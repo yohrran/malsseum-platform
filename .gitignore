@@ -27,5 +27,9 @@ Thumbs.db
 .idea/
 *.swp
 
+# OMC / Claude internal
+.omc/
+.claude/
+
 # TypeScript
 *.tsbuildinfo
