@@ -1,0 +1,73 @@
+import { useLangStore } from '../store/lang-store';
+
+const translations = {
+  ko: {
+    dashboard: '홈',
+    readingPlan: '통독',
+    customPlan: '말씀읽기',
+    leaderboard: '순위표',
+    todayReading: '오늘 읽을 말씀',
+    myPoints: '내 포인트',
+    customPlans: '커스텀 플랜',
+    markComplete: '완료하기',
+    completed: '완료됨',
+    noActivePlan: '진행 중인 통독 계획이 없습니다',
+    createPlan: '통독 계획 만들기',
+    startDate: '시작일',
+    endDate: '종료일',
+    startPlan: '시작하기',
+    creating: '생성 중...',
+    chaptersPerDay: '장/일',
+    allDays: '전체 목록',
+    days: '일',
+    seasonComplete: '시즌 완주!',
+    viewPassage: '본문 보기',
+    noLeaderboard: '순위 데이터가 없습니다.',
+    you: '(나)',
+    logout: '로그아웃',
+    close: '닫기',
+    loadingPassage: '본문 로딩 중...',
+    failedPassage: '본문을 불러오지 못했습니다.',
+    noBibleId: '성경 번역본을 프로필에서 선택해주세요.',
+    viewAndManage: '플랜 보기 및 관리',
+    inProgress: '진행 중',
+  },
+  en: {
+    dashboard: 'Home',
+    readingPlan: 'Reading',
+    customPlan: 'Plans',
+    leaderboard: 'Leaderboard',
+    todayReading: "Today's Reading",
+    myPoints: 'My Points',
+    customPlans: 'Custom Plans',
+    markComplete: 'Mark Complete',
+    completed: 'Completed',
+    noActivePlan: 'No active reading plan',
+    createPlan: 'Create a Reading Plan',
+    startDate: 'Start Date',
+    endDate: 'End Date',
+    startPlan: 'Start Reading Plan',
+    creating: 'Creating...',
+    chaptersPerDay: 'chapters/day',
+    allDays: 'All Days',
+    days: 'days',
+    seasonComplete: 'Season Complete!',
+    viewPassage: 'View Passage',
+    noLeaderboard: 'No leaderboard data yet.',
+    you: '(You)',
+    logout: 'Logout',
+    close: 'Close',
+    loadingPassage: 'Loading passage...',
+    failedPassage: 'Failed to load passage.',
+    noBibleId: 'Select a Bible translation in your profile.',
+    viewAndManage: 'View and manage your reading plans',
+    inProgress: 'In progress',
+  },
+} as const;
+
+export type Translations = typeof translations.en;
+
+export const useT = (): Translations => {
+  const lang = useLangStore((s) => s.lang);
+  return translations[lang] as Translations;
+};

@@ -1,24 +1,28 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/auth-store';
+import { useLangStore } from '../store/lang-store';
 import { ROUTES } from '../lib/constants';
-
-const NAV_LINKS = [
-  { to: ROUTES.HOME, label: 'Home' },
-  { to: ROUTES.READING, label: 'Reading' },
-  { to: ROUTES.CUSTOM_PLAN, label: 'Plans' },
-  { to: ROUTES.LEADERBOARD, label: 'Leaderboard' },
-] as const;
+import { useT } from '../lib/i18n';
 
 export const Navbar = () => {
   const { user, logout } = useAuthStore();
+  const { lang, setLang } = useLangStore();
   const { pathname } = useLocation();
+  const t = useT();
+
+  const NAV_LINKS = [
+    { to: ROUTES.HOME, label: t.dashboard },
+    { to: ROUTES.READING, label: t.readingPlan },
+    { to: ROUTES.CUSTOM_PLAN, label: t.customPlan },
+    { to: ROUTES.LEADERBOARD, label: t.leaderboard },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <div className="flex items-center gap-6">
           <Link to="/" className="text-xl font-bold text-blue-700">
-            Malsseum
+            말씀
           </Link>
           <div className="hidden items-center gap-4 sm:flex">
             {NAV_LINKS.map((link) => (
@@ -37,27 +41,37 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {user && (
-          <div className="flex items-center gap-3">
-            {user.picture && (
-              <img
-                src={user.picture}
-                alt={user.displayName}
-                className="h-8 w-8 rounded-full"
-                referrerPolicy="no-referrer"
-              />
-            )}
-            <span className="hidden text-sm font-medium text-slate-700 sm:inline">
-              {user.displayName}
-            </span>
-            <button
-              onClick={logout}
-              className="rounded-lg px-3 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
-            >
-              Logout
-            </button>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
+            className="rounded-lg px-2 py-1 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+            aria-label="Toggle language"
+          >
+            {lang === 'ko' ? 'EN' : '한'}
+          </button>
+
+          {user && (
+            <>
+              {user.picture && (
+                <img
+                  src={user.picture}
+                  alt={user.displayName}
+                  className="h-8 w-8 rounded-full"
+                  referrerPolicy="no-referrer"
+                />
+              )}
+              <span className="hidden text-sm font-medium text-slate-700 sm:inline">
+                {user.displayName}
+              </span>
+              <button
+                onClick={logout}
+                className="rounded-lg px-3 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
+              >
+                {t.logout}
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-2 overflow-x-auto border-t border-slate-100 px-4 py-2 sm:hidden">
