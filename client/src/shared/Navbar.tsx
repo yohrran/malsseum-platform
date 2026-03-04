@@ -52,17 +52,23 @@ export const Navbar = () => {
 
           {user && (
             <>
-              {user.picture && (
-                <img
-                  src={user.picture}
-                  alt={user.displayName}
-                  className="h-8 w-8 rounded-full"
-                  referrerPolicy="no-referrer"
-                />
-              )}
-              <span className="hidden text-sm font-medium text-slate-700 sm:inline">
-                {user.displayName}
-              </span>
+              <Link to="/profile" className="flex items-center gap-2">
+                {user.picture ? (
+                  <img
+                    src={user.picture}
+                    alt={user.displayName}
+                    className="h-8 w-8 rounded-full"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-600">
+                    {user.displayName?.charAt(0)}
+                  </div>
+                )}
+                <span className="hidden text-sm font-medium text-slate-700 hover:text-blue-700 sm:inline">
+                  {user.displayName}
+                </span>
+              </Link>
               <button
                 onClick={logout}
                 className="rounded-lg px-3 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"

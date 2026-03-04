@@ -8,6 +8,7 @@ import { CustomPlanPage } from './pages/CustomPlanPage';
 import { CustomPlanDetailPage } from './pages/CustomPlanDetailPage';
 import { ReadingPage } from './pages/ReadingPage';
 import { LeaderboardPage } from './pages/LeaderboardPage';
+import { ProfilePage } from './pages/ProfilePage';
 
 export const App = () => {
   return (
@@ -26,6 +27,7 @@ export const App = () => {
           <Route path="/custom-plan" element={<CustomPlanPage />} />
           <Route path="/custom-plan/:id" element={<CustomPlanDetailPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
       </Routes>
     </ErrorBoundary>

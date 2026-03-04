@@ -43,6 +43,38 @@ router.post('/google', async (req, res, next) => {
   }
 });
 
+router.patch('/profile', authenticate, async (req, res, next) => {
+  try {
+    const { preferredBibleId, preferredLanguage } = req.body;
+    const update = {};
+
+    if (preferredBibleId !== undefined) {
+      if (typeof preferredBibleId !== 'string' || preferredBibleId.length > 100) {
+        return res.status(400).json({ success: false, error: 'Invalid preferredBibleId' });
+      }
+      update.preferredBibleId = preferredBibleId;
+    }
+
+    if (preferredLanguage !== undefined) {
+      if (!['ko', 'en'].includes(preferredLanguage)) {
+        return res.status(400).json({ success: false, error: 'preferredLanguage must be ko or en' });
+      }
+      update.preferredLanguage = preferredLanguage;
+    }
+
+    if (Object.keys(update).length === 0) {
+      return res.status(400).json({ success: false, error: 'No valid fields to update' });
+    }
+
+    const user = await User.findByIdAndUpdate(req.user._id, update, { new: true })
+      .select(SAFE_USER_FIELDS);
+
+    res.json({ success: true, data: user });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // M-7: googleId, __v 등 민감/불필요 필드 제외
 router.get('/me', authenticate, (req, res) => {
   const { _id, email, displayName, picture, preferredBibleId, preferredLanguage, totalPoints } = req.user;

@@ -13,4 +13,5 @@ export const ROUTES = {
   READING: '/reading',
   CUSTOM_PLAN: '/custom-plan',
   LEADERBOARD: '/leaderboard',
+  PROFILE: '/profile',
 } as const;
