@@ -9,6 +9,15 @@ const router = express.Router();
 
 router.use(authenticate);
 
+router.get('/', async (req, res, next) => {
+  try {
+    const plans = await ReadingPlan.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    res.json({ success: true, data: plans });
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     const { startDate, endDate, planType } = req.body;

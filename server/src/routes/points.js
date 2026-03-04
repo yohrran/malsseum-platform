@@ -9,7 +9,7 @@ router.use(authenticate);
 
 router.get('/balance', async (req, res, next) => {
   try {
-    res.json({ success: true, data: { totalPoints: req.user.totalPoints } });
+    res.json({ success: true, data: { balance: req.user.totalPoints } });
   } catch (err) {
     next(err);
   }
