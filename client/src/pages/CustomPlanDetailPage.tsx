@@ -3,12 +3,22 @@ import { useParams } from 'react-router-dom';
 import { useCustomPlanDetail } from '../features/custom-plan/useCustomPlanDetail';
 import { useCheckDay } from '../features/custom-plan/useCheckDay';
 import { LoadingSpinner } from '../shared/LoadingSpinner';
+import { PassageViewer } from '../shared/PassageViewer';
+import { buildPassageRef } from '../lib/bible-abbr-map';
+import { useAuthStore } from '../store/auth-store';
+import { useT } from '../lib/i18n';
+
+type SelectedPassage = { ref: string; label: string };
 
 export const CustomPlanDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: plan, isLoading } = useCustomPlanDetail(id ?? '');
   const checkDay = useCheckDay();
+  const { user } = useAuthStore();
+  const t = useT();
+
   const [activeSeasonIdx, setActiveSeasonIdx] = useState(0);
+  const [selectedPassage, setSelectedPassage] = useState<SelectedPassage | null>(null);
 
   if (isLoading || !plan) return <LoadingSpinner />;
 
@@ -23,6 +33,13 @@ export const CustomPlanDetailPage = () => {
       dayIdx,
       isCompleted: !currentCompleted,
     });
+  };
+
+  const handleViewPassage = (bookAbbr: string, chapters: number[], dateLabel: string) => {
+    if (!user?.preferredBibleId) return;
+    const ref = buildPassageRef(bookAbbr, chapters);
+    if (!ref) return;
+    setSelectedPassage({ ref, label: `${dateLabel} · ${bookAbbr} ${chapters.join(', ')}` });
   };
 
   return (
@@ -51,10 +68,7 @@ export const CustomPlanDetailPage = () => {
 
           <ul className="divide-y divide-slate-100 rounded-xl border bg-white shadow-sm">
             {activeSeason.days.map((day, dayIdx) => (
-              <li
-                key={dayIdx}
-                className="flex items-center gap-3 px-4 py-3"
-              >
+              <li key={dayIdx} className="flex items-center gap-3 px-4 py-3">
                 <input
                   type="checkbox"
                   checked={day.isCompleted}
@@ -63,18 +77,22 @@ export const CustomPlanDetailPage = () => {
                 />
                 <span
                   className={`flex-1 text-sm ${
-                    day.isCompleted
-                      ? 'text-green-600 line-through'
-                      : 'text-slate-700'
+                    day.isCompleted ? 'text-green-600 line-through' : 'text-slate-700'
                   }`}
                 >
                   <span className="font-medium">{day.date}</span>
                   {' - '}
                   {day.bookAbbr} {day.chapters.join(', ')}
                 </span>
-                {day.isCompleted && (
-                  <span className="text-green-500">&#10003;</span>
+                {user?.preferredBibleId && buildPassageRef(day.bookAbbr, day.chapters) && (
+                  <button
+                    onClick={() => handleViewPassage(day.bookAbbr, day.chapters, day.date)}
+                    className="shrink-0 rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50"
+                  >
+                    {t.viewPassage}
+                  </button>
                 )}
+                {day.isCompleted && <span className="text-green-500">&#10003;</span>}
               </li>
             ))}
           </ul>
@@ -82,11 +100,20 @@ export const CustomPlanDetailPage = () => {
           {isSeasonComplete && (
             <div className="text-center">
               <button className="rounded-xl bg-amber-500 px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-amber-600">
-                Season Complete!
+                {t.seasonComplete}
               </button>
             </div>
           )}
         </>
+      )}
+
+      {selectedPassage && user?.preferredBibleId && (
+        <PassageViewer
+          bibleId={user.preferredBibleId}
+          ref={selectedPassage.ref}
+          label={selectedPassage.label}
+          onClose={() => setSelectedPassage(null)}
+        />
       )}
     </div>
   );
