@@ -21,7 +21,7 @@ Stack: **MongoDB Atlas** (DB) + **Railway** (backend) + **Vercel** (frontend)
 1. [console.cloud.google.com](https://console.cloud.google.com) → 새 프로젝트 생성
 2. **APIs & Services** → **Credentials** → **OAuth 2.0 Client IDs** → Web application
 3. Authorized JavaScript origins 추가:
-   - `http://localhost:5173` (개발)
+   - `http://localhost:8000` (개발)
    - `https://your-app.vercel.app` (프로덕션)
 4. Client ID 복사 (server + client 모두 사용)
 
@@ -94,7 +94,7 @@ cd client
 cp .env.local.example .env.local
 # .env.local 파일에 값 채우기
 npm install
-npm run dev   # http://localhost:5173
+npm run dev   # http://localhost:8000
 ```
 
 ---
@@ -106,7 +106,7 @@ npm run dev   # http://localhost:5173
 MONGO_URI=mongodb+srv://...
 JWT_SECRET=...
 GOOGLE_CLIENT_ID=...
-CLIENT_URL=http://localhost:5173
+CLIENT_URL=http://localhost:8000
 BIBLE_API_KEY=...
 PORT=5000
 NODE_ENV=development

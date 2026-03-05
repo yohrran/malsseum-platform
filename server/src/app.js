@@ -14,7 +14,7 @@ const bibleRoutes = require('./routes/bible');
 const app = express();
 
 // M-5: CLIENT_URL 미설정 시 경고 (프로덕션 환경에서만 강제)
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:8000';
 
 app.use(helmet());
 app.use(cors({
