@@ -13,7 +13,7 @@ export const LoginPage = () => {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 to-blue-50">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
         <div className="mb-8 text-center">
-          <h1 className="mb-2 text-3xl font-bold text-blue-700">Malsseum</h1>
+          <h1 className="mb-2 text-3xl font-bold text-indigo-600">말씀</h1>
           <p className="text-sm text-slate-500">
             Daily Bible reading companion
           </p>

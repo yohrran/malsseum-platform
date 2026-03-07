@@ -26,10 +26,10 @@ export class ErrorBoundary extends Component<Props, State> {
             An unexpected error occurred. Please try again.
           </p>
           <button
-            className="rounded-lg bg-blue-700 px-4 py-2 text-sm text-white hover:bg-blue-800"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700"
             onClick={() => this.setState({ hasError: false, error: null })}
           >
-            Try again
+            다시 시도
           </button>
         </div>
       );
