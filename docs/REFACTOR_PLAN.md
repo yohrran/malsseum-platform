@@ -348,10 +348,15 @@ lastReadDate: { type: Date },
 - [ ] 월별 캘린더 뷰 (ReadingPage)
 - [ ] Backend streak 시스템 (User 모델 currentStreak/longestStreak)
 
-### 이후 (Phase 3+)
-- [ ] 성경 탐색 페이지 (/bible)
-- [ ] 완료 축하 애니메이션
-- [ ] 하이라이트/메모
+### Phase 3 완료
+- [x] 성경 탐색 페이지 (/bible) - 구약/신약 탭, 책 목록, 장 선택, 인라인 읽기
+- [x] streak 시스템 backend + frontend 연동
+
+### 이후 (Phase 4+)
+- [ ] 완료 축하 애니메이션 (confetti 등)
+- [ ] 하이라이트/메모 기능
+- [ ] 커스텀 플랜 접근 경로 개선 (Dashboard에서 바로가기)
+- [ ] i18n: 성경 탐색 페이지 영어 번역 추가
 
 ---
 
