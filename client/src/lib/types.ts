@@ -5,7 +5,6 @@ export type User = {
   displayName: string;
   picture?: string;
   totalPoints: number;
-  preferredBibleId: string;
   preferredLanguage: string;
 };
 

@@ -1,25 +1,16 @@
-// Maps Korean Bible book abbreviations to API.Bible book IDs
-export const KOREAN_ABBR_TO_BIBLE_ID: Record<string, string> = {
-  창: 'GEN', 출: 'EXO', 레: 'LEV', 민: 'NUM', 신: 'DEU',
-  수: 'JOS', 삿: 'JDG', 룻: 'RUT', 삼상: '1SA', 삼하: '2SA',
-  왕상: '1KI', 왕하: '2KI', 대상: '1CH', 대하: '2CH',
-  스: 'EZR', 느: 'NEH', 에: 'EST', 욥: 'JOB', 시: 'PSA',
-  잠: 'PRO', 전: 'ECC', 아: 'SNG', 사: 'ISA', 렘: 'JER',
-  애: 'LAM', 겔: 'EZK', 단: 'DAN', 호: 'HOS', 욜: 'JOL',
-  암: 'AMO', 옵: 'OBA', 욘: 'JON', 미: 'MIC', 나: 'NAM',
-  합: 'HAB', 습: 'ZEP', 학: 'HAG', 슥: 'ZEC', 말: 'MAL',
-  마: 'MAT', 막: 'MRK', 눅: 'LUK', 요: 'JHN', 행: 'ACT',
-  롬: 'ROM', 고전: '1CO', 고후: '2CO', 갈: 'GAL', 엡: 'EPH',
-  빌: 'PHP', 골: 'COL', 살전: '1TH', 살후: '2TH',
-  딤전: '1TI', 딤후: '2TI', 딛: 'TIT', 몬: 'PHM',
-  히: 'HEB', 약: 'JAS', 벧전: '1PE', 벧후: '2PE',
-  요일: '1JN', 요이: '2JN', 요삼: '3JN', 유: 'JUD', 계: 'REV',
-};
-
-// Build a passage ref like "GEN.1-GEN.2" from bookAbbr + chapters array
-export const buildPassageRef = (bookAbbr: string, chapters: number[]): string | null => {
-  const bookId = KOREAN_ABBR_TO_BIBLE_ID[bookAbbr];
-  if (!bookId || chapters.length === 0) return null;
-  if (chapters.length === 1) return `${bookId}.${chapters[0]}`;
-  return `${bookId}.${chapters[0]}-${bookId}.${chapters[chapters.length - 1]}`;
+export const BOOK_NAMES_KO: Record<string, string> = {
+  창: '창세기', 출: '출애굽기', 레: '레위기', 민: '민수기', 신: '신명기',
+  수: '여호수아', 삿: '사사기', 룻: '룻기', 삼상: '사무엘상', 삼하: '사무엘하',
+  왕상: '열왕기상', 왕하: '열왕기하', 대상: '역대상', 대하: '역대하',
+  스: '에스라', 느: '느헤미야', 에: '에스더', 욥: '욥기', 시: '시편',
+  잠: '잠언', 전: '전도서', 아: '아가', 사: '이사야', 렘: '예레미야',
+  애: '예레미야애가', 겔: '에스겔', 단: '다니엘', 호: '호세아', 욜: '요엘',
+  암: '아모스', 옵: '오바댜', 욘: '요나', 미: '미가', 나: '나훔',
+  합: '하박국', 습: '스바냐', 학: '학개', 슥: '스가랴', 말: '말라기',
+  마: '마태복음', 막: '마가복음', 눅: '누가복음', 요: '요한복음', 행: '사도행전',
+  롬: '로마서', 고전: '고린도전서', 고후: '고린도후서', 갈: '갈라디아서', 엡: '에베소서',
+  빌: '빌립보서', 골: '골로새서', 살전: '데살로니가전서', 살후: '데살로니가후서',
+  딤전: '디모데전서', 딤후: '디모데후서', 딛: '디도서', 몬: '빌레몬서',
+  히: '히브리서', 약: '야고보서', 벧전: '베드로전서', 벧후: '베드로후서',
+  요일: '요한일서', 요이: '요한이서', 요삼: '요한삼서', 유: '유다서', 계: '요한계시록',
 };

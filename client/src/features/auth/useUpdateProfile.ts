@@ -4,7 +4,6 @@ import { useAuthStore } from '../../store/auth-store';
 import type { ApiResponse, User } from '../../lib/types';
 
 type UpdateProfileParams = {
-  preferredBibleId?: string;
   preferredLanguage?: string;
 };
 

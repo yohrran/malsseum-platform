@@ -4,17 +4,14 @@ import { useCustomPlanDetail } from '../features/custom-plan/useCustomPlanDetail
 import { useCheckDay } from '../features/custom-plan/useCheckDay';
 import { LoadingSpinner } from '../shared/LoadingSpinner';
 import { PassageViewer } from '../shared/PassageViewer';
-import { buildPassageRef } from '../lib/bible-abbr-map';
-import { useAuthStore } from '../store/auth-store';
 import { useT } from '../lib/i18n';
 
-type SelectedPassage = { ref: string; label: string };
+type SelectedPassage = { bookAbbr: string; chapters: number[]; label: string };
 
 export const CustomPlanDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: plan, isLoading } = useCustomPlanDetail(id ?? '');
   const checkDay = useCheckDay();
-  const { user } = useAuthStore();
   const t = useT();
 
   const [activeSeasonIdx, setActiveSeasonIdx] = useState(0);
@@ -36,10 +33,11 @@ export const CustomPlanDetailPage = () => {
   };
 
   const handleViewPassage = (bookAbbr: string, chapters: number[], dateLabel: string) => {
-    if (!user?.preferredBibleId) return;
-    const ref = buildPassageRef(bookAbbr, chapters);
-    if (!ref) return;
-    setSelectedPassage({ ref, label: `${dateLabel} · ${bookAbbr} ${chapters.join(', ')}` });
+    setSelectedPassage({
+      bookAbbr,
+      chapters,
+      label: `${dateLabel} · ${bookAbbr} ${chapters.join(', ')}`,
+    });
   };
 
   return (
@@ -84,14 +82,12 @@ export const CustomPlanDetailPage = () => {
                   {' - '}
                   {day.bookAbbr} {day.chapters.join(', ')}
                 </span>
-                {user?.preferredBibleId && buildPassageRef(day.bookAbbr, day.chapters) && (
-                  <button
-                    onClick={() => handleViewPassage(day.bookAbbr, day.chapters, day.date)}
-                    className="shrink-0 rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50"
-                  >
-                    {t.viewPassage}
-                  </button>
-                )}
+                <button
+                  onClick={() => handleViewPassage(day.bookAbbr, day.chapters, day.date)}
+                  className="shrink-0 rounded px-2 py-0.5 text-xs text-blue-600 hover:bg-blue-50"
+                >
+                  {t.viewPassage}
+                </button>
                 {day.isCompleted && <span className="text-green-500">&#10003;</span>}
               </li>
             ))}
@@ -107,10 +103,10 @@ export const CustomPlanDetailPage = () => {
         </>
       )}
 
-      {selectedPassage && user?.preferredBibleId && (
+      {selectedPassage && (
         <PassageViewer
-          bibleId={user.preferredBibleId}
-          ref={selectedPassage.ref}
+          bookAbbr={selectedPassage.bookAbbr}
+          chapters={selectedPassage.chapters}
           label={selectedPassage.label}
           onClose={() => setSelectedPassage(null)}
         />

@@ -9,7 +9,7 @@ const router = express.Router();
 // OAuth2Client를 재사용 (요청마다 생성 방지)
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const SAFE_USER_FIELDS = '_id email displayName picture preferredBibleId preferredLanguage totalPoints';
+const SAFE_USER_FIELDS = '_id email displayName picture preferredLanguage totalPoints';
 
 router.post('/google', async (req, res, next) => {
   try {
@@ -45,15 +45,8 @@ router.post('/google', async (req, res, next) => {
 
 router.patch('/profile', authenticate, async (req, res, next) => {
   try {
-    const { preferredBibleId, preferredLanguage } = req.body;
+    const { preferredLanguage } = req.body;
     const update = {};
-
-    if (preferredBibleId !== undefined) {
-      if (typeof preferredBibleId !== 'string' || preferredBibleId.length > 100) {
-        return res.status(400).json({ success: false, error: 'Invalid preferredBibleId' });
-      }
-      update.preferredBibleId = preferredBibleId;
-    }
 
     if (preferredLanguage !== undefined) {
       if (!['ko', 'en'].includes(preferredLanguage)) {
@@ -77,10 +70,10 @@ router.patch('/profile', authenticate, async (req, res, next) => {
 
 // M-7: googleId, __v 등 민감/불필요 필드 제외
 router.get('/me', authenticate, (req, res) => {
-  const { _id, email, displayName, picture, preferredBibleId, preferredLanguage, totalPoints } = req.user;
+  const { _id, email, displayName, picture, preferredLanguage, totalPoints } = req.user;
   res.json({
     success: true,
-    data: { _id, email, displayName, picture, preferredBibleId, preferredLanguage, totalPoints },
+    data: { _id, email, displayName, picture, preferredLanguage, totalPoints },
   });
 });
 

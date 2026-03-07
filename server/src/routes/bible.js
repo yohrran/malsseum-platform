@@ -1,93 +1,81 @@
 const express = require('express');
-const axios = require('axios');
 const { authenticate } = require('../middleware/auth');
-const { getWithCache } = require('../services/bible-cache-service');
+const BibleBook = require('../models/BibleBook');
 
 const router = express.Router();
 
-const BIBLE_API_BASE = 'https://api.scripture.api.bible/v1';
-
-// M-4: 입력 패턴 검증 (SSRF 방지)
-const BIBLE_ID_PATTERN = /^[a-zA-Z0-9_-]+$/;
-const REF_PATTERN = /^[a-zA-Z0-9.:,-]+$/;
-const LANGUAGE_PATTERN = /^[a-z]{2,3}(-[A-Z]{2})?$/;
-
-const getBibleApiClient = () =>
-  axios.create({
-    baseURL: BIBLE_API_BASE,
-    headers: { 'api-key': process.env.BIBLE_API_KEY },
-    timeout: 10000,
-  });
+const ABBR_PATTERN = /^[\uAC00-\uD7A3a-zA-Z0-9]{1,4}$/;
+const CHAPTERS_PATTERN = /^[0-9,]+$/;
 
 router.use(authenticate);
 
-router.get('/bibles', async (req, res, next) => {
+router.get('/books', async (req, res, next) => {
   try {
-    const { language } = req.query;
-
-    if (language && !LANGUAGE_PATTERN.test(language)) {
-      return res.status(400).json({ success: false, error: 'Invalid language format' });
-    }
-
-    const cacheKey = `bibles:${language || 'all'}`;
-    const data = await getWithCache(cacheKey, async () => {
-      const params = language ? { language } : {};
-      const response = await getBibleApiClient().get('/bibles', { params });
-      return response.data.data;
-    }, 30);
-
+    const books = await BibleBook.find({}, { chapters: 0 }).sort({
+      bookIndex: 1,
+    });
+    const data = books.map((b) => ({
+      abbrKo: b.abbrKo,
+      nameKo: b.nameKo,
+      chapterCount: b.chapterCount,
+    }));
     res.json({ success: true, data });
   } catch (err) {
     next(err);
   }
 });
 
-router.get('/books/:bibleId', async (req, res, next) => {
+router.get('/passage/:bookAbbr/:chapters', async (req, res, next) => {
   try {
-    const { bibleId } = req.params;
+    const { bookAbbr, chapters: chaptersParam } = req.params;
 
-    if (!BIBLE_ID_PATTERN.test(bibleId)) {
-      return res.status(400).json({ success: false, error: 'Invalid bible ID format' });
+    if (!ABBR_PATTERN.test(bookAbbr)) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Invalid book abbreviation' });
+    }
+    if (!CHAPTERS_PATTERN.test(chaptersParam)) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Invalid chapters format' });
     }
 
-    const cacheKey = `books:${bibleId}`;
-    const data = await getWithCache(cacheKey, async () => {
-      const response = await getBibleApiClient().get(`/bibles/${bibleId}/books`);
-      return response.data.data;
-    }, 30);
+    const chapterNums = chaptersParam
+      .split(',')
+      .map(Number)
+      .filter((n) => n > 0);
 
-    res.json({ success: true, data });
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.get('/passage/:bibleId/:ref', async (req, res, next) => {
-  try {
-    const { bibleId, ref } = req.params;
-
-    if (!BIBLE_ID_PATTERN.test(bibleId)) {
-      return res.status(400).json({ success: false, error: 'Invalid bible ID format' });
-    }
-    if (!REF_PATTERN.test(ref)) {
-      return res.status(400).json({ success: false, error: 'Invalid reference format' });
+    if (chapterNums.length === 0 || chapterNums.length > 10) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Provide 1-10 chapters' });
     }
 
-    const cacheKey = `passage:${bibleId}:${ref}`;
-    const data = await getWithCache(cacheKey, async () => {
-      const response = await getBibleApiClient().get(`/bibles/${bibleId}/passages/${ref}`, {
-        params: {
-          'content-type': 'html',
-          'include-notes': false,
-          'include-titles': true,
-          'include-chapter-numbers': true,
-          'include-verse-numbers': true,
-        },
-      });
-      return response.data.data;
-    }, 365);
+    const book = await BibleBook.findOne({ abbrKo: bookAbbr });
+    if (!book) {
+      return res
+        .status(404)
+        .json({ success: false, error: 'Book not found' });
+    }
 
-    res.json({ success: true, data });
+    const chaptersData = chapterNums
+      .filter((ch) => ch >= 1 && ch <= book.chapterCount)
+      .map((ch) => ({
+        chapter: ch,
+        verses: book.chapters[ch - 1].map((text, idx) => ({
+          verse: idx + 1,
+          text,
+        })),
+      }));
+
+    res.json({
+      success: true,
+      data: {
+        bookName: book.nameKo,
+        abbrKo: book.abbrKo,
+        chapters: chaptersData,
+      },
+    });
   } catch (err) {
     next(err);
   }

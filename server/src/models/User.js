@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   displayName: { type: String, required: true },
   picture: { type: String },
-  preferredBibleId: { type: String, default: 'ENGKJV' },
   preferredLanguage: { type: String, default: 'ko' },
   totalPoints: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }

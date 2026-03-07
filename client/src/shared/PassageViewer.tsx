@@ -3,14 +3,14 @@ import { LoadingSpinner } from './LoadingSpinner';
 import { useT } from '../lib/i18n';
 
 type Props = {
-  bibleId: string;
-  ref: string;
+  bookAbbr: string;
+  chapters: number[];
   label: string;
   onClose: () => void;
 };
 
-export const PassageViewer = ({ bibleId, ref, label, onClose }: Props) => {
-  const { data, isLoading, isError } = usePassage(bibleId, ref);
+export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => {
+  const { data, isLoading, isError } = usePassage(bookAbbr, chapters);
   const t = useT();
 
   return (
@@ -36,10 +36,25 @@ export const PassageViewer = ({ bibleId, ref, label, onClose }: Props) => {
         {isLoading && <LoadingSpinner />}
         {isError && <p className="text-sm text-red-500">{t.failedPassage}</p>}
         {data && (
-          <div
-            className="prose prose-sm max-w-none text-slate-700 [&_sup]:text-xs [&_sup]:text-slate-400"
-            dangerouslySetInnerHTML={{ __html: data.content }}
-          />
+          <div className="space-y-4">
+            {data.chapters.map((ch) => (
+              <div key={ch.chapter}>
+                <h4 className="mb-2 text-sm font-semibold text-slate-500">
+                  {data.bookName} {ch.chapter}장
+                </h4>
+                <div className="space-y-1 text-sm leading-relaxed text-slate-700">
+                  {ch.verses.map((v) => (
+                    <p key={v.verse}>
+                      <sup className="mr-1 text-xs text-slate-400">
+                        {v.verse}
+                      </sup>
+                      {v.text}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

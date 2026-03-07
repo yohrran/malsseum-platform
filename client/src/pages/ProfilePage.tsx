@@ -1,35 +1,22 @@
-import { useState } from 'react';
 import { useAuthStore } from '../store/auth-store';
 import { useLangStore } from '../store/lang-store';
-import { useBibles } from '../features/bible/useBibles';
 import { useUpdateProfile } from '../features/auth/useUpdateProfile';
-import { LoadingSpinner } from '../shared/LoadingSpinner';
 import { useT } from '../lib/i18n';
 
 export const ProfilePage = () => {
   const { user } = useAuthStore();
   const { lang, setLang } = useLangStore();
   const t = useT();
-
-  const [selectedBibleId, setSelectedBibleId] = useState(user?.preferredBibleId ?? '');
-  const [langFilter, setLangFilter] = useState('ko');
-
-  const bibles = useBibles(langFilter || undefined);
   const updateProfile = useUpdateProfile();
 
   const handleSave = () => {
-    const update: { preferredBibleId?: string; preferredLanguage?: string } = {};
-    if (selectedBibleId !== user?.preferredBibleId) {
-      update.preferredBibleId = selectedBibleId;
-    }
+    const update: { preferredLanguage?: string } = {};
     if (lang !== user?.preferredLanguage) {
       update.preferredLanguage = lang;
     }
     if (Object.keys(update).length === 0) return;
     updateProfile.mutate(update);
   };
-
-  const selectedBible = bibles.data?.find((b) => b.id === selectedBibleId);
 
   return (
     <div className="mx-auto max-w-lg space-y-6">
@@ -76,67 +63,6 @@ export const ProfilePage = () => {
             </button>
           ))}
         </div>
-      </div>
-
-      <div className="rounded-xl border bg-white p-5 shadow-sm space-y-4">
-        <h2 className="text-sm font-semibold text-slate-700">{t.bibleTranslation}</h2>
-
-        {user?.preferredBibleId && (
-          <p className="text-xs text-slate-500">
-            {t.current}: <span className="font-medium text-slate-700">{selectedBible?.nameLocal ?? user.preferredBibleId}</span>
-          </p>
-        )}
-
-        <div className="flex gap-2">
-          <button
-            onClick={() => setLangFilter('ko')}
-            className={`rounded-full px-3 py-1 text-xs transition-colors ${
-              langFilter === 'ko' ? 'bg-blue-100 font-semibold text-blue-700' : 'bg-slate-100 text-slate-600'
-            }`}
-          >
-            한국어
-          </button>
-          <button
-            onClick={() => setLangFilter('en')}
-            className={`rounded-full px-3 py-1 text-xs transition-colors ${
-              langFilter === 'en' ? 'bg-blue-100 font-semibold text-blue-700' : 'bg-slate-100 text-slate-600'
-            }`}
-          >
-            English
-          </button>
-          <button
-            onClick={() => setLangFilter('')}
-            className={`rounded-full px-3 py-1 text-xs transition-colors ${
-              langFilter === '' ? 'bg-blue-100 font-semibold text-blue-700' : 'bg-slate-100 text-slate-600'
-            }`}
-          >
-            {t.allLanguages}
-          </button>
-        </div>
-
-        {bibles.isLoading && <LoadingSpinner />}
-        {bibles.isError && (
-          <p className="text-sm text-amber-600">{t.bibleApiRequired}</p>
-        )}
-
-        {bibles.data && bibles.data.length > 0 && (
-          <select
-            value={selectedBibleId}
-            onChange={(e) => setSelectedBibleId(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-          >
-            <option value="">{t.selectBible}</option>
-            {bibles.data.map((bible) => (
-              <option key={bible.id} value={bible.id}>
-                {bible.nameLocal || bible.name}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {bibles.data && bibles.data.length === 0 && !bibles.isLoading && (
-          <p className="text-sm text-slate-400">{t.noBiblesFound}</p>
-        )}
       </div>
 
       <button
