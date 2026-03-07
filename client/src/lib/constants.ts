@@ -11,6 +11,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   READING: '/reading',
+  BIBLE: '/bible',
   CUSTOM_PLAN: '/custom-plan',
   LEADERBOARD: '/leaderboard',
   PROFILE: '/profile',

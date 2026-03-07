@@ -12,8 +12,8 @@ export const Navbar = () => {
 
   const NAV_LINKS = [
     { to: ROUTES.HOME, label: t.dashboard, icon: HomeIcon },
-    { to: ROUTES.READING, label: t.readingPlan, icon: BookIcon },
-    { to: ROUTES.CUSTOM_PLAN, label: t.customPlan, icon: ListIcon },
+    { to: ROUTES.READING, label: t.readingPlan, icon: BookOpenIcon },
+    { to: ROUTES.BIBLE, label: '성경', icon: BookIcon },
     { to: ROUTES.LEADERBOARD, label: t.leaderboard, icon: TrophyIcon },
   ];
 
@@ -149,7 +149,7 @@ const BookIcon = ({ size = 16, className = '' }: IconProps) => (
   </svg>
 );
 
-const ListIcon = ({ size = 16, className = '' }: IconProps) => (
+const BookOpenIcon = ({ size = 16, className = '' }: IconProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -162,14 +162,12 @@ const ListIcon = ({ size = 16, className = '' }: IconProps) => (
     strokeLinejoin="round"
     className={className}
   >
-    <line x1="8" y1="6" x2="21" y2="6" />
-    <line x1="8" y1="12" x2="21" y2="12" />
-    <line x1="8" y1="18" x2="21" y2="18" />
-    <line x1="3" y1="6" x2="3.01" y2="6" />
-    <line x1="3" y1="12" x2="3.01" y2="12" />
-    <line x1="3" y1="18" x2="3.01" y2="18" />
+    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    <line x1="12" y1="7" x2="12" y2="21" />
   </svg>
 );
+
 
 const TrophyIcon = ({ size = 16, className = '' }: IconProps) => (
   <svg

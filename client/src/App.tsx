@@ -9,6 +9,7 @@ import { CustomPlanDetailPage } from './pages/CustomPlanDetailPage';
 import { ReadingPage } from './pages/ReadingPage';
 import { LeaderboardPage } from './pages/LeaderboardPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { BiblePage } from './pages/BiblePage';
 
 export const App = () => {
   return (
@@ -24,6 +25,7 @@ export const App = () => {
         >
           <Route path="/" element={<DashboardPage />} />
           <Route path="/reading" element={<ReadingPage />} />
+          <Route path="/bible" element={<BiblePage />} />
           <Route path="/custom-plan" element={<CustomPlanPage />} />
           <Route path="/custom-plan/:id" element={<CustomPlanDetailPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
