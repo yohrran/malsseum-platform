@@ -6,6 +6,9 @@ export type User = {
   picture?: string;
   totalPoints: number;
   preferredLanguage: string;
+  currentStreak: number;
+  longestStreak: number;
+  lastReadDate?: string;
 };
 
 export type Day = {

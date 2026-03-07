@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/auth-store';
 import { useTodayReading } from '../features/reading/useTodayReading';
 import { usePointsBalance } from '../features/points/usePoints';
 import { useReadingPlan } from '../features/reading/useReadingPlan';
+import { useStreak } from '../features/auth/useStreak';
 import { LoadingSpinner } from '../shared/LoadingSpinner';
 import { ROUTES } from '../lib/constants';
 import { useT } from '../lib/i18n';
@@ -12,6 +13,7 @@ export const DashboardPage = () => {
   const todayReading = useTodayReading();
   const pointsBalance = usePointsBalance();
   const { data: plans } = useReadingPlan();
+  const { data: streakData } = useStreak();
   const t = useT();
 
   const activePlan = plans?.find((p) => p.isActive) ?? plans?.[0];
@@ -30,7 +32,7 @@ export const DashboardPage = () => {
         <h1 className="text-2xl font-bold text-slate-800">{firstName}님</h1>
       </div>
 
-      <StreakBanner streak={0} />
+      <StreakBanner streak={streakData?.currentStreak ?? 0} />
 
       <TodayReadingCard todayReading={todayReading} t={t} />
 

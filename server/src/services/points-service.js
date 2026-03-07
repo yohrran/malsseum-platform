@@ -69,6 +69,17 @@ const checkStreak = async (userId) => {
 
   const todayStr = today.toISOString().slice(0, 10);
 
+  // Persist streak to User document
+  const user = await User.findById(userId).select('currentStreak longestStreak');
+  if (user) {
+    const longestStreak = Math.max(streak, user.longestStreak ?? 0);
+    await User.findByIdAndUpdate(userId, {
+      currentStreak: streak,
+      longestStreak,
+      lastReadDate: streak > 0 ? today : user.lastReadDate,
+    });
+  }
+
   if (streak >= 30) {
     const existing = await PointsLedger.findOne({
       userId,
@@ -116,6 +127,8 @@ const checkStreak = async (userId) => {
       }
     }
   }
+
+  return streak;
 };
 
 module.exports = { addPoints, checkStreak };

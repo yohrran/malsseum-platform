@@ -9,7 +9,8 @@ const router = express.Router();
 // OAuth2Client를 재사용 (요청마다 생성 방지)
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const SAFE_USER_FIELDS = '_id email displayName picture preferredLanguage totalPoints';
+const SAFE_USER_FIELDS =
+  '_id email displayName picture preferredLanguage totalPoints currentStreak longestStreak lastReadDate';
 
 router.post('/google', async (req, res, next) => {
   try {
@@ -70,11 +71,34 @@ router.patch('/profile', authenticate, async (req, res, next) => {
 
 // M-7: googleId, __v 등 민감/불필요 필드 제외
 router.get('/me', authenticate, (req, res) => {
-  const { _id, email, displayName, picture, preferredLanguage, totalPoints } = req.user;
+  const {
+    _id, email, displayName, picture, preferredLanguage,
+    totalPoints, currentStreak, longestStreak, lastReadDate,
+  } = req.user;
   res.json({
     success: true,
-    data: { _id, email, displayName, picture, preferredLanguage, totalPoints },
+    data: {
+      _id, email, displayName, picture, preferredLanguage,
+      totalPoints, currentStreak, longestStreak, lastReadDate,
+    },
   });
+});
+
+router.get('/streak', authenticate, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id)
+      .select('currentStreak longestStreak lastReadDate');
+    res.json({
+      success: true,
+      data: {
+        currentStreak: user?.currentStreak ?? 0,
+        longestStreak: user?.longestStreak ?? 0,
+        lastReadDate: user?.lastReadDate ?? null,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

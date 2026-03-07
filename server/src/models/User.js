@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
   picture: { type: String },
   preferredLanguage: { type: String, default: 'ko' },
   totalPoints: { type: Number, default: 0 },
+  currentStreak: { type: Number, default: 0 },
+  longestStreak: { type: Number, default: 0 },
+  lastReadDate: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now }
 });
 
