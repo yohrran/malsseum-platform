@@ -64,9 +64,15 @@ router.put('/:id', async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Invalid plan ID' });
     }
     const { title, seasons } = req.body;
+    if (!title || typeof title !== 'string' || title.trim().length === 0) {
+      return res.status(400).json({ success: false, error: 'Title is required' });
+    }
+    if (seasons !== undefined && !Array.isArray(seasons)) {
+      return res.status(400).json({ success: false, error: 'Seasons must be an array' });
+    }
     const plan = await CustomPlan.findOneAndUpdate(
       { _id: req.params.id, userId: req.user._id },
-      { title, seasons, updatedAt: new Date() },
+      { title: title.trim(), seasons, updatedAt: new Date() },
       { new: true }
     );
     if (!plan) {

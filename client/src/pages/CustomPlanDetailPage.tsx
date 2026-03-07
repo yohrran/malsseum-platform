@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useCustomPlanDetail } from '../features/custom-plan/useCustomPlanDetail';
 import { useCheckDay } from '../features/custom-plan/useCheckDay';
+import { useCompleteSeason } from '../features/custom-plan/useCompleteSeason';
 import { LoadingSpinner } from '../shared/LoadingSpinner';
 import { PassageViewer } from '../shared/PassageViewer';
 import { useT } from '../lib/i18n';
@@ -12,6 +13,7 @@ export const CustomPlanDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: plan, isLoading } = useCustomPlanDetail(id ?? '');
   const checkDay = useCheckDay();
+  const completeSeason = useCompleteSeason();
   const t = useT();
 
   const [activeSeasonIdx, setActiveSeasonIdx] = useState(0);
@@ -20,7 +22,11 @@ export const CustomPlanDetailPage = () => {
   if (isLoading || !plan) return <LoadingSpinner />;
 
   const activeSeason = plan.seasons[activeSeasonIdx];
-  const isSeasonComplete = activeSeason?.days.every((d) => d.isCompleted);
+  const isSeasonComplete =
+    activeSeason &&
+    activeSeason.days.length > 0 &&
+    activeSeason.days.every((d) => d.isCompleted) &&
+    !activeSeason.isCompleted;
 
   const handleCheck = (dayIdx: number, currentCompleted: boolean) => {
     if (!id) return;
@@ -93,10 +99,23 @@ export const CustomPlanDetailPage = () => {
             ))}
           </ul>
 
+          {activeSeason.isCompleted && (
+            <div className="text-center">
+              <p className="text-sm font-semibold text-green-600">&#10003; {t.seasonComplete}</p>
+            </div>
+          )}
+
           {isSeasonComplete && (
             <div className="text-center">
-              <button className="rounded-xl bg-amber-500 px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-amber-600">
-                {t.seasonComplete}
+              <button
+                onClick={() => {
+                  if (!id) return;
+                  completeSeason.mutate({ planId: id, seasonIdx: activeSeasonIdx });
+                }}
+                disabled={completeSeason.isPending}
+                className="rounded-xl bg-amber-500 px-8 py-3 font-semibold text-white shadow-md transition-colors hover:bg-amber-600 disabled:opacity-50"
+              >
+                {completeSeason.isPending ? '...' : t.seasonComplete}
               </button>
             </div>
           )}

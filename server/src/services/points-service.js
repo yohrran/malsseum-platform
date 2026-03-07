@@ -27,7 +27,11 @@ const addPoints = async (userId, eventType, points, referenceId, description) =>
     session.endSession();
   }
 
-  await checkStreak(userId);
+  try {
+    await checkStreak(userId);
+  } catch (err) {
+    console.error('checkStreak failed (non-blocking):', err.message);
+  }
 };
 
 const checkStreak = async (userId) => {
