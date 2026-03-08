@@ -10,13 +10,11 @@ export const LoginPage = () => {
   if (isAuthenticated) return <Navigate to="/" replace />;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 to-blue-50">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-100 to-blue-50 px-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
         <div className="mb-8 text-center">
-          <h1 className="mb-2 text-3xl font-bold text-indigo-600">말씀</h1>
-          <p className="text-sm text-slate-500">
-            Daily Bible reading companion
-          </p>
+          <h1 className="mb-2 text-4xl font-bold text-indigo-600">말씀</h1>
+          <p className="text-sm text-slate-500">Daily Bible reading companion</p>
         </div>
 
         <div className="flex flex-col items-center gap-4">
@@ -27,7 +25,7 @@ export const LoginPage = () => {
               }
             }}
             onError={() => {
-              console.error('Google login failed');
+              /* handled by isError state */
             }}
             theme="outline"
             size="large"
@@ -35,18 +33,16 @@ export const LoginPage = () => {
           />
 
           {googleAuth.isError && (
-            <p className="text-sm text-red-500">
-              Login failed. Please try again.
-            </p>
+            <p className="text-sm text-red-500">로그인에 실패했습니다. 다시 시도해 주세요.</p>
           )}
 
           {googleAuth.isPending && (
-            <p className="text-sm text-slate-500">Signing in...</p>
+            <p className="text-sm text-slate-500">로그인 중...</p>
           )}
         </div>
 
         <p className="mt-8 text-center text-xs text-slate-400">
-          Sign in with your Google account to get started
+          Google 계정으로 로그인하세요
         </p>
       </div>
     </div>

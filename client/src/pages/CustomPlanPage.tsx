@@ -9,7 +9,7 @@ export const CustomPlanPage = () => {
 
   if (!plans || plans.length === 0) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center gap-3 text-center">
+      <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -27,10 +27,12 @@ export const CustomPlanPage = () => {
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
           </svg>
         </div>
-        <h2 className="text-lg font-semibold text-slate-700">플랜이 없습니다</h2>
-        <p className="text-sm text-slate-400">
-          관리자가 말씀읽기 플랜을 등록하면 여기에 표시됩니다.
-        </p>
+        <div>
+          <h2 className="text-base font-semibold text-slate-700">플랜이 없습니다</h2>
+          <p className="mt-1.5 text-sm text-slate-400">
+            관리자가 말씀읽기 플랜을 등록하면 여기에 표시됩니다.
+          </p>
+        </div>
       </div>
     );
   }
@@ -53,21 +55,21 @@ export const CustomPlanPage = () => {
             <Link
               key={plan._id}
               to={`/custom-plan/${plan._id}`}
-              className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+              className="group rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md active:bg-slate-50"
             >
-              <h3 className="mb-1 font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
+              <h3 className="mb-1.5 font-bold text-slate-800 transition-colors group-hover:text-indigo-600">
                 {plan.title}
               </h3>
               <p className="mb-4 text-xs text-slate-400">
                 {plan.seasons.length}개 시즌 · {completedSeasons}/{plan.seasons.length} 완료
               </p>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+              <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
                 <div
                   className="h-full rounded-full bg-indigo-600 transition-all duration-500"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="mt-2 flex items-center justify-between">
+              <div className="mt-2.5 flex items-center justify-between">
                 <span className="text-xs text-slate-400">
                   {completedDays}/{totalDays}일
                 </span>

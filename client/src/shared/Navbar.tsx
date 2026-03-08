@@ -18,96 +18,99 @@ export const Navbar = () => {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-7">
-          <Link to="/" className="flex items-center gap-1.5">
-            <span className="text-xl font-bold text-indigo-600">말씀</span>
-          </Link>
-          <div className="hidden items-center gap-5 sm:flex">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.to;
-              return (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`flex items-center gap-1.5 text-sm transition-colors ${
-                    isActive
-                      ? 'font-semibold text-indigo-600'
-                      : 'text-slate-500 hover:text-slate-800'
-                  }`}
-                >
-                  <link.icon
-                    size={15}
-                    className={isActive ? 'text-indigo-600' : 'text-slate-400'}
-                  />
-                  {link.label}
+    <>
+      {/* Desktop top navbar */}
+      <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-7">
+            <Link to="/" className="flex items-center gap-1.5">
+              <span className="text-xl font-bold text-indigo-600">말씀</span>
+            </Link>
+            <div className="hidden items-center gap-5 sm:flex">
+              {NAV_LINKS.map((link) => {
+                const isActive = pathname === link.to;
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={`flex items-center gap-1.5 text-sm transition-colors ${
+                      isActive
+                        ? 'font-semibold text-indigo-600'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    <link.icon
+                      size={15}
+                      className={isActive ? 'text-indigo-600' : 'text-slate-400'}
+                    />
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
+              className="rounded-lg px-2 py-1 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+              aria-label="Toggle language"
+            >
+              {lang === 'ko' ? 'EN' : '한'}
+            </button>
+
+            {user && (
+              <>
+                <Link to="/profile" className="flex items-center gap-2">
+                  {user.picture ? (
+                    <img
+                      src={user.picture}
+                      alt={user.displayName}
+                      className="h-8 w-8 rounded-full object-cover ring-2 ring-indigo-100"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">
+                      {user.displayName?.charAt(0)}
+                    </div>
+                  )}
+                  <span className="hidden text-sm font-medium text-slate-700 hover:text-indigo-600 sm:inline">
+                    {user.displayName}
+                  </span>
                 </Link>
-              );
-            })}
+                <button
+                  onClick={logout}
+                  className="hidden rounded-lg px-2.5 py-1.5 text-xs text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 sm:block"
+                >
+                  {t.logout}
+                </button>
+              </>
+            )}
           </div>
         </div>
+      </nav>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
-            className="rounded-lg px-2 py-1 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-            aria-label="Toggle language"
-          >
-            {lang === 'ko' ? 'EN' : '한'}
-          </button>
-
-          {user && (
-            <>
-              <Link to="/profile" className="flex items-center gap-2">
-                {user.picture ? (
-                  <img
-                    src={user.picture}
-                    alt={user.displayName}
-                    className="h-8 w-8 rounded-full object-cover ring-2 ring-indigo-100"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">
-                    {user.displayName?.charAt(0)}
-                  </div>
-                )}
-                <span className="hidden text-sm font-medium text-slate-700 hover:text-indigo-600 sm:inline">
-                  {user.displayName}
-                </span>
-              </Link>
-              <button
-                onClick={logout}
-                className="hidden rounded-lg px-2.5 py-1.5 text-xs text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 sm:block"
-              >
-                {t.logout}
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Mobile bottom tab bar */}
-      <div className="flex items-center border-t border-slate-100 sm:hidden">
+      {/* Mobile bottom tab bar — fixed at bottom, outside scroll context */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch border-t border-slate-200 bg-white/95 backdrop-blur-sm sm:hidden">
         {NAV_LINKS.map((link) => {
           const isActive = pathname === link.to;
           return (
             <Link
               key={link.to}
               to={link.to}
-              className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-center transition-colors ${
-                isActive ? 'text-indigo-600' : 'text-slate-400'
+              className={`flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-center transition-colors ${
+                isActive ? 'text-indigo-600' : 'text-slate-400 active:text-slate-600'
               }`}
             >
-              <link.icon size={20} />
-              <span className={`text-[10px] ${isActive ? 'font-semibold' : 'font-normal'}`}>
+              <link.icon size={22} />
+              <span className={`text-[10px] leading-none ${isActive ? 'font-semibold' : 'font-normal'}`}>
                 {link.label}
               </span>
             </Link>
           );
         })}
       </div>
-    </nav>
+    </>
   );
 };
 
@@ -167,7 +170,6 @@ const BookOpenIcon = ({ size = 16, className = '' }: IconProps) => (
     <line x1="12" y1="7" x2="12" y2="21" />
   </svg>
 );
-
 
 const TrophyIcon = ({ size = 16, className = '' }: IconProps) => (
   <svg

@@ -70,10 +70,11 @@ export const BiblePage = () => {
     <div className="space-y-5 pb-6">
       <h1 className="text-2xl font-bold text-slate-800">성경</h1>
 
+      {/* 구약/신약 탭 */}
       <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
         <button
           onClick={() => setTab('ot')}
-          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${
+          className={`flex h-10 flex-1 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${
             tab === 'ot' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
           }`}
         >
@@ -81,7 +82,7 @@ export const BiblePage = () => {
         </button>
         <button
           onClick={() => setTab('nt')}
-          className={`flex-1 rounded-lg py-2 text-sm font-semibold transition-colors ${
+          className={`flex h-10 flex-1 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${
             tab === 'nt' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
           }`}
         >
@@ -89,16 +90,17 @@ export const BiblePage = () => {
         </button>
       </div>
 
+      {/* 성경 책 그리드 */}
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
         {displayedBooks.map((book) => (
           <button
             key={book.abbrKo}
             onClick={() => setSelectedBook(book)}
-            className="flex flex-col items-start rounded-xl border border-slate-100 bg-white p-3 text-left shadow-sm transition-shadow hover:shadow-md hover:border-indigo-200"
+            className="flex flex-col items-start rounded-xl border border-slate-100 bg-white p-3.5 text-left shadow-sm transition-shadow hover:border-indigo-200 hover:shadow-md active:bg-slate-50"
           >
             <span className="text-sm font-bold text-slate-800">{book.abbrKo}</span>
-            <span className="mt-0.5 text-xs text-slate-400 line-clamp-1">{book.nameKo}</span>
-            <span className="mt-1 text-xs font-medium text-indigo-400">{book.chapterCount}장</span>
+            <span className="mt-1 text-xs text-slate-400 line-clamp-1">{book.nameKo}</span>
+            <span className="mt-1.5 text-xs font-semibold text-indigo-400">{book.chapterCount}장</span>
           </button>
         ))}
       </div>
@@ -120,9 +122,10 @@ const ChapterSelector = ({ book, onSelect, onBack }: ChapterSelectorProps) => {
       <div className="flex items-center gap-3">
         <button
           onClick={onBack}
-          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
+          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-slate-500 hover:text-slate-800"
         >
-          <span aria-hidden>←</span> 목록
+          <span aria-hidden>←</span>
+          <span>목록</span>
         </button>
         <h1 className="text-xl font-bold text-slate-800">{book.nameKo}</h1>
       </div>
@@ -132,7 +135,7 @@ const ChapterSelector = ({ book, onSelect, onBack }: ChapterSelectorProps) => {
           <button
             key={ch}
             onClick={() => onSelect(ch)}
-            className="flex h-12 items-center justify-center rounded-xl border border-slate-100 bg-white text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700"
+            className="flex h-12 items-center justify-center rounded-xl border border-slate-100 bg-white text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 active:bg-indigo-100"
           >
             {ch}
           </button>
@@ -169,11 +172,12 @@ const BibleReader = ({
   const chapterData = data?.chapters[0];
 
   return (
-    <div className="flex h-[calc(100vh-130px)] flex-col">
+    <div className="flex h-[calc(100vh-140px)] flex-col">
+      {/* 상단 컨트롤 */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <button
           onClick={onBack}
-          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
+          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-slate-500 hover:text-slate-800"
         >
           <span aria-hidden>←</span>
           <span>{book.nameKo}</span>
@@ -183,7 +187,7 @@ const BibleReader = ({
             <button
               key={size}
               onClick={() => onFontSize(size)}
-              className={`rounded px-1.5 py-1 font-medium transition-colors ${
+              className={`flex h-9 w-9 items-center justify-center rounded-lg font-medium transition-colors ${
                 fontSize === size
                   ? 'bg-indigo-100 text-indigo-700'
                   : 'text-slate-400 hover:text-slate-600'
@@ -196,19 +200,21 @@ const BibleReader = ({
         </div>
       </div>
 
-      <div className="border-b border-slate-100 py-2">
+      {/* 현재 장 표시 */}
+      <div className="border-b border-slate-100 py-2.5">
         <p className="text-center text-sm font-bold text-indigo-600">
           {book.nameKo} {chapter}장
         </p>
       </div>
 
+      {/* 본문 */}
       <div ref={contentRef} className="flex-1 overflow-y-auto py-5">
         {isLoading && <LoadingSpinner />}
         {isError && (
           <p className="text-center text-sm text-red-500">본문을 불러오지 못했습니다.</p>
         )}
         {chapterData && (
-          <div className={`space-y-0.5 text-slate-800 ${FONT_SIZE_CLASS[fontSize]}`}>
+          <div className={`space-y-1 text-slate-800 ${FONT_SIZE_CLASS[fontSize]}`}>
             {chapterData.verses.map((v) => (
               <p key={v.verse} className="flex gap-2">
                 <sup className="mt-1.5 shrink-0 text-xs font-semibold text-slate-300">
@@ -221,11 +227,12 @@ const BibleReader = ({
         )}
       </div>
 
+      {/* 이전/다음 장 */}
       <div className="flex items-center justify-between border-t border-slate-100 pt-3">
         <button
           onClick={() => onSelectChapter(Math.max(1, chapter - 1))}
           disabled={chapter <= 1}
-          className="rounded-xl px-4 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
+          className="flex h-11 items-center rounded-xl px-4 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
         >
           ← 이전 장
         </button>
@@ -235,7 +242,7 @@ const BibleReader = ({
         <button
           onClick={() => onSelectChapter(Math.min(book.chapterCount, chapter + 1))}
           disabled={chapter >= book.chapterCount}
-          className="rounded-xl px-4 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
+          className="flex h-11 items-center rounded-xl px-4 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
         >
           다음 장 →
         </button>

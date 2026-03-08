@@ -40,7 +40,6 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeChapterIdx]);
 
-  // Trap keyboard: Escape closes
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -63,17 +62,17 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
         className="flex h-[92vh] w-full max-w-2xl flex-col rounded-t-3xl bg-white shadow-2xl sm:h-[85vh] sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* 헤더 */}
         <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4">
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-base font-bold text-slate-800">{label}</h3>
           </div>
-          <div className="ml-3 flex items-center gap-1">
+          <div className="ml-3 flex items-center gap-0.5">
             {FONT_SIZES.map((size, i) => (
               <button
                 key={size}
                 onClick={() => handleFontSize(size)}
-                className={`rounded px-1.5 py-1 font-medium transition-colors ${
+                className={`flex h-9 w-9 items-center justify-center rounded-lg font-medium transition-colors ${
                   fontSize === size
                     ? 'bg-indigo-100 text-indigo-700'
                     : 'text-slate-400 hover:text-slate-600'
@@ -86,7 +85,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
             ))}
             <button
               onClick={onClose}
-              className="ml-2 rounded-full p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+              className="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
               aria-label={t.close}
             >
               <svg
@@ -107,14 +106,14 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
           </div>
         </div>
 
-        {/* Chapter tabs */}
+        {/* 장 탭 */}
         {chapters.length > 1 && (
-          <div className="flex shrink-0 gap-1.5 overflow-x-auto border-b border-slate-100 px-5 py-2">
+          <div className="flex shrink-0 gap-1.5 overflow-x-auto border-b border-slate-100 px-5 py-2.5">
             {chapters.map((ch, i) => (
               <button
                 key={ch}
                 onClick={() => setActiveChapterIdx(i)}
-                className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                   i === activeChapterIdx
                     ? 'bg-indigo-600 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -126,7 +125,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
           </div>
         )}
 
-        {/* Content */}
+        {/* 본문 */}
         <div ref={contentRef} className="flex-1 overflow-y-auto px-5 py-5">
           {isLoading && (
             <div className="flex h-32 items-center justify-center">
@@ -141,7 +140,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
               <p className="mb-4 text-xs font-bold tracking-widest text-indigo-400">
                 {data.bookName} {activeChapter.chapter}장
               </p>
-              <div className={`space-y-0.5 text-slate-800 ${FONT_SIZE_CLASS[fontSize]}`}>
+              <div className={`space-y-1 text-slate-800 ${FONT_SIZE_CLASS[fontSize]}`}>
                 {activeChapter.verses.map((v) => (
                   <p key={v.verse} className="flex gap-2">
                     <sup className="mt-1.5 shrink-0 text-xs font-semibold text-slate-300">
@@ -155,13 +154,13 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
           )}
         </div>
 
-        {/* Chapter navigation */}
+        {/* 장 이동 */}
         {chapters.length > 1 && (
           <div className="flex shrink-0 items-center justify-between border-t border-slate-100 px-5 py-3">
             <button
               onClick={() => setActiveChapterIdx((i) => Math.max(0, i - 1))}
               disabled={activeChapterIdx === 0}
-              className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
+              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
             >
               ← 이전 장
             </button>
@@ -171,7 +170,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
             <button
               onClick={() => setActiveChapterIdx((i) => Math.min(chapters.length - 1, i + 1))}
               disabled={activeChapterIdx === chapters.length - 1}
-              className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
+              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
             >
               다음 장 →
             </button>
