@@ -304,9 +304,14 @@ const InlineBibleReader = ({
   const handleComplete = () => {
     if (!isCompleted) {
       setJustCompleted(true);
-      setTimeout(() => setJustCompleted(false), 1200);
+      onCheckToday();
+      setTimeout(() => {
+        setJustCompleted(false);
+        onClose();
+      }, 1200);
+    } else {
+      onCheckToday();
     }
-    onCheckToday();
   };
 
   return (

@@ -7,6 +7,7 @@ import { useStreak } from '../features/auth/useStreak';
 import { Skeleton } from '../shared/Skeleton';
 import { ROUTES } from '../lib/constants';
 import { useT } from '../lib/i18n';
+import { groupChapterRefs } from '../lib/bible-abbr-map';
 
 const DashboardSkeleton = () => (
   <div className="space-y-4 pb-6">
@@ -153,7 +154,12 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
     <div className="rounded-2xl bg-amber-600 p-5 text-white shadow-md">
       <p className="text-xs font-semibold tracking-wide text-amber-200">{t.todayReading}</p>
       <p className="mt-2 text-xl font-bold leading-snug">
-        {todayReading.data.chapterRefs.join(', ')}
+        {todayReading.data.chapterRefs
+          .map((r) => {
+            const g = groupChapterRefs([r]);
+            return g[0]?.label ?? r;
+          })
+          .join(', ')}
       </p>
       <p className="mt-1 text-xs text-amber-200">
         {todayReading.data.isCompleted ? t.completed : t.inProgress}
