@@ -63,9 +63,9 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
         onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
-        <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-stone-100 px-5 py-4">
           <div className="min-w-0 flex-1">
-            <h3 className="truncate text-base font-bold text-slate-800">{label}</h3>
+            <h3 className="truncate text-base font-bold text-stone-800">{label}</h3>
           </div>
           <div className="ml-3 flex items-center gap-0.5">
             {FONT_SIZES.map((size, i) => (
@@ -74,8 +74,8 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                 onClick={() => handleFontSize(size)}
                 className={`flex h-9 w-9 items-center justify-center rounded-lg font-medium transition-colors ${
                   fontSize === size
-                    ? 'bg-indigo-100 text-indigo-700'
-                    : 'text-slate-400 hover:text-slate-600'
+                    ? 'bg-amber-100 text-amber-700'
+                    : 'text-stone-400 hover:text-stone-600'
                 }`}
                 style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
                 aria-label={`폰트 크기 ${size}`}
@@ -85,7 +85,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
             ))}
             <button
               onClick={onClose}
-              className="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+              className="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600"
               aria-label={t.close}
             >
               <svg
@@ -108,15 +108,15 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
 
         {/* 장 탭 */}
         {chapters.length > 1 && (
-          <div className="flex shrink-0 gap-1.5 overflow-x-auto border-b border-slate-100 px-5 py-2.5">
+          <div className="flex shrink-0 gap-1.5 overflow-x-auto border-b border-stone-100 px-5 py-2.5">
             {chapters.map((ch, i) => (
               <button
                 key={ch}
                 onClick={() => setActiveChapterIdx(i)}
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                   i === activeChapterIdx
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-amber-600 text-white'
+                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                 }`}
               >
                 {bookAbbr} {ch}장
@@ -137,16 +137,16 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
           )}
           {data && activeChapter && (
             <div>
-              <p className="mb-4 text-xs font-bold tracking-widest text-indigo-400">
+              <p className="mb-4 text-xs font-bold tracking-widest text-amber-500">
                 {data.bookName} {activeChapter.chapter}장
               </p>
-              <div className={`space-y-1 text-slate-800 ${FONT_SIZE_CLASS[fontSize]}`}>
+              <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
                 {activeChapter.verses.map((v) => (
-                  <p key={v.verse} className="flex gap-2">
-                    <sup className="mt-1.5 shrink-0 text-xs font-semibold text-slate-300">
+                  <p key={v.verse} className="flex gap-3">
+                    <span className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-semibold text-stone-300">
                       {v.verse}
-                    </sup>
-                    <span>{v.text}</span>
+                    </span>
+                    <span className="flex-1">{v.text}</span>
                   </p>
                 ))}
               </div>
@@ -156,21 +156,21 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
 
         {/* 장 이동 */}
         {chapters.length > 1 && (
-          <div className="flex shrink-0 items-center justify-between border-t border-slate-100 px-5 py-3">
+          <div className="flex shrink-0 items-center justify-between border-t border-stone-100 px-5 py-3">
             <button
               onClick={() => setActiveChapterIdx((i) => Math.max(0, i - 1))}
               disabled={activeChapterIdx === 0}
-              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
+              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-stone-500 transition-colors hover:bg-stone-100 disabled:opacity-30"
             >
               ← 이전 장
             </button>
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-stone-400">
               {activeChapterIdx + 1} / {chapters.length}
             </span>
             <button
               onClick={() => setActiveChapterIdx((i) => Math.min(chapters.length - 1, i + 1))}
               disabled={activeChapterIdx === chapters.length - 1}
-              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 disabled:opacity-30"
+              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-stone-500 transition-colors hover:bg-stone-100 disabled:opacity-30"
             >
               다음 장 →
             </button>

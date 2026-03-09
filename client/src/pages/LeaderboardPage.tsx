@@ -5,13 +5,13 @@ import { useT } from '../lib/i18n';
 
 const RANK_CARD_STYLES: Record<number, string> = {
   1: 'bg-amber-50 border-amber-200',
-  2: 'bg-slate-50 border-slate-200',
+  2: 'bg-stone-50 border-stone-200',
   3: 'bg-orange-50 border-orange-200',
 };
 
 const RANK_BADGE_STYLES: Record<number, string> = {
   1: 'bg-amber-400 text-white',
-  2: 'bg-slate-400 text-white',
+  2: 'bg-stone-400 text-white',
   3: 'bg-orange-400 text-white',
 };
 
@@ -24,11 +24,11 @@ export const LeaderboardPage = () => {
 
   return (
     <div className="space-y-5 pb-6">
-      <h1 className="text-2xl font-bold text-slate-800">{t.leaderboard}</h1>
+      <h1 className="text-2xl font-bold text-stone-800">{t.leaderboard}</h1>
 
       {!entries || entries.length === 0 ? (
         <div className="flex min-h-[300px] flex-col items-center justify-center gap-3">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-stone-100">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -39,7 +39,7 @@ export const LeaderboardPage = () => {
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-slate-400"
+              className="text-stone-400"
             >
               <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
               <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
@@ -49,21 +49,21 @@ export const LeaderboardPage = () => {
               <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
             </svg>
           </div>
-          <p className="text-sm text-slate-400">{t.noLeaderboard}</p>
+          <p className="text-sm text-stone-400">{t.noLeaderboard}</p>
         </div>
       ) : (
         <ul className="space-y-2.5">
           {entries.map((entry, idx) => {
             const rank = idx + 1;
             const isMe = entry._id === user?._id;
-            const cardStyle = RANK_CARD_STYLES[rank] ?? 'border-slate-100 bg-white';
-            const badgeStyle = RANK_BADGE_STYLES[rank] ?? 'bg-slate-100 text-slate-500';
+            const cardStyle = RANK_CARD_STYLES[rank] ?? 'border-stone-100 bg-white';
+            const badgeStyle = RANK_BADGE_STYLES[rank] ?? 'bg-stone-100 text-stone-500';
 
             return (
               <li
                 key={entry._id}
                 className={`flex items-center gap-3 rounded-2xl border p-4 ${cardStyle} ${
-                  isMe ? 'ring-2 ring-indigo-400 ring-offset-1' : ''
+                  isMe ? 'ring-2 ring-amber-400 ring-offset-1' : ''
                 }`}
               >
                 {/* 순위 뱃지 */}
@@ -82,27 +82,27 @@ export const LeaderboardPage = () => {
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-sm font-semibold text-indigo-600">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-amber-700">
                     {entry.displayName.charAt(0)}
                   </div>
                 )}
 
                 {/* 이름 */}
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-slate-800">
+                  <p className="truncate text-sm font-semibold text-stone-800">
                     {entry.displayName}
                     {isMe && (
-                      <span className="ml-2 text-xs font-normal text-indigo-500">{t.you}</span>
+                      <span className="ml-2 text-xs font-normal text-amber-600">{t.you}</span>
                     )}
                   </p>
                 </div>
 
                 {/* 포인트 */}
                 <div className="shrink-0 text-right">
-                  <span className="text-sm font-bold text-indigo-600">
+                  <span className="text-sm font-bold text-amber-600">
                     {entry.totalPoints.toLocaleString()}
                   </span>
-                  <span className="ml-0.5 text-xs font-normal text-slate-400">pts</span>
+                  <span className="ml-0.5 text-xs font-normal text-stone-400">pts</span>
                 </div>
               </li>
             );

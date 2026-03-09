@@ -19,14 +19,14 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex min-h-[300px] flex-col items-center justify-center gap-4 p-8">
-          <h2 className="text-xl font-semibold text-slate-800">
-            Something went wrong
+          <h2 className="text-xl font-semibold text-stone-800">
+            오류가 발생했습니다
           </h2>
-          <p className="text-sm text-slate-500">
-            An unexpected error occurred. Please try again.
+          <p className="text-sm text-stone-500">
+            예상치 못한 오류가 발생했습니다. 다시 시도해 주세요.
           </p>
           <button
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-700"
+            className="rounded-lg bg-amber-600 px-4 py-2 text-sm text-white hover:bg-amber-700"
             onClick={() => this.setState({ hasError: false, error: null })}
           >
             다시 시도

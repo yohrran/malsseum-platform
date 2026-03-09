@@ -1,12 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/auth-store';
-import { useLangStore } from '../store/lang-store';
 import { ROUTES } from '../lib/constants';
 import { useT } from '../lib/i18n';
 
 export const Navbar = () => {
   const { user, logout } = useAuthStore();
-  const { lang, setLang } = useLangStore();
   const { pathname } = useLocation();
   const t = useT();
 
@@ -20,11 +18,11 @@ export const Navbar = () => {
   return (
     <>
       {/* Desktop top navbar */}
-      <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur-sm">
+      <nav className="sticky top-0 z-50 border-b border-stone-100 bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
           <div className="flex items-center gap-7">
             <Link to="/" className="flex items-center gap-1.5">
-              <span className="text-xl font-bold text-indigo-600">말씀</span>
+              <span className="text-xl font-bold text-amber-600">말씀</span>
             </Link>
             <div className="hidden items-center gap-5 sm:flex">
               {NAV_LINKS.map((link) => {
@@ -35,13 +33,13 @@ export const Navbar = () => {
                     to={link.to}
                     className={`flex items-center gap-1.5 text-sm transition-colors ${
                       isActive
-                        ? 'font-semibold text-indigo-600'
-                        : 'text-slate-500 hover:text-slate-800'
+                        ? 'font-semibold text-amber-600'
+                        : 'text-stone-500 hover:text-stone-800'
                     }`}
                   >
                     <link.icon
                       size={15}
-                      className={isActive ? 'text-indigo-600' : 'text-slate-400'}
+                      className={isActive ? 'text-amber-600' : 'text-stone-400'}
                     />
                     {link.label}
                   </Link>
@@ -51,14 +49,6 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
-              className="rounded-lg px-2 py-1 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-              aria-label="Toggle language"
-            >
-              {lang === 'ko' ? 'EN' : '한'}
-            </button>
-
             {user && (
               <>
                 <Link to="/profile" className="flex items-center gap-2">
@@ -66,21 +56,21 @@ export const Navbar = () => {
                     <img
                       src={user.picture}
                       alt={user.displayName}
-                      className="h-8 w-8 rounded-full object-cover ring-2 ring-indigo-100"
+                      className="h-8 w-8 rounded-full object-cover ring-2 ring-amber-100"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-600">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700">
                       {user.displayName?.charAt(0)}
                     </div>
                   )}
-                  <span className="hidden text-sm font-medium text-slate-700 hover:text-indigo-600 sm:inline">
+                  <span className="hidden text-sm font-medium text-stone-700 hover:text-amber-600 sm:inline">
                     {user.displayName}
                   </span>
                 </Link>
                 <button
                   onClick={logout}
-                  className="hidden rounded-lg px-2.5 py-1.5 text-xs text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 sm:block"
+                  className="hidden rounded-lg px-2.5 py-1.5 text-xs text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600 sm:block"
                 >
                   {t.logout}
                 </button>
@@ -90,8 +80,8 @@ export const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile bottom tab bar — fixed at bottom, outside scroll context */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch border-t border-slate-200 bg-white/95 backdrop-blur-sm sm:hidden">
+      {/* Mobile bottom tab bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch border-t border-stone-200 bg-white/95 backdrop-blur-sm sm:hidden">
         {NAV_LINKS.map((link) => {
           const isActive = pathname === link.to;
           return (
@@ -99,7 +89,7 @@ export const Navbar = () => {
               key={link.to}
               to={link.to}
               className={`flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-center transition-colors ${
-                isActive ? 'text-indigo-600' : 'text-slate-400 active:text-slate-600'
+                isActive ? 'text-amber-600' : 'text-stone-400 active:text-stone-600'
               }`}
             >
               <link.icon size={22} />

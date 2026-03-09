@@ -29,8 +29,8 @@ export const DashboardPage = () => {
     <div className="space-y-4 pb-6">
       {/* 인사말 */}
       <div className="pt-1">
-        <p className="text-sm text-slate-400">{getGreeting()}</p>
-        <h1 className="mt-0.5 text-2xl font-bold text-slate-800">{firstName}님</h1>
+        <p className="text-sm text-stone-400">{getGreeting()}</p>
+        <h1 className="mt-0.5 text-2xl font-bold text-stone-800">{firstName}님</h1>
       </div>
 
       <StreakBanner streak={streakData?.currentStreak ?? 0} />
@@ -39,18 +39,18 @@ export const DashboardPage = () => {
 
       {/* 통독 진행률 */}
       {activePlan && (
-        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-600">통독 진행률</h2>
-            <span className="text-sm font-bold text-indigo-600">{progress}%</span>
+            <h2 className="text-sm font-semibold text-stone-600">통독 진행률</h2>
+            <span className="text-sm font-bold text-amber-600">{progress}%</span>
           </div>
-          <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+          <div className="h-2.5 w-full overflow-hidden rounded-full bg-stone-100">
             <div
-              className="h-full rounded-full bg-indigo-600 transition-all duration-500"
+              className="h-full rounded-full bg-amber-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="mt-2 text-right text-xs text-slate-400">
+          <p className="mt-2 text-right text-xs text-stone-400">
             {completedDays}/{totalDays}일 완료
           </p>
         </div>
@@ -60,27 +60,27 @@ export const DashboardPage = () => {
 
       {/* 포인트 & 순위표 */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium text-slate-500">{t.myPoints}</p>
+        <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
+          <p className="text-xs font-medium text-stone-500">{t.myPoints}</p>
           {pointsBalance.isLoading ? (
             <div className="mt-2">
               <LoadingSpinner />
             </div>
           ) : (
-            <p className="mt-2 text-2xl font-bold text-indigo-600">
+            <p className="mt-2 text-2xl font-bold text-amber-600">
               {(pointsBalance.data?.balance ?? 0).toLocaleString()}
             </p>
           )}
-          <p className="mt-0.5 text-xs text-slate-400">pts</p>
+          <p className="mt-0.5 text-xs text-stone-400">pts</p>
         </div>
 
         <Link
           to={ROUTES.LEADERBOARD}
-          className="flex flex-col justify-center rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md active:bg-slate-50"
+          className="flex flex-col justify-center rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md active:bg-stone-50"
         >
-          <p className="text-xs font-medium text-slate-500">순위표</p>
-          <p className="mt-2 text-lg font-bold text-slate-700">TOP 10</p>
-          <p className="mt-0.5 text-xs font-medium text-indigo-600">확인하기 →</p>
+          <p className="text-xs font-medium text-stone-500">순위표</p>
+          <p className="mt-2 text-lg font-bold text-stone-700">TOP 10</p>
+          <p className="mt-0.5 text-xs font-medium text-amber-600">확인하기 →</p>
         </Link>
       </div>
     </div>
@@ -95,7 +95,7 @@ type TodayReadingCardProps = {
 const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
   if (todayReading.isLoading) {
     return (
-      <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
         <LoadingSpinner />
       </div>
     );
@@ -103,11 +103,11 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
 
   if (!todayReading.data) {
     return (
-      <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6">
-        <p className="text-sm text-slate-500">{t.noActivePlan}</p>
+      <div className="rounded-2xl border border-dashed border-stone-200 bg-stone-50 p-6">
+        <p className="text-sm text-stone-500">{t.noActivePlan}</p>
         <Link
           to={ROUTES.READING}
-          className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+          className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-600 hover:text-amber-700"
         >
           통독 계획 만들기 →
         </Link>
@@ -116,17 +116,17 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
   }
 
   return (
-    <div className="rounded-2xl bg-indigo-600 p-5 text-white shadow-md">
-      <p className="text-xs font-semibold tracking-wide text-indigo-200">{t.todayReading}</p>
+    <div className="rounded-2xl bg-amber-600 p-5 text-white shadow-md">
+      <p className="text-xs font-semibold tracking-wide text-amber-200">{t.todayReading}</p>
       <p className="mt-2 text-xl font-bold leading-snug">
         {todayReading.data.chapterRefs.join(', ')}
       </p>
-      <p className="mt-1 text-xs text-indigo-300">
+      <p className="mt-1 text-xs text-amber-200">
         {todayReading.data.isCompleted ? t.completed : t.inProgress}
       </p>
       <Link
         to={ROUTES.READING}
-        className="mt-4 inline-flex h-11 items-center gap-1.5 rounded-xl bg-white px-5 text-sm font-semibold text-indigo-600 transition-opacity hover:opacity-90 active:opacity-80"
+        className="mt-4 inline-flex h-11 items-center gap-1.5 rounded-xl bg-white px-5 text-sm font-semibold text-amber-700 transition-opacity hover:opacity-90 active:opacity-80"
       >
         지금 읽기
         <span aria-hidden>→</span>
@@ -138,20 +138,20 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
 type WeekDay = { label: string; isCompleted: boolean; isToday: boolean; isFuture: boolean };
 
 const WeeklyCalendar = ({ days }: { days: WeekDay[] }) => (
-  <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-    <h2 className="mb-4 text-sm font-semibold text-slate-600">이번 주 읽기</h2>
+  <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
+    <h2 className="mb-4 text-sm font-semibold text-stone-600">이번 주 읽기</h2>
     <div className="grid grid-cols-7 gap-1 text-center">
       {days.map((day) => (
         <div key={day.label} className="flex flex-col items-center gap-1.5">
-          <span className="text-[11px] font-medium text-slate-400">{day.label}</span>
+          <span className="text-[11px] font-medium text-stone-400">{day.label}</span>
           <div
             className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
-              day.isToday ? 'ring-2 ring-indigo-400 ring-offset-1' : ''
+              day.isToday ? 'ring-2 ring-amber-400 ring-offset-1' : ''
             } ${
               day.isCompleted
-                ? 'bg-indigo-600 text-white'
+                ? 'bg-amber-500 text-white'
                 : day.isFuture
-                ? 'bg-slate-100 text-slate-300'
+                ? 'bg-stone-100 text-stone-300'
                 : 'bg-rose-50 text-rose-400'
             }`}
           >
