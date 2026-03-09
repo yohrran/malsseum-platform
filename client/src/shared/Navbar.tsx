@@ -8,11 +8,20 @@ export const Navbar = () => {
   const { pathname } = useLocation();
   const t = useT();
 
-  const NAV_LINKS = [
+  const DESKTOP_NAV_LINKS = [
     { to: ROUTES.HOME, label: t.dashboard, icon: HomeIcon },
     { to: ROUTES.READING, label: t.readingPlan, icon: BookOpenIcon },
     { to: ROUTES.BIBLE, label: '성경', icon: BookIcon },
+    { to: ROUTES.CUSTOM_PLAN, label: '말씀읽기', icon: ClipboardIcon },
     { to: ROUTES.LEADERBOARD, label: t.leaderboard, icon: TrophyIcon },
+  ];
+
+  const MOBILE_TAB_LINKS = [
+    { to: ROUTES.HOME, label: t.dashboard, icon: HomeIcon },
+    { to: ROUTES.READING, label: t.readingPlan, icon: BookOpenIcon },
+    { to: ROUTES.BIBLE, label: '성경', icon: BookIcon },
+    { to: ROUTES.CUSTOM_PLAN, label: '말씀읽기', icon: ClipboardIcon },
+    { to: ROUTES.PROFILE, label: '프로필', icon: PersonIcon },
   ];
 
   return (
@@ -25,7 +34,7 @@ export const Navbar = () => {
               <span className="text-xl font-bold text-amber-600">말씀</span>
             </Link>
             <div className="hidden items-center gap-5 sm:flex">
-              {NAV_LINKS.map((link) => {
+              {DESKTOP_NAV_LINKS.map((link) => {
                 const isActive = pathname === link.to;
                 return (
                   <Link
@@ -81,17 +90,23 @@ export const Navbar = () => {
       </nav>
 
       {/* Mobile bottom tab bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch border-t border-stone-200 bg-white/95 backdrop-blur-sm sm:hidden">
-        {NAV_LINKS.map((link) => {
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch border-t border-stone-200 bg-white/95 backdrop-blur-sm sm:hidden"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        {MOBILE_TAB_LINKS.map((link) => {
           const isActive = pathname === link.to;
           return (
             <Link
               key={link.to}
               to={link.to}
-              className={`flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-center transition-colors ${
+              className={`relative flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-center transition-colors ${
                 isActive ? 'text-amber-600' : 'text-stone-400 active:text-stone-600'
               }`}
             >
+              {isActive && (
+                <span className="absolute top-1.5 h-1 w-1 rounded-full bg-amber-500" />
+              )}
               <link.icon size={22} />
               <span className={`text-[10px] leading-none ${isActive ? 'font-semibold' : 'font-normal'}`}>
                 {link.label}
@@ -180,5 +195,43 @@ const TrophyIcon = ({ size = 16, className = '' }: IconProps) => (
     <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
     <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
     <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  </svg>
+);
+
+const ClipboardIcon = ({ size = 16, className = '' }: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <rect x="9" y="2" width="6" height="4" rx="1" ry="1" />
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+    <line x1="9" y1="12" x2="15" y2="12" />
+    <line x1="9" y1="16" x2="13" y2="16" />
+  </svg>
+);
+
+const PersonIcon = ({ size = 16, className = '' }: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
   </svg>
 );

@@ -19,6 +19,9 @@ const FONT_SIZE_CLASS: Record<FontSize, string> = {
 
 const FONT_SIZES: FontSize[] = ['sm', 'md', 'lg', 'xl'];
 const FONT_DISPLAY_SIZE = [12, 14, 16, 18];
+const DAY_LIST_PAGE_SIZE = 20;
+
+const todayDateStr = () => new Date().toISOString().slice(0, 10);
 
 export const ReadingPage = () => {
   const { data: plans, isLoading } = useReadingPlan();
@@ -33,6 +36,9 @@ export const ReadingPage = () => {
   const [fontSize, setFontSize] = useState<FontSize>(
     () => (localStorage.getItem('bible-font-size') as FontSize) ?? 'md'
   );
+  const [visibleCount, setVisibleCount] = useState(DAY_LIST_PAGE_SIZE);
+
+  const todayItemRef = useRef<HTMLLIElement>(null);
 
   const handleFontSize = (size: FontSize) => {
     setFontSize(size);
@@ -68,6 +74,9 @@ export const ReadingPage = () => {
   const completedDays = activePlan.days.filter((d) => d.isCompleted).length;
   const totalDays = activePlan.days.length;
   const progress = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
+  const today = todayDateStr();
+  const visibleDays = activePlan.days.slice(0, visibleCount);
+  const remaining = activePlan.days.length - visibleCount;
 
   const handleCheckToday = () => {
     if (!todayReading.data || !activePlan._id) return;
@@ -163,47 +172,96 @@ export const ReadingPage = () => {
       )}
 
       {/* 전체 일정 목록 */}
-      <div>
-        <h2 className="mb-3 text-sm font-semibold text-stone-600">{t.allDays}</h2>
-        <ul className="divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-white shadow-sm">
-          {activePlan.days.slice(0, 40).map((day) => {
-            const groups = groupChapterRefs(day.chapterRefs);
-            const label = groups.map((g) => g.label).join(', ');
-            return (
-              <li key={day._id} className="flex items-center justify-between px-4 py-3.5">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                      day.isCompleted
-                        ? 'bg-green-100 text-green-600'
-                        : 'bg-stone-100 text-stone-400'
-                    }`}
-                  >
-                    {day.isCompleted ? '✓' : day.dayNumber}
-                  </div>
-                  <div>
-                    <span className="text-xs font-medium text-stone-500">
-                      {new Date(day.scheduledDate).toLocaleDateString('ko-KR', {
-                        month: 'short',
-                        day: 'numeric',
-                      })}
-                    </span>
-                    <span className="ml-2 text-xs text-stone-400">{label}</span>
-                  </div>
+      <DayList
+        days={visibleDays}
+        today={today}
+        todayItemRef={todayItemRef}
+        remaining={remaining}
+        onShowMore={() => setVisibleCount((c) => c + DAY_LIST_PAGE_SIZE)}
+        t={t}
+      />
+    </div>
+  );
+};
+
+type DayEntry = {
+  _id: string;
+  dayNumber: number;
+  scheduledDate: string;
+  isCompleted: boolean;
+  chapterRefs: string[];
+};
+
+type DayListProps = {
+  days: DayEntry[];
+  today: string;
+  todayItemRef: React.RefObject<HTMLLIElement>;
+  remaining: number;
+  onShowMore: () => void;
+  t: ReturnType<typeof useT>;
+};
+
+const DayList = ({ days, today, todayItemRef, remaining, onShowMore, t }: DayListProps) => {
+  useEffect(() => {
+    todayItemRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [todayItemRef]);
+
+  return (
+    <div>
+      <h2 className="mb-3 text-sm font-semibold text-stone-600">{t.allDays}</h2>
+      <ul className="divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-white shadow-sm">
+        {days.map((day) => {
+          const groups = groupChapterRefs(day.chapterRefs);
+          const label = groups.map((g) => g.label).join(', ');
+          const isToday = day.scheduledDate.slice(0, 10) === today;
+          return (
+            <li
+              key={day._id}
+              ref={isToday ? todayItemRef : undefined}
+              className={`flex items-center justify-between px-4 py-3.5 ${
+                isToday ? 'border-l-4 border-amber-400 bg-amber-50/50' : ''
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
+                    day.isCompleted
+                      ? 'bg-green-100 text-green-600'
+                      : 'bg-stone-100 text-stone-400'
+                  }`}
+                >
+                  {day.isCompleted ? '✓' : day.dayNumber}
                 </div>
-                {day.isCompleted && (
-                  <span className="text-xs font-semibold text-green-500">완료</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-        {activePlan.days.length > 40 && (
-          <p className="mt-3 text-center text-xs text-stone-400">
-            {activePlan.days.length - 40}일 더 있습니다
-          </p>
-        )}
-      </div>
+                <div>
+                  <span className="text-xs font-medium text-stone-500">
+                    {new Date(day.scheduledDate).toLocaleDateString('ko-KR', {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </span>
+                  {isToday && (
+                    <span className="ml-1.5 inline-flex items-center rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-600">
+                      오늘
+                    </span>
+                  )}
+                  <span className="ml-2 text-xs text-stone-400">{label}</span>
+                </div>
+              </div>
+              {day.isCompleted && (
+                <span className="text-xs font-semibold text-green-500">완료</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      {remaining > 0 && (
+        <button
+          onClick={onShowMore}
+          className="mt-3 flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white py-2.5 text-xs font-medium text-stone-500 transition-colors hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700"
+        >
+          더 보기 ({remaining}일 남음)
+        </button>
+      )}
     </div>
   );
 };
@@ -230,6 +288,7 @@ const InlineBibleReader = ({
   t,
 }: InlineBibleReaderProps) => {
   const [activeGroupIdx, setActiveGroupIdx] = useState(0);
+  const [justCompleted, setJustCompleted] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const activeGroup = groups[activeGroupIdx] ?? groups[0];
 
@@ -242,8 +301,16 @@ const InlineBibleReader = ({
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeGroupIdx]);
 
+  const handleComplete = () => {
+    if (!isCompleted) {
+      setJustCompleted(true);
+      setTimeout(() => setJustCompleted(false), 1200);
+    }
+    onCheckToday();
+  };
+
   return (
-    <div className="flex h-[calc(100vh-140px)] flex-col">
+    <div className="flex h-[calc(100dvh-140px)] flex-col">
       {/* 상단 컨트롤 */}
       <div className="flex items-center justify-between border-b border-stone-100 pb-3">
         <button
@@ -344,17 +411,38 @@ const InlineBibleReader = ({
           </div>
         )}
         <button
-          onClick={onCheckToday}
+          onClick={handleComplete}
           disabled={isCheckPending}
-          className={`flex h-12 w-full items-center justify-center rounded-2xl text-sm font-bold shadow-sm transition-colors disabled:opacity-50 ${
+          className={`relative flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl text-sm font-bold shadow-sm transition-colors disabled:opacity-50 ${
             isCompleted
               ? 'bg-green-100 text-green-700 hover:bg-green-200'
               : 'bg-amber-600 text-white hover:bg-amber-700'
           }`}
         >
-          {isCompleted ? '완료됨 ✓' : '오늘 읽기 완료'}
+          {justCompleted && (
+            <span
+              className="absolute inset-0 flex items-center justify-center text-2xl"
+              style={{
+                animation: 'completionPop 1.2s ease forwards',
+              }}
+            >
+              ✓
+            </span>
+          )}
+          <span className={justCompleted ? 'opacity-0' : undefined}>
+            {isCompleted ? '완료됨 ✓' : '오늘 읽기 완료'}
+          </span>
         </button>
       </div>
+
+      <style>{`
+        @keyframes completionPop {
+          0%   { opacity: 0; transform: scale(0.4); color: #16a34a; }
+          40%  { opacity: 1; transform: scale(1.3); color: #16a34a; }
+          70%  { opacity: 1; transform: scale(1.0); color: #16a34a; }
+          100% { opacity: 0; transform: scale(1.0); color: #16a34a; }
+        }
+      `}</style>
     </div>
   );
 };
@@ -379,79 +467,101 @@ const CreatePlanView = ({
   isPending,
   isError,
   t,
-}: CreatePlanViewProps) => (
-  <div className="space-y-5">
-    <h1 className="text-2xl font-bold text-stone-800">{t.readingPlan}</h1>
+}: CreatePlanViewProps) => {
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
 
-    <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
-      <h2 className="mb-1 text-base font-bold text-stone-700">{t.createPlan}</h2>
-      <p className="mb-5 text-sm text-stone-400">
-        성경을 처음부터 끝까지 읽는 계획을 만들어 보세요
-      </p>
+  const handlePreset = (preset: (typeof PLAN_PRESETS)[number]) => {
+    const start = new Date();
+    const end = new Date();
+    end.setDate(end.getDate() + preset.days - 1);
+    const startStr = start.toISOString().slice(0, 10);
+    const endStr = end.toISOString().slice(0, 10);
+    onStartDate(startStr);
+    onEndDate(endStr);
+    setSelectedPreset(preset.label);
+  };
 
-      <div className="mb-5 grid grid-cols-3 gap-2">
-        {PLAN_PRESETS.map((preset) => (
-          <button
-            key={preset.label}
-            type="button"
-            onClick={() => {
-              const start = new Date();
-              const end = new Date();
-              end.setDate(end.getDate() + preset.days - 1);
-              onStartDate(start.toISOString().slice(0, 10));
-              onEndDate(end.toISOString().slice(0, 10));
-            }}
-            className="rounded-xl border border-stone-200 p-3 text-left transition-colors hover:border-amber-300 hover:bg-amber-50 active:bg-amber-50"
-          >
-            <p className="text-xs font-bold text-stone-700">{preset.label}</p>
-            <p className="mt-0.5 text-xs text-stone-400">{preset.desc}</p>
-          </button>
-        ))}
-      </div>
+  const isPresetActive = (preset: (typeof PLAN_PRESETS)[number]) =>
+    selectedPreset === preset.label;
 
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div>
-            <label className="mb-1.5 block text-xs font-medium text-stone-500">
-              {t.startDate}
-            </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => onStartDate(e.target.value)}
-              className="h-11 w-full rounded-xl border border-stone-200 px-3 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-200"
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-xs font-medium text-stone-500">
-              {t.endDate}
-            </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => onEndDate(e.target.value)}
-              className="h-11 w-full rounded-xl border border-stone-200 px-3 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-200"
-              required
-            />
-          </div>
+  return (
+    <div className="space-y-5">
+      <h1 className="text-2xl font-bold text-stone-800">{t.readingPlan}</h1>
+
+      <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
+        <h2 className="mb-1 text-base font-bold text-stone-700">{t.createPlan}</h2>
+        <p className="mb-5 text-sm text-stone-400">
+          성경을 처음부터 끝까지 읽는 계획을 만들어 보세요
+        </p>
+
+        <div className="mb-5 grid grid-cols-3 gap-2">
+          {PLAN_PRESETS.map((preset) => (
+            <button
+              key={preset.label}
+              type="button"
+              onClick={() => handlePreset(preset)}
+              className={`rounded-xl border p-3 text-left transition-colors ${
+                isPresetActive(preset)
+                  ? 'border-amber-400 bg-amber-50 ring-1 ring-amber-300'
+                  : 'border-stone-200 hover:border-amber-300 hover:bg-amber-50'
+              }`}
+            >
+              <p className="text-xs font-bold text-stone-700">{preset.label}</p>
+              <p className="mt-0.5 text-xs text-stone-400">{preset.desc}</p>
+            </button>
+          ))}
         </div>
-        <button
-          type="submit"
-          disabled={isPending}
-          className="flex h-12 w-full items-center justify-center rounded-xl bg-amber-600 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 disabled:opacity-50"
-        >
-          {isPending ? t.creating : t.startPlan}
-        </button>
-        {isError && (
-          <p className="text-center text-sm text-red-500">
-            플랜 생성에 실패했습니다. 다시 시도해 주세요.
-          </p>
-        )}
-      </form>
+
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-stone-500">
+                {t.startDate}
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                  onStartDate(e.target.value);
+                  setSelectedPreset(null);
+                }}
+                className="h-11 w-full rounded-xl border border-stone-200 px-3 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-200"
+                required
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-xs font-medium text-stone-500">
+                {t.endDate}
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                  onEndDate(e.target.value);
+                  setSelectedPreset(null);
+                }}
+                className="h-11 w-full rounded-xl border border-stone-200 px-3 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-200"
+                required
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="flex h-12 w-full items-center justify-center rounded-xl bg-amber-600 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 disabled:opacity-50"
+          >
+            {isPending ? t.creating : t.startPlan}
+          </button>
+          {isError && (
+            <p className="text-center text-sm text-red-500">
+              플랜 생성에 실패했습니다. 다시 시도해 주세요.
+            </p>
+          )}
+        </form>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const PLAN_PRESETS = [
   { label: '1년 통독', desc: '3장/일', days: 365 },

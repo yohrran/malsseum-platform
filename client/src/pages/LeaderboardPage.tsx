@@ -1,6 +1,6 @@
 import { useLeaderboard } from '../features/points/useLeaderboard';
 import { useAuthStore } from '../store/auth-store';
-import { LoadingSpinner } from '../shared/LoadingSpinner';
+import { Skeleton } from '../shared/Skeleton';
 import { useT } from '../lib/i18n';
 
 const RANK_CARD_STYLES: Record<number, string> = {
@@ -20,7 +20,18 @@ export const LeaderboardPage = () => {
   const { user } = useAuthStore();
   const t = useT();
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) {
+    return (
+      <div className="space-y-5 pb-6">
+        <Skeleton className="h-8 w-32" />
+        <div className="space-y-2.5">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-16 rounded-2xl" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5 pb-6">
