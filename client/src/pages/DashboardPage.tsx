@@ -10,17 +10,16 @@ import { useT } from '../lib/i18n';
 import { groupChapterRefs } from '../lib/bible-abbr-map';
 
 const DashboardSkeleton = () => (
-  <div className="space-y-4 pb-6">
-    <div className="pt-1 space-y-2">
+  <div className="space-y-5 pb-6">
+    <div className="space-y-2 pt-1">
       <Skeleton className="h-4 w-32" />
       <Skeleton className="h-7 w-48" />
     </div>
-    <Skeleton className="h-32 rounded-2xl" />
-    <Skeleton className="h-24 rounded-2xl" />
+    <Skeleton className="h-36 rounded-2xl" />
     <Skeleton className="h-24 rounded-2xl" />
     <div className="grid grid-cols-2 gap-3">
-      <Skeleton className="h-24 rounded-2xl" />
-      <Skeleton className="h-24 rounded-2xl" />
+      <Skeleton className="h-28 rounded-2xl" />
+      <Skeleton className="h-28 rounded-2xl" />
     </div>
   </div>
 );
@@ -45,33 +44,33 @@ export const DashboardPage = () => {
   const firstName = user?.displayName?.split(' ')[0] ?? user?.displayName ?? '';
 
   return (
-    <div className="space-y-4 pb-6">
-      {/* 인사말 */}
-      <div className="pt-1">
+    <div className="space-y-5 pb-6">
+      {/* Greeting */}
+      <div className="pt-2">
         <p className="text-sm text-stone-400">
-          {getGreeting()} &middot; <span className="text-stone-400">{getTodayDateLabel()}</span>
+          {getGreeting()} &middot; {getTodayDateLabel()}
         </p>
-        <h1 className="mt-0.5 text-2xl font-bold text-stone-800">{firstName}님</h1>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight text-stone-800">{firstName}님</h1>
       </div>
 
       <StreakBanner streak={streakData?.currentStreak ?? 0} />
 
       <TodayReadingCard todayReading={todayReading} t={t} />
 
-      {/* 통독 진행률 */}
+      {/* Progress */}
       {activePlan && (
-        <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl bg-white p-5 ring-1 ring-stone-200/60">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-stone-600">통독 진행률</h2>
-            <span className="text-sm font-bold text-amber-600">{progress}%</span>
+            <h2 className="text-sm font-semibold text-stone-700">통독 진행률</h2>
+            <span className="text-sm font-bold tabular-nums text-stone-800">{progress}%</span>
           </div>
-          <div className="h-2.5 w-full overflow-hidden rounded-full bg-stone-100">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-stone-100">
             <div
               className="h-full rounded-full bg-amber-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="mt-2 text-right text-xs text-stone-400">
+          <p className="mt-2.5 text-right text-xs tabular-nums text-stone-400">
             {completedDays}/{totalDays}일 완료
           </p>
         </div>
@@ -79,43 +78,61 @@ export const DashboardPage = () => {
 
       <WeeklyCalendar days={weekDays} />
 
-      {/* 포인트 & 순위표 */}
+      {/* Points & Leaderboard */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
-          <p className="text-xs font-medium text-stone-500">{t.myPoints}</p>
+        <div className="rounded-2xl bg-white p-5 ring-1 ring-stone-200/60">
+          <p className="text-xs font-medium text-stone-400">{t.myPoints}</p>
           {pointsBalance.isLoading ? (
-            <Skeleton className="mt-2 h-8 w-20" />
+            <Skeleton className="mt-3 h-8 w-20" />
           ) : (
-            <p className="mt-2 text-2xl font-bold text-amber-600">
+            <p className="mt-3 text-2xl font-bold tabular-nums text-stone-800">
               {(pointsBalance.data?.balance ?? 0).toLocaleString()}
             </p>
           )}
-          <p className="mt-0.5 text-xs text-stone-400">포인트</p>
+          <p className="mt-1 text-xs text-stone-400">포인트</p>
         </div>
 
         <Link
           to={ROUTES.LEADERBOARD}
-          className="flex flex-col justify-center rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md active:bg-stone-50"
+          className="group flex flex-col justify-between rounded-2xl bg-white p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
         >
-          <p className="text-xs font-medium text-stone-500">순위표</p>
-          <p className="mt-2 text-lg font-bold text-stone-700">TOP 10</p>
-          <p className="mt-0.5 text-xs font-medium text-amber-600">확인하기 →</p>
+          <p className="text-xs font-medium text-stone-400">순위표</p>
+          <div>
+            <p className="mt-3 text-lg font-bold text-stone-800">TOP 10</p>
+            <p className="mt-1 text-xs font-medium text-stone-400 transition-colors group-hover:text-stone-600">
+              확인하기 →
+            </p>
+          </div>
         </Link>
       </div>
 
-      {/* 말씀읽기 플랜 바로가기 */}
+      {/* Custom plan shortcut */}
       <Link
         to={ROUTES.CUSTOM_PLAN}
-        className="flex items-center gap-4 rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md active:bg-stone-50"
+        className="group flex items-center gap-4 rounded-2xl bg-white p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-2xl">
-          📖
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-stone-100 transition-colors group-hover:bg-amber-50">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-stone-400 transition-colors group-hover:text-amber-600"
+          >
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
         </div>
         <div className="flex-1">
           <p className="text-sm font-semibold text-stone-700">말씀읽기 플랜</p>
           <p className="mt-0.5 text-xs text-stone-400">나만의 성경 읽기 계획 만들기</p>
         </div>
-        <span className="text-sm text-stone-300">→</span>
+        <span className="text-sm text-stone-300 transition-colors group-hover:text-stone-500">→</span>
       </Link>
     </div>
   );
@@ -128,20 +145,34 @@ type TodayReadingCardProps = {
 
 const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
   if (todayReading.isLoading) {
-    return <Skeleton className="h-32 rounded-2xl" />;
+    return <Skeleton className="h-36 rounded-2xl" />;
   }
 
   if (!todayReading.data) {
     return (
-      <div className="rounded-2xl border border-amber-100 bg-amber-50 p-6">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-3xl shadow-sm">
-          📚
+      <div className="rounded-2xl bg-stone-100 p-6">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-stone-400"
+          >
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+          </svg>
         </div>
         <p className="text-base font-semibold text-stone-700">통독 계획이 없어요</p>
         <p className="mt-1 text-sm text-stone-500">{t.noActivePlan}</p>
         <Link
           to={ROUTES.READING}
-          className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-amber-600 px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80"
+          className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-stone-800 px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80"
         >
           통독 계획 만들기
           <span aria-hidden>→</span>
@@ -151,26 +182,30 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
   }
 
   return (
-    <div className="rounded-2xl bg-amber-600 p-5 text-white shadow-md">
-      <p className="text-xs font-semibold tracking-wide text-amber-200">{t.todayReading}</p>
-      <p className="mt-2 text-xl font-bold leading-snug">
-        {todayReading.data.chapterRefs
-          .map((r) => {
-            const g = groupChapterRefs([r]);
-            return g[0]?.label ?? r;
-          })
-          .join(', ')}
-      </p>
-      <p className="mt-1 text-xs text-amber-200">
-        {todayReading.data.isCompleted ? t.completed : t.inProgress}
-      </p>
-      <Link
-        to={ROUTES.READING}
-        className="mt-4 inline-flex h-11 items-center gap-1.5 rounded-xl bg-white px-5 text-sm font-semibold text-amber-700 transition-opacity hover:opacity-90 active:opacity-80"
-      >
-        지금 읽기
-        <span aria-hidden>→</span>
-      </Link>
+    <div className="relative overflow-hidden rounded-2xl bg-stone-800 p-5 text-white">
+      <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/5" />
+      <div className="absolute -bottom-4 -right-4 h-20 w-20 rounded-full bg-white/5" />
+      <div className="relative">
+        <p className="text-xs font-semibold tracking-wide text-stone-400">{t.todayReading}</p>
+        <p className="mt-2 text-xl font-bold leading-snug">
+          {todayReading.data.chapterRefs
+            .map((r) => {
+              const g = groupChapterRefs([r]);
+              return g[0]?.label ?? r;
+            })
+            .join(', ')}
+        </p>
+        <p className="mt-1.5 text-xs text-stone-400">
+          {todayReading.data.isCompleted ? t.completed : t.inProgress}
+        </p>
+        <Link
+          to={ROUTES.READING}
+          className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-white px-5 text-sm font-semibold text-stone-800 transition-opacity hover:opacity-90 active:opacity-80"
+        >
+          지금 읽기
+          <span aria-hidden>→</span>
+        </Link>
+      </div>
     </div>
   );
 };
@@ -178,21 +213,21 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
 type WeekDay = { label: string; dayNumber: number; isCompleted: boolean; isToday: boolean; isFuture: boolean };
 
 const WeeklyCalendar = ({ days }: { days: WeekDay[] }) => (
-  <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
-    <h2 className="mb-4 text-sm font-semibold text-stone-600">이번 주 읽기</h2>
+  <div className="rounded-2xl bg-white p-5 ring-1 ring-stone-200/60">
+    <h2 className="mb-4 text-sm font-semibold text-stone-700">이번 주 읽기</h2>
     <div className="grid grid-cols-7 gap-1 text-center">
       {days.map((day) => (
         <div key={day.label} className="flex flex-col items-center gap-1.5">
           <span className="text-[11px] font-medium text-stone-400">{day.label}</span>
           <div
             className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold transition-colors ${
-              day.isToday ? 'ring-2 ring-amber-400 ring-offset-1' : ''
+              day.isToday ? 'ring-2 ring-stone-800 ring-offset-1' : ''
             } ${
               day.isCompleted
-                ? 'bg-amber-500 text-white'
+                ? 'bg-stone-800 text-white'
                 : day.isFuture
                 ? 'bg-stone-100 text-stone-300'
-                : 'bg-rose-50 text-rose-400'
+                : 'bg-red-50 text-red-400'
             }`}
           >
             {day.isCompleted ? '✓' : day.isFuture ? '' : day.dayNumber}
@@ -206,25 +241,29 @@ const WeeklyCalendar = ({ days }: { days: WeekDay[] }) => (
 const StreakBanner = ({ streak }: { streak: number }) => {
   if (streak < 2) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl border border-stone-100 bg-stone-50 px-5 py-4">
-        <span className="text-2xl" aria-hidden>
-          🌱
-        </span>
+      <div className="flex items-center gap-3 rounded-2xl bg-white px-5 py-4 ring-1 ring-stone-200/60">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100">
+          <span className="text-lg" aria-hidden>
+            🌱
+          </span>
+        </div>
         <div>
-          <p className="text-sm font-semibold text-stone-600">오늘부터 시작해 보세요!</p>
+          <p className="text-sm font-semibold text-stone-700">오늘부터 시작해 보세요!</p>
           <p className="mt-0.5 text-xs text-stone-400">매일 읽으면 스트릭이 쌓여요</p>
         </div>
       </div>
     );
   }
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-orange-100 bg-orange-50 px-5 py-4">
-      <span className="text-2xl" aria-hidden>
-        🔥
-      </span>
+    <div className="flex items-center gap-3 rounded-2xl bg-amber-50 px-5 py-4 ring-1 ring-amber-200/60">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+        <span className="text-lg" aria-hidden>
+          🔥
+        </span>
+      </div>
       <div>
-        <p className="text-sm font-semibold text-orange-700">연속 {streak}일째 읽고 있어요!</p>
-        <p className="mt-0.5 text-xs text-orange-500">계속 이어가 보세요</p>
+        <p className="text-sm font-semibold text-amber-800">연속 {streak}일째 읽고 있어요!</p>
+        <p className="mt-0.5 text-xs text-amber-600/70">계속 이어가 보세요</p>
       </div>
     </div>
   );

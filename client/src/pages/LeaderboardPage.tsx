@@ -3,18 +3,6 @@ import { useAuthStore } from '../store/auth-store';
 import { Skeleton } from '../shared/Skeleton';
 import { useT } from '../lib/i18n';
 
-const RANK_CARD_STYLES: Record<number, string> = {
-  1: 'bg-amber-50 border-amber-200',
-  2: 'bg-stone-50 border-stone-200',
-  3: 'bg-orange-50 border-orange-200',
-};
-
-const RANK_BADGE_STYLES: Record<number, string> = {
-  1: 'bg-amber-400 text-white',
-  2: 'bg-stone-400 text-white',
-  3: 'bg-orange-400 text-white',
-};
-
 export const LeaderboardPage = () => {
   const { data: entries, isLoading } = useLeaderboard();
   const { user } = useAuthStore();
@@ -24,7 +12,7 @@ export const LeaderboardPage = () => {
     return (
       <div className="space-y-5 pb-6">
         <Skeleton className="h-8 w-32" />
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Skeleton key={i} className="h-16 rounded-2xl" />
           ))}
@@ -35,7 +23,7 @@ export const LeaderboardPage = () => {
 
   return (
     <div className="space-y-5 pb-6">
-      <h1 className="text-2xl font-bold text-stone-800">{t.leaderboard}</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-stone-800">{t.leaderboard}</h1>
 
       {!entries || entries.length === 0 ? (
         <div className="flex min-h-[300px] flex-col items-center justify-center gap-3">
@@ -63,62 +51,65 @@ export const LeaderboardPage = () => {
           <p className="text-sm text-stone-400">{t.noLeaderboard}</p>
         </div>
       ) : (
-        <ul className="space-y-2.5">
+        <div className="overflow-hidden rounded-2xl bg-white ring-1 ring-stone-200/60">
           {entries.map((entry, idx) => {
             const rank = idx + 1;
             const isMe = entry._id === user?._id;
-            const cardStyle = RANK_CARD_STYLES[rank] ?? 'border-stone-100 bg-white';
-            const badgeStyle = RANK_BADGE_STYLES[rank] ?? 'bg-stone-100 text-stone-500';
 
             return (
-              <li
+              <div
                 key={entry._id}
-                className={`flex items-center gap-3 rounded-2xl border p-4 ${cardStyle} ${
-                  isMe ? 'ring-2 ring-amber-400 ring-offset-1' : ''
-                }`}
+                className={`flex items-center gap-3 px-4 py-3.5 ${
+                  idx > 0 ? 'border-t border-stone-100' : ''
+                } ${isMe ? 'bg-amber-50/50' : ''}`}
               >
-                {/* 순위 뱃지 */}
+                {/* Rank */}
                 <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${badgeStyle}`}
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    rank === 1
+                      ? 'bg-amber-400 text-white'
+                      : rank === 2
+                      ? 'bg-stone-300 text-white'
+                      : rank === 3
+                      ? 'bg-orange-300 text-white'
+                      : 'text-stone-400'
+                  }`}
                 >
                   {rank}
                 </span>
 
-                {/* 프로필 이미지 */}
+                {/* Avatar */}
                 {entry.picture ? (
                   <img
                     src={entry.picture}
                     alt={entry.displayName}
-                    className="h-10 w-10 rounded-full object-cover"
+                    className="h-9 w-9 rounded-full object-cover"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-semibold text-amber-700">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-200 text-xs font-semibold text-stone-600">
                     {entry.displayName.charAt(0)}
                   </div>
                 )}
 
-                {/* 이름 */}
+                {/* Name */}
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-stone-800">
+                  <p className="truncate text-sm font-medium text-stone-700">
                     {entry.displayName}
                     {isMe && (
-                      <span className="ml-2 text-xs font-normal text-amber-600">{t.you}</span>
+                      <span className="ml-1.5 text-xs text-stone-400">{t.you}</span>
                     )}
                   </p>
                 </div>
 
-                {/* 포인트 */}
-                <div className="shrink-0 text-right">
-                  <span className="text-sm font-bold text-amber-600">
-                    {entry.totalPoints.toLocaleString()}
-                  </span>
-                  <span className="ml-0.5 text-xs font-normal text-stone-400">pts</span>
-                </div>
-              </li>
+                {/* Points */}
+                <span className="shrink-0 text-sm font-bold tabular-nums text-stone-800">
+                  {entry.totalPoints.toLocaleString()}
+                </span>
+              </div>
             );
           })}
-        </ul>
+        </div>
       )}
     </div>
   );

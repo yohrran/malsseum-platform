@@ -9,7 +9,7 @@ export const CustomPlanPage = () => {
     return (
       <div className="space-y-5 pb-6">
         <Skeleton className="h-8 w-40" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, i) => (
             <Skeleton key={i} className="h-32 rounded-2xl" />
           ))}
@@ -21,18 +21,18 @@ export const CustomPlanPage = () => {
   if (!plans || plans.length === 0) {
     return (
       <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-stone-100">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-amber-400"
+            className="text-stone-400"
           >
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
@@ -50,9 +50,9 @@ export const CustomPlanPage = () => {
 
   return (
     <div className="space-y-5 pb-6">
-      <h1 className="text-2xl font-bold text-stone-800">말씀읽기 플랜</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-stone-800">말씀읽기 플랜</h1>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-3">
         {plans.map((plan) => {
           const totalDays = plan.seasons.reduce((sum, s) => sum + s.days.length, 0);
           const completedDays = plan.seasons.reduce(
@@ -66,26 +66,26 @@ export const CustomPlanPage = () => {
             <Link
               key={plan._id}
               to={`/custom-plan/${plan._id}`}
-              className="group rounded-2xl border border-stone-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md active:bg-stone-50"
+              className="group block rounded-2xl bg-white p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
             >
-              <h3 className="mb-1.5 font-bold text-stone-800 transition-colors group-hover:text-amber-600">
-                {plan.title}
-              </h3>
-              <p className="mb-4 text-xs text-stone-400">
-                {plan.seasons.length}개 시즌 · {completedSeasons}/{plan.seasons.length} 완료
-              </p>
-              <div className="h-2.5 w-full overflow-hidden rounded-full bg-stone-100">
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="font-bold text-stone-800">{plan.title}</h3>
+                  <p className="mt-1 text-xs text-stone-400">
+                    {plan.seasons.length}개 시즌 · {completedSeasons}/{plan.seasons.length} 완료
+                  </p>
+                </div>
+                <span className="text-sm font-bold tabular-nums text-stone-800">{progress}%</span>
+              </div>
+              <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
                 <div
                   className="h-full rounded-full bg-amber-500 transition-all duration-500"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="mt-2.5 flex items-center justify-between">
-                <span className="text-xs text-stone-400">
-                  {completedDays}/{totalDays}일
-                </span>
-                <span className="text-xs font-semibold text-amber-600">{progress}%</span>
-              </div>
+              <p className="mt-2 text-right text-xs tabular-nums text-stone-400">
+                {completedDays}/{totalDays}일
+              </p>
             </Link>
           );
         })}

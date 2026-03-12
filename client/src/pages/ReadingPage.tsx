@@ -105,10 +105,10 @@ export const ReadingPage = () => {
 
   return (
     <div className="space-y-5 pb-6">
-      <h1 className="text-2xl font-bold text-stone-800">{t.readingPlan}</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-stone-800">{t.readingPlan}</h1>
 
-      {/* 진행률 카드 */}
-      <div className="rounded-2xl border border-stone-100 bg-white p-5 shadow-sm">
+      {/* Progress card */}
+      <div className="rounded-2xl bg-white p-5 ring-1 ring-stone-200/60">
         <div className="mb-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-stone-400">
@@ -119,59 +119,62 @@ export const ReadingPage = () => {
               {activePlan.chaptersPerDay} {t.chaptersPerDay}
             </p>
           </div>
-          <span className="text-xl font-bold text-amber-600">{progress}%</span>
+          <span className="text-xl font-bold tabular-nums text-stone-800">{progress}%</span>
         </div>
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-stone-100">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-stone-100">
           <div
             className="h-full rounded-full bg-amber-500 transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="mt-2 text-right text-xs text-stone-400">
+        <p className="mt-2.5 text-right text-xs tabular-nums text-stone-400">
           {completedDays}/{totalDays} {t.days}
         </p>
       </div>
 
-      {/* 오늘의 읽기 */}
+      {/* Today's reading */}
       {todayReading.data && (
-        <div className="rounded-2xl border-2 border-amber-100 bg-amber-50 p-5">
-          <p className="mb-1.5 text-xs font-semibold tracking-wide text-amber-500">
-            {t.todayReading}
-          </p>
-          <p className="text-xl font-bold text-stone-800">
-            {todayReading.data.chapterRefs
-              .map((r) => {
-                const g = groupChapterRefs([r]);
-                return g[0]?.label ?? r;
-              })
-              .join(', ')}
-          </p>
-          <p className="mt-1 text-xs text-stone-400">
-            {todayReading.data.isCompleted ? t.completed : t.inProgress}
-          </p>
-          <div className="mt-4 flex gap-2">
-            <button
-              onClick={() => setIsReadingMode(true)}
-              className="flex h-11 flex-1 items-center justify-center rounded-xl bg-amber-600 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-90 active:opacity-80"
-            >
-              읽기 시작
-            </button>
-            <button
-              onClick={handleCheckToday}
-              disabled={checkDay.isPending}
-              className={`flex h-11 items-center rounded-xl px-4 text-sm font-semibold transition-colors disabled:opacity-50 ${
-                todayReading.data.isCompleted
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                  : 'border border-amber-200 bg-white text-amber-700 hover:bg-amber-50'
-              }`}
-            >
-              {todayReading.data.isCompleted ? '완료됨 ✓' : t.markComplete}
-            </button>
+        <div className="relative overflow-hidden rounded-2xl bg-stone-800 p-5 text-white">
+          <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-white/5" />
+          <div className="relative">
+            <p className="mb-1.5 text-xs font-semibold tracking-wide text-stone-400">
+              {t.todayReading}
+            </p>
+            <p className="text-xl font-bold leading-snug">
+              {todayReading.data.chapterRefs
+                .map((r) => {
+                  const g = groupChapterRefs([r]);
+                  return g[0]?.label ?? r;
+                })
+                .join(', ')}
+            </p>
+            <p className="mt-1.5 text-xs text-stone-400">
+              {todayReading.data.isCompleted ? t.completed : t.inProgress}
+            </p>
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={() => setIsReadingMode(true)}
+                className="flex h-10 flex-1 items-center justify-center rounded-xl bg-white text-sm font-semibold text-stone-800 transition-opacity hover:opacity-90 active:opacity-80"
+              >
+                읽기 시작
+              </button>
+              <button
+                onClick={handleCheckToday}
+                disabled={checkDay.isPending}
+                className={`flex h-10 items-center rounded-xl px-4 text-sm font-semibold transition-colors disabled:opacity-50 ${
+                  todayReading.data.isCompleted
+                    ? 'bg-green-500/20 text-green-300'
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                }`}
+              >
+                {todayReading.data.isCompleted ? '완료됨 ✓' : t.markComplete}
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* 전체 일정 목록 */}
+      {/* Day list */}
       <DayList
         days={visibleDays}
         today={today}
@@ -208,56 +211,58 @@ const DayList = ({ days, today, todayItemRef, remaining, onShowMore, t }: DayLis
 
   return (
     <div>
-      <h2 className="mb-3 text-sm font-semibold text-stone-600">{t.allDays}</h2>
-      <ul className="divide-y divide-stone-100 rounded-2xl border border-stone-100 bg-white shadow-sm">
-        {days.map((day) => {
-          const groups = groupChapterRefs(day.chapterRefs);
-          const label = groups.map((g) => g.label).join(', ');
-          const isToday = day.scheduledDate.slice(0, 10) === today;
-          return (
-            <li
-              key={day._id}
-              ref={isToday ? todayItemRef : undefined}
-              className={`flex items-center justify-between px-4 py-3.5 ${
-                isToday ? 'border-l-4 border-amber-400 bg-amber-50/50' : ''
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                    day.isCompleted
-                      ? 'bg-green-100 text-green-600'
-                      : 'bg-stone-100 text-stone-400'
-                  }`}
-                >
-                  {day.isCompleted ? '✓' : day.dayNumber}
-                </div>
-                <div>
-                  <span className="text-xs font-medium text-stone-500">
-                    {new Date(day.scheduledDate).toLocaleDateString('ko-KR', {
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </span>
-                  {isToday && (
-                    <span className="ml-1.5 inline-flex items-center rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-600">
-                      오늘
+      <h2 className="mb-3 text-sm font-semibold text-stone-700">{t.allDays}</h2>
+      <div className="overflow-hidden rounded-2xl bg-white ring-1 ring-stone-200/60">
+        <ul className="divide-y divide-stone-100">
+          {days.map((day) => {
+            const groups = groupChapterRefs(day.chapterRefs);
+            const label = groups.map((g) => g.label).join(', ');
+            const isToday = day.scheduledDate.slice(0, 10) === today;
+            return (
+              <li
+                key={day._id}
+                ref={isToday ? todayItemRef : undefined}
+                className={`flex items-center justify-between px-4 py-3.5 ${
+                  isToday ? 'bg-amber-50/50' : ''
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
+                      day.isCompleted
+                        ? 'bg-stone-800 text-white'
+                        : 'bg-stone-100 text-stone-400'
+                    }`}
+                  >
+                    {day.isCompleted ? '✓' : day.dayNumber}
+                  </div>
+                  <div>
+                    <span className="text-xs font-medium text-stone-500">
+                      {new Date(day.scheduledDate).toLocaleDateString('ko-KR', {
+                        month: 'short',
+                        day: 'numeric',
+                      })}
                     </span>
-                  )}
-                  <span className="ml-2 text-xs text-stone-400">{label}</span>
+                    {isToday && (
+                      <span className="ml-1.5 inline-flex items-center rounded-full bg-stone-800 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                        오늘
+                      </span>
+                    )}
+                    <span className="ml-2 text-xs text-stone-400">{label}</span>
+                  </div>
                 </div>
-              </div>
-              {day.isCompleted && (
-                <span className="text-xs font-semibold text-green-500">완료</span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+                {day.isCompleted && (
+                  <span className="text-xs font-medium text-stone-400">완료</span>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
       {remaining > 0 && (
         <button
           onClick={onShowMore}
-          className="mt-3 flex w-full items-center justify-center rounded-xl border border-stone-200 bg-white py-2.5 text-xs font-medium text-stone-500 transition-colors hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700"
+          className="mt-3 flex w-full items-center justify-center rounded-xl bg-white py-2.5 text-xs font-medium text-stone-500 ring-1 ring-stone-200/60 transition-colors hover:bg-stone-50"
         >
           더 보기 ({remaining}일 남음)
         </button>
@@ -316,11 +321,11 @@ const InlineBibleReader = ({
 
   return (
     <div className="flex h-[calc(100dvh-140px)] flex-col">
-      {/* 상단 컨트롤 */}
+      {/* Top controls */}
       <div className="flex items-center justify-between border-b border-stone-100 pb-3">
         <button
           onClick={onClose}
-          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-stone-500 hover:text-stone-800"
+          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-stone-500 transition-colors hover:text-stone-800"
         >
           <span aria-hidden>←</span>
           <span>목록으로</span>
@@ -330,9 +335,9 @@ const InlineBibleReader = ({
             <button
               key={size}
               onClick={() => onFontSize(size)}
-              className={`flex h-9 w-9 items-center justify-center rounded-lg font-medium transition-colors ${
+              className={`flex h-8 w-8 items-center justify-center rounded-lg font-medium transition-colors ${
                 fontSize === size
-                  ? 'bg-amber-100 text-amber-700'
+                  ? 'bg-stone-100 text-stone-800'
                   : 'text-stone-400 hover:text-stone-600'
               }`}
               style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
@@ -344,7 +349,7 @@ const InlineBibleReader = ({
         </div>
       </div>
 
-      {/* 그룹 탭 */}
+      {/* Group tabs */}
       {groups.length > 1 && (
         <div className="flex gap-1.5 overflow-x-auto border-b border-stone-100 py-2.5">
           {groups.map((group, i) => (
@@ -353,8 +358,8 @@ const InlineBibleReader = ({
               onClick={() => setActiveGroupIdx(i)}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                 i === activeGroupIdx
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                  ? 'bg-stone-800 text-white'
+                  : 'bg-stone-100 text-stone-500 hover:bg-stone-200'
               }`}
             >
               {group.label}
@@ -363,7 +368,7 @@ const InlineBibleReader = ({
         </div>
       )}
 
-      {/* 본문 */}
+      {/* Content */}
       <div ref={contentRef} className="flex-1 overflow-y-auto py-5">
         {isLoading && <LoadingSpinner />}
         {isError && (
@@ -373,13 +378,13 @@ const InlineBibleReader = ({
           <div className="space-y-8">
             {data.chapters.map((ch) => (
               <div key={ch.chapter}>
-                <h3 className="mb-4 text-sm font-bold tracking-wide text-amber-600">
+                <h3 className="mb-4 text-xs font-bold tracking-widest text-stone-400">
                   {data.bookName} {ch.chapter}장
                 </h3>
                 <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
                   {ch.verses.map((v) => (
                     <p key={v.verse} className="flex gap-3">
-                      <span className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-semibold text-stone-300">
+                      <span className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300">
                         {v.verse}
                       </span>
                       <span className="flex-1">{v.text}</span>
@@ -392,7 +397,7 @@ const InlineBibleReader = ({
         )}
       </div>
 
-      {/* 하단 컨트롤 */}
+      {/* Bottom controls */}
       <div className="border-t border-stone-100 pt-3">
         {groups.length > 1 && (
           <div className="mb-3 flex items-center justify-between">
@@ -403,7 +408,7 @@ const InlineBibleReader = ({
             >
               ← 이전
             </button>
-            <span className="text-xs text-stone-400">
+            <span className="text-xs tabular-nums text-stone-400">
               {activeGroupIdx + 1} / {groups.length}
             </span>
             <button
@@ -418,10 +423,10 @@ const InlineBibleReader = ({
         <button
           onClick={handleComplete}
           disabled={isCheckPending}
-          className={`relative flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl text-sm font-bold shadow-sm transition-colors disabled:opacity-50 ${
+          className={`relative flex h-12 w-full items-center justify-center overflow-hidden rounded-2xl text-sm font-bold transition-colors disabled:opacity-50 ${
             isCompleted
-              ? 'bg-green-100 text-green-700 hover:bg-green-200'
-              : 'bg-amber-600 text-white hover:bg-amber-700'
+              ? 'bg-stone-100 text-stone-500'
+              : 'bg-stone-800 text-white hover:bg-stone-700'
           }`}
         >
           {justCompleted && (
@@ -491,10 +496,10 @@ const CreatePlanView = ({
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-bold text-stone-800">{t.readingPlan}</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-stone-800">{t.readingPlan}</h1>
 
-      <div className="rounded-2xl border border-stone-100 bg-white p-6 shadow-sm">
-        <h2 className="mb-1 text-base font-bold text-stone-700">{t.createPlan}</h2>
+      <div className="rounded-2xl bg-white p-6 ring-1 ring-stone-200/60">
+        <h2 className="mb-1 text-base font-bold text-stone-800">{t.createPlan}</h2>
         <p className="mb-5 text-sm text-stone-400">
           성경을 처음부터 끝까지 읽는 계획을 만들어 보세요
         </p>
@@ -505,14 +510,18 @@ const CreatePlanView = ({
               key={preset.label}
               type="button"
               onClick={() => handlePreset(preset)}
-              className={`rounded-xl border p-3 text-left transition-colors ${
+              className={`rounded-xl p-3 text-left transition-all ${
                 isPresetActive(preset)
-                  ? 'border-amber-400 bg-amber-50 ring-1 ring-amber-300'
-                  : 'border-stone-200 hover:border-amber-300 hover:bg-amber-50'
+                  ? 'bg-stone-800 text-white ring-1 ring-stone-800'
+                  : 'bg-stone-50 ring-1 ring-stone-200/60 hover:bg-stone-100'
               }`}
             >
-              <p className="text-xs font-bold text-stone-700">{preset.label}</p>
-              <p className="mt-0.5 text-xs text-stone-400">{preset.desc}</p>
+              <p className={`text-xs font-bold ${isPresetActive(preset) ? 'text-white' : 'text-stone-700'}`}>
+                {preset.label}
+              </p>
+              <p className={`mt-0.5 text-xs ${isPresetActive(preset) ? 'text-stone-300' : 'text-stone-400'}`}>
+                {preset.desc}
+              </p>
             </button>
           ))}
         </div>
@@ -530,7 +539,7 @@ const CreatePlanView = ({
                   onStartDate(e.target.value);
                   setSelectedPreset(null);
                 }}
-                className="h-11 w-full rounded-xl border border-stone-200 px-3 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-200"
+                className="h-11 w-full rounded-xl border-0 bg-stone-50 px-3 text-sm ring-1 ring-stone-200/60 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-stone-400"
                 required
               />
             </div>
@@ -545,7 +554,7 @@ const CreatePlanView = ({
                   onEndDate(e.target.value);
                   setSelectedPreset(null);
                 }}
-                className="h-11 w-full rounded-xl border border-stone-200 px-3 text-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-200"
+                className="h-11 w-full rounded-xl border-0 bg-stone-50 px-3 text-sm ring-1 ring-stone-200/60 transition-all focus:bg-white focus:outline-none focus:ring-2 focus:ring-stone-400"
                 required
               />
             </div>
@@ -553,7 +562,7 @@ const CreatePlanView = ({
           <button
             type="submit"
             disabled={isPending}
-            className="flex h-12 w-full items-center justify-center rounded-xl bg-amber-600 text-sm font-semibold text-white shadow-sm hover:bg-amber-700 disabled:opacity-50"
+            className="flex h-12 w-full items-center justify-center rounded-xl bg-stone-800 text-sm font-semibold text-white transition-colors hover:bg-stone-700 disabled:opacity-50"
           >
             {isPending ? t.creating : t.startPlan}
           </button>

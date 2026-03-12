@@ -27,28 +27,28 @@ export const Navbar = () => {
   return (
     <>
       {/* Desktop top navbar */}
-      <nav className="sticky top-0 z-50 border-b border-stone-100 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-7">
+      <nav className="sticky top-0 z-50 border-b border-stone-200/60 bg-white/80 backdrop-blur-lg">
+        <div className="mx-auto flex max-w-2xl items-center justify-between px-5 py-3">
+          <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-1.5">
-              <span className="text-xl font-bold text-amber-600">말씀</span>
+              <span className="text-xl font-bold tracking-tight text-stone-800">말씀</span>
             </Link>
-            <div className="hidden items-center gap-5 sm:flex">
+            <div className="hidden items-center gap-1 sm:flex">
               {DESKTOP_NAV_LINKS.map((link) => {
                 const isActive = pathname === link.to;
                 return (
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`flex items-center gap-1.5 text-sm transition-colors ${
+                    className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-all ${
                       isActive
-                        ? 'font-semibold text-amber-600'
-                        : 'text-stone-500 hover:text-stone-800'
+                        ? 'bg-stone-100 font-semibold text-stone-800'
+                        : 'text-stone-400 hover:bg-stone-50 hover:text-stone-600'
                     }`}
                   >
                     <link.icon
                       size={15}
-                      className={isActive ? 'text-amber-600' : 'text-stone-400'}
+                      className={isActive ? 'text-stone-600' : 'text-stone-400'}
                     />
                     {link.label}
                   </Link>
@@ -60,29 +60,23 @@ export const Navbar = () => {
           <div className="flex items-center gap-2">
             {user && (
               <>
-                <Link to="/profile" className="flex items-center gap-2">
+                <Link to="/profile" className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-stone-50">
                   {user.picture ? (
                     <img
                       src={user.picture}
                       alt={user.displayName}
-                      className="h-8 w-8 rounded-full object-cover ring-2 ring-amber-100"
+                      className="h-7 w-7 rounded-full object-cover"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-stone-200 text-xs font-semibold text-stone-600">
                       {user.displayName?.charAt(0)}
                     </div>
                   )}
-                  <span className="hidden text-sm font-medium text-stone-700 hover:text-amber-600 sm:inline">
+                  <span className="hidden text-sm font-medium text-stone-600 sm:inline">
                     {user.displayName}
                   </span>
                 </Link>
-                <button
-                  onClick={logout}
-                  className="hidden rounded-lg px-2.5 py-1.5 text-xs text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600 sm:block"
-                >
-                  {t.logout}
-                </button>
               </>
             )}
           </div>
@@ -91,29 +85,31 @@ export const Navbar = () => {
 
       {/* Mobile bottom tab bar */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch border-t border-stone-200 bg-white/95 backdrop-blur-sm sm:hidden"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200/60 bg-white/80 backdrop-blur-lg sm:hidden"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        {MOBILE_TAB_LINKS.map((link) => {
-          const isActive = pathname === link.to;
-          return (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`relative flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-center transition-colors ${
-                isActive ? 'text-amber-600' : 'text-stone-400 active:text-stone-600'
-              }`}
-            >
-              {isActive && (
-                <span className="absolute top-1.5 h-1 w-1 rounded-full bg-amber-500" />
-              )}
-              <link.icon size={22} />
-              <span className={`text-[10px] leading-none ${isActive ? 'font-semibold' : 'font-normal'}`}>
-                {link.label}
-              </span>
-            </Link>
-          );
-        })}
+        <div className="flex items-stretch">
+          {MOBILE_TAB_LINKS.map((link) => {
+            const isActive = pathname === link.to;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-center transition-colors ${
+                  isActive ? 'text-stone-800' : 'text-stone-400 active:text-stone-600'
+                }`}
+              >
+                <link.icon size={20} className={isActive ? 'text-stone-800' : ''} />
+                <span className={`text-[10px] leading-none ${isActive ? 'font-semibold' : 'font-normal'}`}>
+                  {link.label}
+                </span>
+                {isActive && (
+                  <span className="absolute -bottom-0 h-0.5 w-5 rounded-full bg-stone-800" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </>
   );
