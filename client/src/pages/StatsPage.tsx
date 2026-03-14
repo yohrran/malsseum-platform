@@ -2,6 +2,7 @@ import { useReadingStats } from '../features/reading/useReadingStats';
 import { useStreak } from '../features/auth/useStreak';
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
+import { StatCard } from '../shared/StatCard';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
 export const StatsPage = () => {
@@ -105,20 +106,6 @@ export const StatsPage = () => {
     </>
   );
 };
-
-type StatCardProps = {
-  value: string | number;
-  label: string;
-};
-
-const StatCard = ({ value, label }: StatCardProps) => (
-  <div className="rounded-2xl bg-white dark:bg-stone-800 p-4 ring-1 ring-stone-200/60 dark:ring-stone-700/60">
-    <p className="text-2xl font-bold tabular-nums text-stone-800 dark:text-stone-100">
-      {typeof value === 'number' ? value.toLocaleString() : value}
-    </p>
-    <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">{label}</p>
-  </div>
-);
 
 type MonthHeatmapProps = {
   label: string;

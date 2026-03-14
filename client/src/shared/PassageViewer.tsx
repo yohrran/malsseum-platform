@@ -5,18 +5,12 @@ import { BookmarkButton } from '../features/bookmarks/BookmarkButton';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useT } from '../lib/i18n';
 import { BOOK_NAMES_KO } from '../lib/bible-abbr-map';
-
-type FontSize = 'sm' | 'md' | 'lg' | 'xl';
-
-const FONT_SIZE_CLASS: Record<FontSize, string> = {
-  sm: 'text-sm leading-7',
-  md: 'text-base leading-8',
-  lg: 'text-lg leading-9',
-  xl: 'text-xl leading-10',
-};
-
-const FONT_SIZES: FontSize[] = ['sm', 'md', 'lg', 'xl'];
-const FONT_DISPLAY_SIZE = [11, 13, 15, 17];
+import {
+  type FontSize,
+  FONT_SIZE_CLASS,
+  FONT_SIZES,
+  FONT_DISPLAY_SIZE_BIBLE as FONT_DISPLAY_SIZE,
+} from '../lib/font-config';
 
 type Props = {
   bookAbbr: string;

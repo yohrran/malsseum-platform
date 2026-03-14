@@ -8,18 +8,12 @@ import { LoadingSpinner } from '../shared/LoadingSpinner';
 import { SEOHead } from '../shared/SEOHead';
 import { useT } from '../lib/i18n';
 import { groupChapterRefs, type ParsedChapterGroup } from '../lib/bible-abbr-map';
-
-type FontSize = 'sm' | 'md' | 'lg' | 'xl';
-
-const FONT_SIZE_CLASS: Record<FontSize, string> = {
-  sm: 'text-sm leading-7',
-  md: 'text-base leading-8',
-  lg: 'text-lg leading-9',
-  xl: 'text-xl leading-10',
-};
-
-const FONT_SIZES: FontSize[] = ['sm', 'md', 'lg', 'xl'];
-const FONT_DISPLAY_SIZE = [12, 14, 16, 18];
+import {
+  type FontSize,
+  FONT_SIZE_CLASS,
+  FONT_SIZES,
+  FONT_DISPLAY_SIZE_READING as FONT_DISPLAY_SIZE,
+} from '../lib/font-config';
 const DAY_LIST_PAGE_SIZE = 20;
 
 const todayDateStr = () => new Date().toISOString().slice(0, 10);
