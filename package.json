@@ -1,0 +1,26 @@
+{
+  "name": "malsseum-platform",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "lint-staged": {
+    "client/src/**/*.{ts,tsx}": [
+      "prettier --write"
+    ],
+    "server/src/**/*.js": [
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.1"
+  }
+}
