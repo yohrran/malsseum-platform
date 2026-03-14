@@ -32,7 +32,7 @@ export const DashboardPage = () => {
   const { data: streakData } = useStreak();
   const t = useT();
 
-  if (todayReading.isLoading || plansLoading) return <DashboardSkeleton />;
+  if (plansLoading) return <DashboardSkeleton />;
 
   const activePlan = plans?.find((p) => p.isActive) ?? plans?.[0];
   const completedDays = activePlan?.days.filter((d) => d.isCompleted).length ?? 0;
@@ -53,7 +53,7 @@ export const DashboardPage = () => {
         <h1 className="mt-1 text-2xl font-bold tracking-tight text-stone-800">{firstName}님</h1>
       </div>
 
-      <StreakBanner streak={streakData?.currentStreak ?? 0} />
+      <StreakBanner streak={streakData?.currentStreak ?? 0} lastReadDate={streakData?.lastReadDate ?? null} />
 
       <TodayReadingCard todayReading={todayReading} t={t} />
 
@@ -188,11 +188,8 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
       <div className="relative">
         <p className="text-xs font-semibold tracking-wide text-stone-400">{t.todayReading}</p>
         <p className="mt-2 text-xl font-bold leading-snug">
-          {todayReading.data.chapterRefs
-            .map((r) => {
-              const g = groupChapterRefs([r]);
-              return g[0]?.label ?? r;
-            })
+          {groupChapterRefs(todayReading.data.chapterRefs)
+            .map((g) => g.label)
             .join(', ')}
         </p>
         <p className="mt-1.5 text-xs text-stone-400">
@@ -238,8 +235,20 @@ const WeeklyCalendar = ({ days }: { days: WeekDay[] }) => (
   </div>
 );
 
-const StreakBanner = ({ streak }: { streak: number }) => {
-  if (streak < 2) {
+const getDaysSinceLastRead = (lastReadDate: string | null): number | null => {
+  if (!lastReadDate) return null;
+  const last = new Date(lastReadDate);
+  last.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.floor((today.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
+};
+
+const StreakBanner = ({ streak, lastReadDate }: { streak: number; lastReadDate: string | null }) => {
+  const daysSince = getDaysSinceLastRead(lastReadDate);
+
+  // 한 번도 읽은 적 없음
+  if (daysSince === null) {
     return (
       <div className="flex items-center gap-3 rounded-2xl bg-white px-5 py-4 ring-1 ring-stone-200/60">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100">
@@ -254,16 +263,52 @@ const StreakBanner = ({ streak }: { streak: number }) => {
       </div>
     );
   }
+
+  // 오늘 또는 어제 읽었고 연속 2일 이상
+  if (daysSince <= 1 && streak >= 2) {
+    return (
+      <div className="flex items-center gap-3 rounded-2xl bg-amber-50 px-5 py-4 ring-1 ring-amber-200/60">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+          <span className="text-lg" aria-hidden>
+            🔥
+          </span>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-amber-800">연속 {streak}일째 읽고 있어요!</p>
+          <p className="mt-0.5 text-xs text-amber-600/70">계속 이어가 보세요</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 2일 이상 안 읽음 - 다시 돌아옴
+  if (daysSince >= 2) {
+    return (
+      <div className="flex items-center gap-3 rounded-2xl bg-blue-50 px-5 py-4 ring-1 ring-blue-200/60">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+          <span className="text-lg" aria-hidden>
+            📖
+          </span>
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-blue-800">{daysSince}일 만에 돌아오셨네요!</p>
+          <p className="mt-0.5 text-xs text-blue-600/70">오늘 말씀을 읽어볼까요?</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 오늘 또는 어제 읽었지만 연속 1일 (막 시작)
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-amber-50 px-5 py-4 ring-1 ring-amber-200/60">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white">
+    <div className="flex items-center gap-3 rounded-2xl bg-white px-5 py-4 ring-1 ring-stone-200/60">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100">
         <span className="text-lg" aria-hidden>
-          🔥
+          🌱
         </span>
       </div>
       <div>
-        <p className="text-sm font-semibold text-amber-800">연속 {streak}일째 읽고 있어요!</p>
-        <p className="mt-0.5 text-xs text-amber-600/70">계속 이어가 보세요</p>
+        <p className="text-sm font-semibold text-stone-700">좋은 시작이에요!</p>
+        <p className="mt-0.5 text-xs text-stone-400">내일도 읽으면 연속 기록이 시작돼요</p>
       </div>
     </div>
   );

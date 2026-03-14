@@ -141,11 +141,8 @@ export const ReadingPage = () => {
               {t.todayReading}
             </p>
             <p className="text-xl font-bold leading-snug">
-              {todayReading.data.chapterRefs
-                .map((r) => {
-                  const g = groupChapterRefs([r]);
-                  return g[0]?.label ?? r;
-                })
+              {groupChapterRefs(todayReading.data.chapterRefs)
+                .map((g) => g.label)
                 .join(', ')}
             </p>
             <p className="mt-1.5 text-xs text-stone-400">

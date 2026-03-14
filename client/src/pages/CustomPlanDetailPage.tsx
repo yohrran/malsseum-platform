@@ -6,6 +6,7 @@ import { useCompleteSeason } from '../features/custom-plan/useCompleteSeason';
 import { LoadingSpinner } from '../shared/LoadingSpinner';
 import { PassageViewer } from '../shared/PassageViewer';
 import { useT } from '../lib/i18n';
+import { BOOK_NAMES_KO } from '../lib/bible-abbr-map';
 
 type SelectedPassage = { bookAbbr: string; chapters: number[]; label: string };
 
@@ -43,10 +44,11 @@ export const CustomPlanDetailPage = () => {
   };
 
   const handleViewPassage = (bookAbbr: string, chapters: number[], dateLabel: string) => {
+    const fullName = BOOK_NAMES_KO[bookAbbr] ?? bookAbbr;
     setSelectedPassage({
       bookAbbr,
       chapters,
-      label: `${dateLabel} · ${bookAbbr} ${chapters.join(', ')}장`,
+      label: `${dateLabel} · ${fullName} ${chapters.join(', ')}장`,
     });
   };
 
@@ -127,7 +129,7 @@ export const CustomPlanDetailPage = () => {
                   >
                     <span className="font-medium text-stone-500">{day.date}</span>
                     <span className="mx-1.5 text-stone-200">·</span>
-                    {day.bookAbbr} {day.chapters.join(', ')}장
+                    {BOOK_NAMES_KO[day.bookAbbr] ?? day.bookAbbr} {day.chapters.join(', ')}장
                   </span>
 
                   <button

@@ -76,8 +76,8 @@ export const groupChapterRefs = (refs: string[]): ParsedChapterGroup[] => {
     const last = group.chapters[group.chapters.length - 1];
     group.label =
       group.chapters.length === 1
-        ? `${group.bookAbbr} ${first}장`
-        : `${group.bookAbbr} ${first}-${last}장`;
+        ? `${group.bookName} ${first}장`
+        : `${group.bookName} ${first}-${last}장`;
   }
 
   return groups;

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { usePassage } from '../features/bible/usePassage';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useT } from '../lib/i18n';
+import { BOOK_NAMES_KO } from '../lib/bible-abbr-map';
 
 type FontSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -119,7 +120,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                     : 'bg-stone-100 text-stone-500 hover:bg-stone-200'
                 }`}
               >
-                {bookAbbr} {ch}장
+                {BOOK_NAMES_KO[bookAbbr] ?? bookAbbr} {ch}장
               </button>
             ))}
           </div>

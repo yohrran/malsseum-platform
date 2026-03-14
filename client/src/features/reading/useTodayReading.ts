@@ -12,5 +12,6 @@ export const useTodayReading = () => {
       if (!data.data) throw new Error(data.error ?? 'Failed to load today reading');
       return data.data;
     },
+    staleTime: 1000 * 60 * 5,
   });
 };
