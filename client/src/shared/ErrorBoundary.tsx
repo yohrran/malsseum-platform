@@ -19,10 +19,10 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.hasError) {
       return (
         <div className="flex min-h-[300px] flex-col items-center justify-center gap-4 p-8">
-          <h2 className="text-xl font-semibold text-stone-800">
+          <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100">
             오류가 발생했습니다
           </h2>
-          <p className="text-sm text-stone-500">
+          <p className="text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">
             예상치 못한 오류가 발생했습니다. 다시 시도해 주세요.
           </p>
           <button

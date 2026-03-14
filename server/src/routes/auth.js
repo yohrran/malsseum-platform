@@ -29,14 +29,12 @@ router.post('/google', async (req, res, next) => {
     const user = await User.findOneAndUpdate(
       { googleId },
       { googleId, email, displayName: name, picture },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true },
     ).select(SAFE_USER_FIELDS);
 
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    });
 
     res.json({ success: true, data: { token, user } });
   } catch (err) {
@@ -51,7 +49,9 @@ router.patch('/profile', authenticate, async (req, res, next) => {
 
     if (preferredLanguage !== undefined) {
       if (!['ko', 'en'].includes(preferredLanguage)) {
-        return res.status(400).json({ success: false, error: 'preferredLanguage must be ko or en' });
+        return res
+          .status(400)
+          .json({ success: false, error: 'preferredLanguage must be ko or en' });
       }
       update.preferredLanguage = preferredLanguage;
     }
@@ -60,8 +60,9 @@ router.patch('/profile', authenticate, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'No valid fields to update' });
     }
 
-    const user = await User.findByIdAndUpdate(req.user._id, update, { new: true })
-      .select(SAFE_USER_FIELDS);
+    const user = await User.findByIdAndUpdate(req.user._id, update, { new: true }).select(
+      SAFE_USER_FIELDS,
+    );
 
     res.json({ success: true, data: user });
   } catch (err) {
@@ -72,22 +73,37 @@ router.patch('/profile', authenticate, async (req, res, next) => {
 // M-7: googleId, __v 등 민감/불필요 필드 제외
 router.get('/me', authenticate, (req, res) => {
   const {
-    _id, email, displayName, picture, preferredLanguage,
-    totalPoints, currentStreak, longestStreak, lastReadDate,
+    _id,
+    email,
+    displayName,
+    picture,
+    preferredLanguage,
+    totalPoints,
+    currentStreak,
+    longestStreak,
+    lastReadDate,
   } = req.user;
   res.json({
     success: true,
     data: {
-      _id, email, displayName, picture, preferredLanguage,
-      totalPoints, currentStreak, longestStreak, lastReadDate,
+      _id,
+      email,
+      displayName,
+      picture,
+      preferredLanguage,
+      totalPoints,
+      currentStreak,
+      longestStreak,
+      lastReadDate,
     },
   });
 });
 
 router.get('/streak', authenticate, async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id)
-      .select('currentStreak longestStreak lastReadDate');
+    const user = await User.findById(req.user._id).select(
+      'currentStreak longestStreak lastReadDate',
+    );
     res.json({
       success: true,
       data: {
@@ -96,6 +112,23 @@ router.get('/streak', authenticate, async (req, res, next) => {
         lastReadDate: user?.lastReadDate ?? null,
       },
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post('/refresh', authenticate, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select(SAFE_USER_FIELDS);
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'User not found' });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    });
+
+    res.json({ success: true, data: { token, user } });
   } catch (err) {
     next(err);
   }

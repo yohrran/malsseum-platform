@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useCustomPlans } from '../features/custom-plan/useCustomPlans';
 import { Skeleton } from '../shared/Skeleton';
+import { SEOHead } from '../shared/SEOHead';
 
 export const CustomPlanPage = () => {
   const { data: plans, isLoading } = useCustomPlans();
@@ -21,7 +22,7 @@ export const CustomPlanPage = () => {
   if (!plans || plans.length === 0) {
     return (
       <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 text-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-stone-100">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-stone-100 dark:bg-stone-700">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -32,15 +33,17 @@ export const CustomPlanPage = () => {
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-stone-400"
+            className="text-stone-400 dark:text-stone-500"
           >
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
           </svg>
         </div>
         <div>
-          <h2 className="text-base font-semibold text-stone-700">플랜이 없습니다</h2>
-          <p className="mt-1.5 text-sm text-stone-400">
+          <h2 className="text-base font-semibold text-stone-700 dark:text-stone-200">
+            플랜이 없습니다
+          </h2>
+          <p className="mt-1.5 text-sm text-stone-400 dark:text-stone-500">
             관리자가 말씀읽기 플랜을 등록하면 여기에 표시됩니다.
           </p>
         </div>
@@ -49,47 +52,54 @@ export const CustomPlanPage = () => {
   }
 
   return (
-    <div className="space-y-5 pb-6">
-      <h1 className="text-2xl font-bold tracking-tight text-stone-800">말씀읽기 플랜</h1>
+    <>
+      <SEOHead title="말씀읽기" />
+      <div className="space-y-5 pb-6">
+        <h1 className="text-2xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
+          말씀읽기 플랜
+        </h1>
 
-      <div className="space-y-3">
-        {plans.map((plan) => {
-          const totalDays = plan.seasons.reduce((sum, s) => sum + s.days.length, 0);
-          const completedDays = plan.seasons.reduce(
-            (sum, s) => sum + s.days.filter((d) => d.isCompleted).length,
-            0
-          );
-          const completedSeasons = plan.seasons.filter((s) => s.isCompleted).length;
-          const progress = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
+        <div className="space-y-3">
+          {plans.map((plan) => {
+            const totalDays = plan.seasons.reduce((sum, s) => sum + s.days.length, 0);
+            const completedDays = plan.seasons.reduce(
+              (sum, s) => sum + s.days.filter((d) => d.isCompleted).length,
+              0,
+            );
+            const completedSeasons = plan.seasons.filter((s) => s.isCompleted).length;
+            const progress = totalDays > 0 ? Math.round((completedDays / totalDays) * 100) : 0;
 
-          return (
-            <Link
-              key={plan._id}
-              to={`/custom-plan/${plan._id}`}
-              className="group block rounded-2xl bg-white p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="font-bold text-stone-800">{plan.title}</h3>
-                  <p className="mt-1 text-xs text-stone-400">
-                    {plan.seasons.length}개 시즌 · {completedSeasons}/{plan.seasons.length} 완료
-                  </p>
+            return (
+              <Link
+                key={plan._id}
+                to={`/custom-plan/${plan._id}`}
+                className="group block rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="font-bold text-stone-800 dark:text-stone-100">{plan.title}</h3>
+                    <p className="mt-1 text-xs text-stone-400 dark:text-stone-500">
+                      {plan.seasons.length}개 시즌 · {completedSeasons}/{plan.seasons.length} 완료
+                    </p>
+                  </div>
+                  <span className="text-sm font-bold tabular-nums text-stone-800 dark:text-stone-100">
+                    {progress}%
+                  </span>
                 </div>
-                <span className="text-sm font-bold tabular-nums text-stone-800">{progress}%</span>
-              </div>
-              <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-stone-100">
-                <div
-                  className="h-full rounded-full bg-amber-500 transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <p className="mt-2 text-right text-xs tabular-nums text-stone-400">
-                {completedDays}/{totalDays}일
-              </p>
-            </Link>
-          );
-        })}
+                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-stone-100 dark:bg-stone-700">
+                  <div
+                    className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-right text-xs tabular-nums text-stone-400 dark:text-stone-500">
+                  {completedDays}/{totalDays}일
+                </p>
+              </Link>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 };

@@ -12,17 +12,61 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+let isRefreshing = false;
 let isRedirecting = false;
+
+const tryRefreshToken = async (): Promise<string | null> => {
+  if (isRefreshing) return null;
+  isRefreshing = true;
+  try {
+    const currentToken = useAuthStore.getState().token;
+    if (!currentToken) return null;
+
+    const { data } = await axios.post(
+      `${apiClient.defaults.baseURL}/api/auth/refresh`,
+      {},
+      { headers: { Authorization: `Bearer ${currentToken}` } },
+    );
+
+    if (data.success && data.data?.token) {
+      useAuthStore.getState().setAuth(data.data.token, data.data.user);
+      return data.data.token;
+    }
+    return null;
+  } catch {
+    return null;
+  } finally {
+    isRefreshing = false;
+  }
+};
 
 apiClient.interceptors.response.use(
   (res) => res,
-  (err) => {
+  async (err) => {
+    const originalRequest = err.config;
+
+    if (
+      err.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes('/auth/refresh')
+    ) {
+      originalRequest._retry = true;
+      const newToken = await tryRefreshToken();
+      if (newToken) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return apiClient(originalRequest);
+      }
+    }
+
     if (err.response?.status === 401 && !isRedirecting) {
       isRedirecting = true;
       useAuthStore.getState().logout();
       window.location.href = '/login';
-      setTimeout(() => { isRedirecting = false; }, 3000);
+      setTimeout(() => {
+        isRedirecting = false;
+      }, 3000);
     }
+
     return Promise.reject(err);
-  }
+  },
 );

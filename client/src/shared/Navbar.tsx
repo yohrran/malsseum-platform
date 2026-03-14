@@ -1,12 +1,19 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/auth-store';
+import { useThemeStore } from '../store/theme-store';
 import { ROUTES } from '../lib/constants';
 import { useT } from '../lib/i18n';
 
 export const Navbar = () => {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
+  const { theme, setTheme } = useThemeStore();
   const { pathname } = useLocation();
   const t = useT();
+
+  const handleToggleTheme = () => {
+    const next = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
+    setTheme(next);
+  };
 
   const DESKTOP_NAV_LINKS = [
     { to: ROUTES.HOME, label: t.dashboard, icon: HomeIcon },
@@ -27,11 +34,13 @@ export const Navbar = () => {
   return (
     <>
       {/* Desktop top navbar */}
-      <nav className="sticky top-0 z-50 border-b border-stone-200/60 bg-white/80 backdrop-blur-lg">
+      <nav className="sticky top-0 z-50 border-b border-stone-200/60 bg-white/80 backdrop-blur-lg dark:border-stone-700/60 dark:bg-stone-900/80">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-5 py-3">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-1.5">
-              <span className="text-xl font-bold tracking-tight text-stone-800">말씀</span>
+              <span className="text-xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
+                말씀
+              </span>
             </Link>
             <div className="hidden items-center gap-1 sm:flex">
               {DESKTOP_NAV_LINKS.map((link) => {
@@ -42,8 +51,8 @@ export const Navbar = () => {
                     to={link.to}
                     className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-all ${
                       isActive
-                        ? 'bg-stone-100 font-semibold text-stone-800'
-                        : 'text-stone-400 hover:bg-stone-50 hover:text-stone-600'
+                        ? 'bg-stone-100 dark:bg-stone-700 font-semibold text-stone-800 dark:bg-stone-800 dark:text-stone-100'
+                        : 'text-stone-400 hover:bg-stone-50 hover:text-stone-600 dark:text-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-300'
                     }`}
                   >
                     <link.icon
@@ -58,9 +67,27 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleToggleTheme}
+              className="rounded-lg p-2 text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600 dark:text-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-300"
+              title={
+                theme === 'light' ? '다크 모드' : theme === 'dark' ? '시스템 설정' : '라이트 모드'
+              }
+            >
+              {theme === 'dark' ? (
+                <MoonIcon size={18} />
+              ) : theme === 'light' ? (
+                <SunIcon size={18} />
+              ) : (
+                <MonitorIcon size={18} />
+              )}
+            </button>
             {user && (
               <>
-                <Link to="/profile" className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-stone-50">
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-stone-50 dark:hover:bg-stone-800"
+                >
                   {user.picture ? (
                     <img
                       src={user.picture}
@@ -69,11 +96,11 @@ export const Navbar = () => {
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-stone-200 text-xs font-semibold text-stone-600">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-stone-200 text-xs font-semibold text-stone-600 dark:bg-stone-700 dark:text-stone-300">
                       {user.displayName?.charAt(0)}
                     </div>
                   )}
-                  <span className="hidden text-sm font-medium text-stone-600 sm:inline">
+                  <span className="hidden text-sm font-medium text-stone-600 dark:text-stone-300 sm:inline">
                     {user.displayName}
                   </span>
                 </Link>
@@ -85,7 +112,7 @@ export const Navbar = () => {
 
       {/* Mobile bottom tab bar */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200/60 bg-white/80 backdrop-blur-lg sm:hidden"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200/60 bg-white/80 backdrop-blur-lg dark:border-stone-700/60 dark:bg-stone-900/80 sm:hidden"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex items-stretch">
@@ -96,15 +123,22 @@ export const Navbar = () => {
                 key={link.to}
                 to={link.to}
                 className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-center transition-colors ${
-                  isActive ? 'text-stone-800' : 'text-stone-400 active:text-stone-600'
+                  isActive
+                    ? 'text-stone-800 dark:text-stone-100'
+                    : 'text-stone-400 active:text-stone-600 dark:text-stone-500 dark:active:text-stone-300'
                 }`}
               >
-                <link.icon size={20} className={isActive ? 'text-stone-800' : ''} />
-                <span className={`text-[10px] leading-none ${isActive ? 'font-semibold' : 'font-normal'}`}>
+                <link.icon
+                  size={20}
+                  className={isActive ? 'text-stone-800 dark:text-stone-100' : ''}
+                />
+                <span
+                  className={`text-[10px] leading-none ${isActive ? 'font-semibold' : 'font-normal'}`}
+                >
                   {link.label}
                 </span>
                 {isActive && (
-                  <span className="absolute -bottom-0 h-0.5 w-5 rounded-full bg-stone-800" />
+                  <span className="absolute -bottom-0 h-0.5 w-5 rounded-full bg-stone-800 dark:bg-stone-100" />
                 )}
               </Link>
             );
@@ -211,6 +245,67 @@ const ClipboardIcon = ({ size = 16, className = '' }: IconProps) => (
     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
     <line x1="9" y1="12" x2="15" y2="12" />
     <line x1="9" y1="16" x2="13" y2="16" />
+  </svg>
+);
+
+const SunIcon = ({ size = 16, className = '' }: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2" />
+    <path d="M12 20v2" />
+    <path d="m4.93 4.93 1.41 1.41" />
+    <path d="m17.66 17.66 1.41 1.41" />
+    <path d="M2 12h2" />
+    <path d="M20 12h2" />
+    <path d="m6.34 17.66-1.41 1.41" />
+    <path d="m19.07 4.93-1.41 1.41" />
+  </svg>
+);
+
+const MoonIcon = ({ size = 16, className = '' }: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+  </svg>
+);
+
+const MonitorIcon = ({ size = 16, className = '' }: IconProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <rect width="20" height="14" x="2" y="3" rx="2" />
+    <line x1="8" x2="16" y1="21" y2="21" />
+    <line x1="12" x2="12" y1="17" y2="21" />
   </svg>
 );
 

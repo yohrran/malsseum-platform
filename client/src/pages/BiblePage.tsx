@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useBibleBooks, type BibleBookEntry } from '../features/bible/useBibles';
 import { usePassage } from '../features/bible/usePassage';
 import { Skeleton } from '../shared/Skeleton';
+import { SEOHead } from '../shared/SEOHead';
 
 type FontSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -50,7 +51,7 @@ export const BiblePage = () => {
   const [selectedBook, setSelectedBook] = useState<BibleBookEntry | null>(null);
   const [reading, setReading] = useState<ReadingState | null>(null);
   const [fontSize, setFontSize] = useState<FontSize>(
-    () => (localStorage.getItem('bible-font-size') as FontSize) ?? 'md'
+    () => (localStorage.getItem('bible-font-size') as FontSize) ?? 'md',
   );
   const [search, setSearch] = useState('');
   const [recentBooks, setRecentBooks] = useState<RecentEntry[]>(() => loadRecentBooks());
@@ -86,13 +87,10 @@ export const BiblePage = () => {
   const isSearching = search.trim().length > 0;
   const allBooks = books ?? [];
   const filteredBooks = isSearching
-    ? allBooks.filter(
-        (b) =>
-          b.nameKo.includes(search.trim()) || b.abbrKo.includes(search.trim())
-      )
+    ? allBooks.filter((b) => b.nameKo.includes(search.trim()) || b.abbrKo.includes(search.trim()))
     : tab === 'ot'
-    ? otBooks
-    : ntBooks;
+      ? otBooks
+      : ntBooks;
 
   if (reading) {
     return (
@@ -118,98 +116,131 @@ export const BiblePage = () => {
   }
 
   return (
-    <div className="space-y-5 pb-6">
-      <h1 className="text-2xl font-bold tracking-tight text-stone-800">성경</h1>
+    <>
+      <SEOHead title="성경" />
+      <div className="space-y-5 pb-6">
+        <h1 className="text-2xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
+          성경
+        </h1>
 
-      {/* Search */}
-      <div className="relative">
-        <span className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-stone-400">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-          </svg>
-        </span>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="성경 검색 (예: 창세기, 마태복음)"
-          className="h-11 w-full rounded-xl border-0 bg-white pl-9 pr-4 text-sm text-stone-800 placeholder-stone-400 outline-none ring-1 ring-stone-200/60 transition-all focus:ring-2 focus:ring-stone-400"
-        />
-        {isSearching && (
-          <button
-            onClick={() => setSearch('')}
-            className="absolute inset-y-0 right-3 flex items-center text-stone-400 hover:text-stone-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        {/* Search */}
+        <div className="relative">
+          <span className="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-stone-400 dark:text-stone-500">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+              />
             </svg>
-          </button>
+          </span>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="성경 검색 (예: 창세기, 마태복음)"
+            className="h-11 w-full rounded-xl border-0 bg-white dark:bg-stone-800 pl-9 pr-4 text-sm text-stone-800 placeholder-stone-400 outline-none ring-1 ring-stone-200/60 transition-all focus:ring-2 focus:ring-stone-400"
+          />
+          {isSearching && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute inset-y-0 right-3 flex items-center text-stone-400 hover:text-stone-600"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/* OT / NT tabs */}
+        {!isSearching && (
+          <div className="flex gap-1 rounded-xl bg-stone-100 dark:bg-stone-700 p-1">
+            <button
+              onClick={() => setTab('ot')}
+              className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
+                tab === 'ot'
+                  ? 'bg-white dark:bg-stone-800 text-stone-800 shadow-sm'
+                  : 'text-stone-400'
+              }`}
+            >
+              구약 ({OT_COUNT}권)
+            </button>
+            <button
+              onClick={() => setTab('nt')}
+              className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
+                tab === 'nt'
+                  ? 'bg-white dark:bg-stone-800 text-stone-800 shadow-sm'
+                  : 'text-stone-400'
+              }`}
+            >
+              신약 ({(books?.length ?? 66) - OT_COUNT}권)
+            </button>
+          </div>
+        )}
+
+        {/* Recent */}
+        {!isSearching && recentBooks.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-stone-400 dark:text-stone-500">최근 읽은 책</p>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {recentBooks.map((entry) => {
+                const book = allBooks.find((b) => b.abbrKo === entry.abbrKo);
+                if (!book) return null;
+                return (
+                  <button
+                    key={`${entry.abbrKo}-${entry.chapter}`}
+                    onClick={() => handleSetReading({ book, chapter: entry.chapter })}
+                    className="shrink-0 rounded-lg bg-white dark:bg-stone-800 px-3 py-1.5 text-xs font-medium text-stone-600 ring-1 ring-stone-200/60 transition-colors hover:bg-stone-50 dark:bg-stone-800"
+                  >
+                    {entry.abbrKo} {entry.chapter}장
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Book grid */}
+        {isSearching && filteredBooks.length === 0 ? (
+          <p className="py-8 text-center text-sm text-stone-400 dark:text-stone-500">
+            검색 결과가 없습니다.
+          </p>
+        ) : (
+          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
+            {filteredBooks.map((book) => (
+              <button
+                key={book.abbrKo}
+                onClick={() => setSelectedBook(book)}
+                className="flex flex-col items-start rounded-xl bg-white dark:bg-stone-800 p-3.5 text-left ring-1 ring-stone-200/60 transition-all hover:bg-stone-50 dark:bg-stone-800 hover:ring-stone-300 active:bg-stone-100 dark:bg-stone-700"
+              >
+                <span className="text-sm font-bold text-stone-800 dark:text-stone-100">
+                  {book.abbrKo}
+                </span>
+                <span className="mt-1 text-xs text-stone-400 line-clamp-1">{book.nameKo}</span>
+                <span className="mt-1.5 text-xs tabular-nums text-stone-400 dark:text-stone-500">
+                  {book.chapterCount}장
+                </span>
+              </button>
+            ))}
+          </div>
         )}
       </div>
-
-      {/* OT / NT tabs */}
-      {!isSearching && (
-        <div className="flex gap-1 rounded-xl bg-stone-100 p-1">
-          <button
-            onClick={() => setTab('ot')}
-            className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
-              tab === 'ot' ? 'bg-white text-stone-800 shadow-sm' : 'text-stone-400'
-            }`}
-          >
-            구약 ({OT_COUNT}권)
-          </button>
-          <button
-            onClick={() => setTab('nt')}
-            className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
-              tab === 'nt' ? 'bg-white text-stone-800 shadow-sm' : 'text-stone-400'
-            }`}
-          >
-            신약 ({(books?.length ?? 66) - OT_COUNT}권)
-          </button>
-        </div>
-      )}
-
-      {/* Recent */}
-      {!isSearching && recentBooks.length > 0 && (
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-stone-400">최근 읽은 책</p>
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {recentBooks.map((entry) => {
-              const book = allBooks.find((b) => b.abbrKo === entry.abbrKo);
-              if (!book) return null;
-              return (
-                <button
-                  key={`${entry.abbrKo}-${entry.chapter}`}
-                  onClick={() => handleSetReading({ book, chapter: entry.chapter })}
-                  className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-stone-600 ring-1 ring-stone-200/60 transition-colors hover:bg-stone-50"
-                >
-                  {entry.abbrKo} {entry.chapter}장
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Book grid */}
-      {isSearching && filteredBooks.length === 0 ? (
-        <p className="py-8 text-center text-sm text-stone-400">검색 결과가 없습니다.</p>
-      ) : (
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5">
-          {filteredBooks.map((book) => (
-            <button
-              key={book.abbrKo}
-              onClick={() => setSelectedBook(book)}
-              className="flex flex-col items-start rounded-xl bg-white p-3.5 text-left ring-1 ring-stone-200/60 transition-all hover:bg-stone-50 hover:ring-stone-300 active:bg-stone-100"
-            >
-              <span className="text-sm font-bold text-stone-800">{book.abbrKo}</span>
-              <span className="mt-1 text-xs text-stone-400 line-clamp-1">{book.nameKo}</span>
-              <span className="mt-1.5 text-xs tabular-nums text-stone-400">{book.chapterCount}장</span>
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 
@@ -227,12 +258,12 @@ const ChapterSelector = ({ book, onSelect, onBack }: ChapterSelectorProps) => {
       <div className="flex items-center gap-3">
         <button
           onClick={onBack}
-          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-stone-500 transition-colors hover:text-stone-800"
+          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-stone-500 transition-colors hover:text-stone-800 dark:text-stone-100"
         >
           <span aria-hidden>←</span>
           <span>목록</span>
         </button>
-        <h1 className="text-xl font-bold text-stone-800">{book.nameKo}</h1>
+        <h1 className="text-xl font-bold text-stone-800 dark:text-stone-100">{book.nameKo}</h1>
       </div>
 
       <div className="grid grid-cols-5 gap-2 sm:grid-cols-8">
@@ -240,7 +271,7 @@ const ChapterSelector = ({ book, onSelect, onBack }: ChapterSelectorProps) => {
           <button
             key={ch}
             onClick={() => onSelect(ch)}
-            className="flex h-12 items-center justify-center rounded-xl bg-white text-sm font-medium tabular-nums text-stone-700 ring-1 ring-stone-200/60 transition-all hover:bg-stone-50 hover:ring-stone-300 active:bg-stone-100"
+            className="flex h-12 items-center justify-center rounded-xl bg-white dark:bg-stone-800 text-sm font-medium tabular-nums text-stone-700 ring-1 ring-stone-200/60 transition-all hover:bg-stone-50 dark:bg-stone-800 hover:ring-stone-300 active:bg-stone-100 dark:bg-stone-700"
           >
             {ch}
           </button>
@@ -279,10 +310,10 @@ const BibleReader = ({
   return (
     <div className="flex h-[calc(100vh-140px)] flex-col">
       {/* Top controls */}
-      <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+      <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-700 pb-3">
         <button
           onClick={onBack}
-          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-stone-500 transition-colors hover:text-stone-800"
+          className="flex h-10 items-center gap-1.5 rounded-lg px-1 text-sm font-medium text-stone-500 transition-colors hover:text-stone-800 dark:text-stone-100"
         >
           <span aria-hidden>←</span>
           <span>{book.nameKo}</span>
@@ -294,7 +325,7 @@ const BibleReader = ({
               onClick={() => onFontSize(size)}
               className={`flex h-8 w-8 items-center justify-center rounded-lg font-medium transition-colors ${
                 fontSize === size
-                  ? 'bg-stone-100 text-stone-800'
+                  ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
                   : 'text-stone-400 hover:text-stone-600'
               }`}
               style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
@@ -306,8 +337,8 @@ const BibleReader = ({
       </div>
 
       {/* Chapter label */}
-      <div className="border-b border-stone-100 py-2.5">
-        <p className="text-center text-xs font-bold tracking-widest text-stone-400">
+      <div className="border-b border-stone-100 dark:border-stone-700 py-2.5">
+        <p className="text-center text-xs font-bold tracking-widest text-stone-400 dark:text-stone-500">
           {book.nameKo} {chapter}장
         </p>
       </div>
@@ -317,13 +348,15 @@ const BibleReader = ({
         {isLoading && (
           <div className="space-y-3 px-1">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-5 rounded" style={{ width: `${70 + (i % 3) * 10}%` }} />
+              <Skeleton
+                key={i}
+                className="h-5 rounded"
+                style={{ width: `${70 + (i % 3) * 10}%` }}
+              />
             ))}
           </div>
         )}
-        {isError && (
-          <p className="text-center text-sm text-red-500">본문을 불러오지 못했습니다.</p>
-        )}
+        {isError && <p className="text-center text-sm text-red-500">본문을 불러오지 못했습니다.</p>}
         {chapterData && (
           <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
             {chapterData.verses.map((v) => (
@@ -339,21 +372,21 @@ const BibleReader = ({
       </div>
 
       {/* Prev / Next */}
-      <div className="flex items-center justify-between border-t border-stone-100 pt-3">
+      <div className="flex items-center justify-between border-t border-stone-100 dark:border-stone-700 pt-3">
         <button
           onClick={() => onSelectChapter(Math.max(1, chapter - 1))}
           disabled={chapter <= 1}
-          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 disabled:opacity-30"
+          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:bg-stone-700 disabled:opacity-30"
         >
           ← 이전 장
         </button>
-        <span className="text-xs tabular-nums text-stone-400">
+        <span className="text-xs tabular-nums text-stone-400 dark:text-stone-500">
           {chapter} / {book.chapterCount}장
         </span>
         <button
           onClick={() => onSelectChapter(Math.min(book.chapterCount, chapter + 1))}
           disabled={chapter >= book.chapterCount}
-          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 disabled:opacity-30"
+          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:bg-stone-700 disabled:opacity-30"
         >
           다음 장 →
         </button>
