@@ -74,6 +74,16 @@ export type ApiResponse<T> = {
   error?: string;
 };
 
+export type Bookmark = {
+  _id: string;
+  userId: string;
+  bookId: string;
+  chapter: number;
+  verse: number;
+  note: string;
+  createdAt: string;
+};
+
 export type LeaderboardEntry = {
   _id: string;
   displayName: string;

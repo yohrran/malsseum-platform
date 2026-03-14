@@ -35,10 +35,7 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'endDate must be after startDate' });
     }
 
-    await ReadingPlan.updateMany(
-      { userId: req.user._id, isActive: true },
-      { isActive: false }
-    );
+    await ReadingPlan.updateMany({ userId: req.user._id, isActive: true }, { isActive: false });
 
     const { days, chaptersPerDay } = calculateReadingPlan(start, end);
     const plan = await ReadingPlan.create({
@@ -66,9 +63,13 @@ router.get('/today', async (req, res, next) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    const todayPlan = plan.days.find(d => {
+    const todayPlan = plan.days.find((d) => {
       const scheduled = new Date(d.scheduledDate);
-      const scheduledDay = new Date(scheduled.getFullYear(), scheduled.getMonth(), scheduled.getDate());
+      const scheduledDay = new Date(
+        scheduled.getFullYear(),
+        scheduled.getMonth(),
+        scheduled.getDate(),
+      );
       return scheduledDay.getTime() === today.getTime();
     });
 
@@ -104,7 +105,13 @@ router.patch('/:planId/days/:dayId', async (req, res, next) => {
     await plan.save();
 
     if (isCompleted && !wasCompleted) {
-      await addPoints(req.user._id, 'daily_complete', 50, plan._id, `Day ${day.dayNumber} completed`);
+      await addPoints(
+        req.user._id,
+        'daily_complete',
+        50,
+        plan._id,
+        `Day ${day.dayNumber} completed`,
+      );
     }
 
     res.json({ success: true, data: day });
@@ -112,5 +119,63 @@ router.patch('/:planId/days/:dayId', async (req, res, next) => {
     next(err);
   }
 });
+
+router.get('/stats', async (req, res, next) => {
+  try {
+    const plans = await ReadingPlan.find({ userId: req.user._id });
+
+    const completedDays = [];
+    for (const plan of plans) {
+      for (const day of plan.days) {
+        if (day.isCompleted && day.completedAt) {
+          completedDays.push({
+            date: new Date(day.completedAt).toISOString().slice(0, 10),
+            chapters: day.chapterRefs.length,
+          });
+        }
+      }
+    }
+
+    const weeklyMap = {};
+    const monthlyMap = {};
+    for (const entry of completedDays) {
+      const d = new Date(entry.date);
+      const weekKey = getWeekKey(d);
+      const monthKey = entry.date.slice(0, 7);
+
+      weeklyMap[weekKey] = (weeklyMap[weekKey] || 0) + entry.chapters;
+      monthlyMap[entry.date] = (monthlyMap[entry.date] || 0) + entry.chapters;
+    }
+
+    const weekly = Object.entries(weeklyMap)
+      .map(([week, chapters]) => ({ week, chapters }))
+      .sort((a, b) => a.week.localeCompare(b.week))
+      .slice(-12);
+
+    const totalChapters = completedDays.reduce((sum, d) => sum + d.chapters, 0);
+    const totalDaysCompleted = new Set(completedDays.map((d) => d.date)).size;
+
+    res.json({
+      success: true,
+      data: {
+        weekly,
+        monthly: monthlyMap,
+        totalChapters,
+        totalDaysCompleted,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+function getWeekKey(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+  const week1 = new Date(d.getFullYear(), 0, 4);
+  const weekNum = 1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
+}
 
 module.exports = router;

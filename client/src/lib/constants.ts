@@ -15,4 +15,6 @@ export const ROUTES = {
   CUSTOM_PLAN: '/custom-plan',
   LEADERBOARD: '/leaderboard',
   PROFILE: '/profile',
+  STATS: '/stats',
+  SETTINGS: '/settings',
 } as const;

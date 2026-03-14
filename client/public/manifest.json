@@ -1,0 +1,21 @@
+{
+  "name": "매일 말씀",
+  "short_name": "말씀",
+  "description": "매일 성경을 읽고 묵상하는 통독 플랫폼",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#292524",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

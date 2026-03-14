@@ -10,6 +10,8 @@ import { ReadingPage } from './pages/ReadingPage';
 import { LeaderboardPage } from './pages/LeaderboardPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { BiblePage } from './pages/BiblePage';
+import { StatsPage } from './pages/StatsPage';
+import { SettingsPage } from './pages/SettingsPage';
 
 export const App = () => {
   return (
@@ -30,9 +32,10 @@ export const App = () => {
           <Route path="/custom-plan/:id" element={<CustomPlanDetailPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Routes>
     </ErrorBoundary>
   );
 };
-

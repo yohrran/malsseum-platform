@@ -10,6 +10,7 @@ const customPlanRoutes = require('./routes/custom-plan');
 const readingRoutes = require('./routes/reading');
 const pointsRoutes = require('./routes/points');
 const bibleRoutes = require('./routes/bible');
+const bookmarkRoutes = require('./routes/bookmarks');
 
 const app = express();
 
@@ -17,10 +18,12 @@ const app = express();
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:8000';
 
 app.use(helmet());
-app.use(cors({
-  origin: CLIENT_URL,
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    credentials: true,
+  }),
+);
 
 // H-5: body 크기 제한
 app.use(express.json({ limit: '1mb' }));
@@ -52,6 +55,7 @@ app.use('/api/custom-plans', customPlanRoutes);
 app.use('/api/reading-plans', readingRoutes);
 app.use('/api/points', pointsRoutes);
 app.use('/api/bible', bibleRoutes);
+app.use('/api/bookmarks', bookmarkRoutes);
 
 app.use(errorHandler);
 
