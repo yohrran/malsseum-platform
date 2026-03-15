@@ -46,7 +46,7 @@
 | 최근 읽은 위치 기억             | :white_check_mark: | Zustand persist + 이어서 읽기 배너                 |
 | 온보딩/튜토리얼                 | :white_check_mark: | 3단계 온보딩 (환영 → 계획 선택 → 완료)             |
 | 구절 하이라이트                 | :white_check_mark: | 5색 팔레트 (서버 Highlight 모델 + HighlightPicker) |
-| 노트 기능                       | :x:                | 북마크 note 필드 존재하나 UI 없음                  |
+| 노트 기능                       | :white_check_mark: | NoteModal + PATCH API (북마크 확장)                |
 | 읽기 알림                       | :x:                |                                                    |
 | 스와이프 네비게이션             | :x:                |                                                    |
 | 다중 번역본                     | :x:                |                                                    |
@@ -62,8 +62,8 @@
 | 키워드 검색      | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 | 장/절 직접 이동  | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 | 절 복사/공유     | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
-| 구절 하이라이트  |        :x:         |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
-| 노트/메모        |        :x:         |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
+| 구절 하이라이트  | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
+| 노트/메모        | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
 | 오프라인 읽기    |        :x:         |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 | 다중 번역본      |        :x:         | :white_check_mark: (2000+) | :white_check_mark: (10+) | :white_check_mark: (5+) |
 | 오디오 성경      |        :x:         |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |

@@ -66,6 +66,31 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+// PATCH bookmark note
+router.patch('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { note } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'Invalid ID format' });
+    }
+    if (typeof note !== 'string') {
+      return res.status(400).json({ success: false, error: 'note must be a string' });
+    }
+    const bookmark = await Bookmark.findOneAndUpdate(
+      { _id: id, userId: req.user._id },
+      { note },
+      { new: true },
+    );
+    if (!bookmark) {
+      return res.status(404).json({ success: false, error: 'Bookmark not found' });
+    }
+    res.json({ success: true, data: bookmark });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // DELETE bookmark
 router.delete('/:id', async (req, res, next) => {
   try {

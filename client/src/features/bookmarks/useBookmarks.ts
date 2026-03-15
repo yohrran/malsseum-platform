@@ -42,3 +42,18 @@ export const useToggleBookmark = () => {
     },
   });
 };
+
+export const useUpdateBookmarkNote = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (params: { id: string; note: string }) => {
+      const { data } = await apiClient.patch(`/api/bookmarks/${params.id}`, {
+        note: params.note,
+      });
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+    },
+  });
+};
