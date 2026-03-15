@@ -1,8 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useBibleBooks, type BibleBookEntry } from '../features/bible/useBibles';
 import { usePassage } from '../features/bible/usePassage';
+import { QuickJumpModal } from '../features/bible/QuickJumpModal';
+import { VerseActions } from '../features/bible/VerseActions';
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
+import { useReadingPositionStore } from '../store/reading-position-store';
 import {
   type FontSize,
   FONT_SIZE_CLASS,
@@ -49,6 +52,19 @@ export const BiblePage = () => {
   );
   const [search, setSearch] = useState('');
   const [recentBooks, setRecentBooks] = useState<RecentEntry[]>(() => loadRecentBooks());
+  const [isQuickJumpOpen, setIsQuickJumpOpen] = useState(false);
+  const { lastPosition, savePosition } = useReadingPositionStore();
+
+  const handleQuickJump = useCallback(
+    (bookAbbr: string, chapter: number) => {
+      const book = books?.find((b) => b.abbrKo === bookAbbr);
+      if (book) {
+        handleSetReading({ book, chapter });
+        setIsQuickJumpOpen(false);
+      }
+    },
+    [books],
+  );
 
   const handleFontSize = (size: FontSize) => {
     setFontSize(size);
@@ -58,6 +74,11 @@ export const BiblePage = () => {
   const handleSetReading = (state: ReadingState) => {
     saveRecentBook(state.book, state.chapter);
     setRecentBooks(loadRecentBooks());
+    savePosition({
+      bookAbbr: state.book.abbrKo,
+      bookName: state.book.nameKo,
+      chapter: state.chapter,
+    });
     setReading(state);
   };
 
@@ -113,9 +134,28 @@ export const BiblePage = () => {
     <>
       <SEOHead title="성경" />
       <div className="space-y-5 pb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
-          성경
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
+            성경
+          </h1>
+          <button
+            onClick={() => setIsQuickJumpOpen(true)}
+            className="flex h-9 items-center gap-1.5 rounded-lg bg-stone-100 dark:bg-stone-700 px-3 text-xs font-medium text-stone-600 dark:text-stone-300 transition-colors hover:bg-stone-200 dark:hover:bg-stone-600"
+            aria-label="장/절 바로가기"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-3.5 w-3.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+            바로가기
+          </button>
+        </div>
 
         {/* Search */}
         <div className="relative">
@@ -187,6 +227,50 @@ export const BiblePage = () => {
           </div>
         )}
 
+        {/* Continue reading */}
+        {!isSearching && lastPosition && books && (
+          <button
+            onClick={() => {
+              const book = books.find((b) => b.abbrKo === lastPosition.bookAbbr);
+              if (book) handleSetReading({ book, chapter: lastPosition.chapter });
+            }}
+            className="flex w-full items-center gap-3 rounded-xl bg-stone-800 dark:bg-stone-700 p-4 text-left text-white transition-colors hover:bg-stone-700 dark:hover:bg-stone-600"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+              </svg>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-white/60">이어서 읽기</p>
+              <p className="truncate text-sm font-bold">
+                {lastPosition.bookName} {lastPosition.chapter}장
+              </p>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 text-white/40"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
+
         {/* Recent */}
         {!isSearching && recentBooks.length > 0 && (
           <div className="space-y-2">
@@ -232,6 +316,15 @@ export const BiblePage = () => {
               </button>
             ))}
           </div>
+        )}
+
+        {/* Quick Jump Modal */}
+        {isQuickJumpOpen && books && (
+          <QuickJumpModal
+            books={books}
+            onJump={handleQuickJump}
+            onClose={() => setIsQuickJumpOpen(false)}
+          />
         )}
       </div>
     </>
@@ -354,11 +447,19 @@ const BibleReader = ({
         {chapterData && (
           <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
             {chapterData.verses.map((v) => (
-              <p key={v.verse} className="flex gap-3">
+              <p key={v.verse} className="group flex gap-3">
                 <span className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300">
                   {v.verse}
                 </span>
                 <span className="flex-1">{v.text}</span>
+                <span className="shrink-0 pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <VerseActions
+                    bookName={book.nameKo}
+                    chapter={chapter}
+                    verse={v.verse}
+                    text={v.text}
+                  />
+                </span>
               </p>
             ))}
           </div>

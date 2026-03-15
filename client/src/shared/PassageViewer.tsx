@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { usePassage } from '../features/bible/usePassage';
 import { useBookmarks } from '../features/bookmarks/useBookmarks';
 import { BookmarkButton } from '../features/bookmarks/BookmarkButton';
+import { VerseActions } from '../features/bible/VerseActions';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useT } from '../lib/i18n';
 import { BOOK_NAMES_KO } from '../lib/bible-abbr-map';
@@ -152,8 +153,14 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                     </span>
                     <span className="flex-1">{v.text}</span>
                     <span
-                      className={`shrink-0 pt-0.5 ${bookmarkedVerses.has(v.verse) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}
+                      className={`shrink-0 pt-0.5 flex items-center gap-0.5 ${bookmarkedVerses.has(v.verse) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}
                     >
+                      <VerseActions
+                        bookName={data.bookName}
+                        chapter={activeChapter.chapter}
+                        verse={v.verse}
+                        text={v.text}
+                      />
                       <BookmarkButton
                         bookId={bookAbbr}
                         chapter={activeChapter.chapter}
