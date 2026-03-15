@@ -11,6 +11,7 @@ const readingRoutes = require('./routes/reading');
 const pointsRoutes = require('./routes/points');
 const bibleRoutes = require('./routes/bible');
 const bookmarkRoutes = require('./routes/bookmarks');
+const highlightRoutes = require('./routes/highlights');
 
 const app = express();
 
@@ -56,6 +57,7 @@ app.use('/api/reading-plans', readingRoutes);
 app.use('/api/points', pointsRoutes);
 app.use('/api/bible', bibleRoutes);
 app.use('/api/bookmarks', bookmarkRoutes);
+app.use('/api/highlights', highlightRoutes);
 
 app.use(errorHandler);
 

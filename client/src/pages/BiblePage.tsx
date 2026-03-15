@@ -1,9 +1,16 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useBibleBooks, type BibleBookEntry } from '../features/bible/useBibles';
 import { usePassage } from '../features/bible/usePassage';
 import { QuickJumpModal } from '../features/bible/QuickJumpModal';
 import { BibleSearchModal } from '../features/bible/BibleSearchModal';
 import { VerseActions } from '../features/bible/VerseActions';
+import {
+  useHighlights,
+  useSetHighlight,
+  useRemoveHighlight,
+  type HighlightColor,
+} from '../features/highlights/useHighlights';
+import { HighlightPicker, HIGHLIGHT_BG } from '../features/highlights/HighlightPicker';
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
 import { useReadingPositionStore } from '../store/reading-position-store';
@@ -425,11 +432,22 @@ const BibleReader = ({
   onSelectChapter,
 }: BibleReaderProps) => {
   const { data, isLoading, isError } = usePassage(book.abbrKo, [chapter]);
+  const { data: highlights } = useHighlights(book.abbrKo, chapter);
+  const setHighlight = useSetHighlight();
+  const removeHighlight = useRemoveHighlight();
+  const [activeVerse, setActiveVerse] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    setActiveVerse(null);
   }, [chapter]);
+
+  const highlightMap = useMemo(() => {
+    const map = new Map<number, HighlightColor>();
+    highlights?.forEach((h) => map.set(h.verse, h.color));
+    return map;
+  }, [highlights]);
 
   const chapterData = data?.chapters[0];
 
@@ -485,25 +503,55 @@ const BibleReader = ({
         {isError && <p className="text-center text-sm text-red-500">본문을 불러오지 못했습니다.</p>}
         {chapterData && (
           <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
-            {chapterData.verses.map((v) => (
-              <p key={v.verse} className="group flex gap-3">
-                <span
-                  aria-hidden="true"
-                  className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300"
-                >
-                  {v.verse}
-                </span>
-                <span className="flex-1">{v.text}</span>
-                <span className="shrink-0 pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <VerseActions
-                    bookName={book.nameKo}
-                    chapter={chapter}
-                    verse={v.verse}
-                    text={v.text}
-                  />
-                </span>
-              </p>
-            ))}
+            {chapterData.verses.map((v) => {
+              const color = highlightMap.get(v.verse);
+              const isActive = activeVerse === v.verse;
+              return (
+                <div key={v.verse} className="relative">
+                  <p
+                    className={`group flex gap-3 rounded-sm px-1 -mx-1 cursor-pointer transition-colors ${
+                      color ? HIGHLIGHT_BG[color] : ''
+                    }`}
+                    onClick={() => setActiveVerse(isActive ? null : v.verse)}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300"
+                    >
+                      {v.verse}
+                    </span>
+                    <span className="flex-1">{v.text}</span>
+                    <span className="shrink-0 pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <VerseActions
+                        bookName={book.nameKo}
+                        chapter={chapter}
+                        verse={v.verse}
+                        text={v.text}
+                      />
+                    </span>
+                  </p>
+                  {isActive && (
+                    <div className="absolute -top-8 left-8 z-10">
+                      <HighlightPicker
+                        currentColor={color ?? null}
+                        onSelect={(c) =>
+                          setHighlight.mutate({
+                            bookId: book.abbrKo,
+                            chapter,
+                            verse: v.verse,
+                            color: c,
+                          })
+                        }
+                        onRemove={() =>
+                          removeHighlight.mutate({ bookId: book.abbrKo, chapter, verse: v.verse })
+                        }
+                        onClose={() => setActiveVerse(null)}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

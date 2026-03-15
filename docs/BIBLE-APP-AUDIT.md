@@ -21,36 +21,36 @@
 
 ### 기능 체크리스트
 
-| 기능                            | 상태               | 비고                                              |
-| ------------------------------- | ------------------ | ------------------------------------------------- |
-| Google OAuth 로그인             | :white_check_mark: | 서버사이드 검증                                   |
-| 성경 텍스트 열람 (66권)         | :white_check_mark: | 구약 39권, 신약 27권                              |
-| 책/장 단위 탐색                 | :white_check_mark: | 순차 탐색 (그리드 선택)                           |
-| 연간 통독 계획 (1년/6개월/90일) | :white_check_mark: | 일별 완료 체크                                    |
-| 커스텀 계획 (시즌 구조)         | :white_check_mark: | 관리자 생성                                       |
-| 일별 읽기 추적                  | :white_check_mark: | 완료 애니메이션 포함                              |
-| 포인트 시스템                   | :white_check_mark: | 일일 50pt, 연속 보너스                            |
-| 스트릭 추적                     | :white_check_mark: | 현재/최장 스트릭                                  |
-| 리더보드 (상위 20명)            | :white_check_mark: | totalPoints 기준                                  |
-| 북마크                          | :white_check_mark: | 구절 단위, 토글 방식                              |
-| 다크 모드                       | :white_check_mark: | 시스템 설정 연동                                  |
-| 글꼴 크기 조절                  | :white_check_mark: | 4단계 (sm/md/lg/xl)                               |
-| 읽기 통계                       | :white_check_mark: | 주간 차트, 월간 히트맵                            |
-| SEO 메타태그                    | :white_check_mark: | react-helmet-async                                |
-| 토큰 자동 리프레시              | :white_check_mark: | Axios 인터셉터                                    |
-| Rate Limiting                   | :white_check_mark: | 인증 20/15분, API 300/15분                        |
-| 구절 검색                       | :white_check_mark: | 서버 API + BibleSearchModal (키워드 하이라이트)   |
-| 절 복사/공유                    | :white_check_mark: | VerseActions 컴포넌트 (Clipboard + Web Share API) |
-| 직접 장/절 이동                 | :white_check_mark: | QuickJumpModal ("창 3:16" 단축 입력 지원)         |
-| 오프라인 성경 텍스트            | :x:                | PWA 셸만 캐싱                                     |
-| 최근 읽은 위치 기억             | :white_check_mark: | Zustand persist + 이어서 읽기 배너                |
-| 온보딩/튜토리얼                 | :white_check_mark: | 3단계 온보딩 (환영 → 계획 선택 → 완료)            |
-| 구절 하이라이트                 | :x:                |                                                   |
-| 노트 기능                       | :x:                | 북마크 note 필드 존재하나 UI 없음                 |
-| 읽기 알림                       | :x:                |                                                   |
-| 스와이프 네비게이션             | :x:                |                                                   |
-| 다중 번역본                     | :x:                |                                                   |
-| 오디오 성경                     | :x:                |                                                   |
+| 기능                            | 상태               | 비고                                               |
+| ------------------------------- | ------------------ | -------------------------------------------------- |
+| Google OAuth 로그인             | :white_check_mark: | 서버사이드 검증                                    |
+| 성경 텍스트 열람 (66권)         | :white_check_mark: | 구약 39권, 신약 27권                               |
+| 책/장 단위 탐색                 | :white_check_mark: | 순차 탐색 (그리드 선택)                            |
+| 연간 통독 계획 (1년/6개월/90일) | :white_check_mark: | 일별 완료 체크                                     |
+| 커스텀 계획 (시즌 구조)         | :white_check_mark: | 관리자 생성                                        |
+| 일별 읽기 추적                  | :white_check_mark: | 완료 애니메이션 포함                               |
+| 포인트 시스템                   | :white_check_mark: | 일일 50pt, 연속 보너스                             |
+| 스트릭 추적                     | :white_check_mark: | 현재/최장 스트릭                                   |
+| 리더보드 (상위 20명)            | :white_check_mark: | totalPoints 기준                                   |
+| 북마크                          | :white_check_mark: | 구절 단위, 토글 방식                               |
+| 다크 모드                       | :white_check_mark: | 시스템 설정 연동                                   |
+| 글꼴 크기 조절                  | :white_check_mark: | 4단계 (sm/md/lg/xl)                                |
+| 읽기 통계                       | :white_check_mark: | 주간 차트, 월간 히트맵                             |
+| SEO 메타태그                    | :white_check_mark: | react-helmet-async                                 |
+| 토큰 자동 리프레시              | :white_check_mark: | Axios 인터셉터                                     |
+| Rate Limiting                   | :white_check_mark: | 인증 20/15분, API 300/15분                         |
+| 구절 검색                       | :white_check_mark: | 서버 API + BibleSearchModal (키워드 하이라이트)    |
+| 절 복사/공유                    | :white_check_mark: | VerseActions 컴포넌트 (Clipboard + Web Share API)  |
+| 직접 장/절 이동                 | :white_check_mark: | QuickJumpModal ("창 3:16" 단축 입력 지원)          |
+| 오프라인 성경 텍스트            | :x:                | PWA 셸만 캐싱                                      |
+| 최근 읽은 위치 기억             | :white_check_mark: | Zustand persist + 이어서 읽기 배너                 |
+| 온보딩/튜토리얼                 | :white_check_mark: | 3단계 온보딩 (환영 → 계획 선택 → 완료)             |
+| 구절 하이라이트                 | :white_check_mark: | 5색 팔레트 (서버 Highlight 모델 + HighlightPicker) |
+| 노트 기능                       | :x:                | 북마크 note 필드 존재하나 UI 없음                  |
+| 읽기 알림                       | :x:                |                                                    |
+| 스와이프 네비게이션             | :x:                |                                                    |
+| 다중 번역본                     | :x:                |                                                    |
+| 오디오 성경                     | :x:                |                                                    |
 
 ---
 
