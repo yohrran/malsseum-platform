@@ -1,6 +1,14 @@
 import { useThemeStore } from '../store/theme-store';
 import { useSettingsStore } from '../store/settings-store';
 import { SEOHead } from '../shared/SEOHead';
+import {
+  FONT_SIZES,
+  FONT_SIZE_LABEL,
+  LINE_HEIGHTS,
+  LINE_HEIGHT_LABEL,
+  FONT_SIZE_CLASS,
+  LINE_HEIGHT_CLASS,
+} from '../lib/font-config';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -10,16 +18,9 @@ const THEME_OPTIONS: { value: Theme; label: string }[] = [
   { value: 'system', label: '시스템' },
 ];
 
-const FONT_OPTIONS: { value: 'sm' | 'md' | 'lg' | 'xl'; label: string }[] = [
-  { value: 'sm', label: '작게' },
-  { value: 'md', label: '보통' },
-  { value: 'lg', label: '크게' },
-  { value: 'xl', label: '아주 크게' },
-];
-
 export const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
-  const { fontSize, setFontSize } = useSettingsStore();
+  const { fontSize, lineHeight, setFontSize, setLineHeight } = useSettingsStore();
 
   return (
     <>
@@ -50,20 +51,49 @@ export const SettingsPage = () => {
 
         {/* Font size */}
         <SettingSection title="글자 크기">
-          <div className="flex gap-2">
-            {FONT_OPTIONS.map((option) => (
+          <div className="grid grid-cols-3 gap-2">
+            {FONT_SIZES.map((size) => (
               <button
-                key={option.value}
-                onClick={() => setFontSize(option.value)}
-                className={`flex-1 rounded-xl px-3 py-3 text-sm font-medium transition-all ${
-                  fontSize === option.value
+                key={size}
+                onClick={() => setFontSize(size)}
+                className={`rounded-xl px-3 py-3 text-sm font-medium transition-all ${
+                  fontSize === size
                     ? 'bg-stone-800 text-white dark:bg-stone-100 dark:text-stone-800'
                     : 'bg-stone-100 text-stone-500 hover:bg-stone-200 dark:bg-stone-700 dark:text-stone-400 dark:hover:bg-stone-600'
                 }`}
               >
-                {option.label}
+                {FONT_SIZE_LABEL[size]}
               </button>
             ))}
+          </div>
+        </SettingSection>
+
+        {/* Line height */}
+        <SettingSection title="줄간격">
+          <div className="flex gap-2">
+            {LINE_HEIGHTS.map((height) => (
+              <button
+                key={height}
+                onClick={() => setLineHeight(height)}
+                className={`flex-1 rounded-xl px-3 py-3 text-sm font-medium transition-all ${
+                  lineHeight === height
+                    ? 'bg-stone-800 text-white dark:bg-stone-100 dark:text-stone-800'
+                    : 'bg-stone-100 text-stone-500 hover:bg-stone-200 dark:bg-stone-700 dark:text-stone-400 dark:hover:bg-stone-600'
+                }`}
+              >
+                {LINE_HEIGHT_LABEL[height]}
+              </button>
+            ))}
+          </div>
+        </SettingSection>
+
+        {/* Preview */}
+        <SettingSection title="미리보기">
+          <div
+            className={`rounded-xl bg-stone-50 dark:bg-stone-700 p-4 text-stone-800 dark:text-stone-100 ${FONT_SIZE_CLASS[fontSize]} ${LINE_HEIGHT_CLASS[lineHeight]}`}
+          >
+            태초에 하나님이 천지를 창조하시니라 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고
+            하나님의 영은 수면 위에 운행하시니라
           </div>
         </SettingSection>
 

@@ -16,10 +16,14 @@ import { SEOHead } from '../shared/SEOHead';
 import { useReadingPositionStore } from '../store/reading-position-store';
 import {
   type FontSize,
+  type LineHeight,
   FONT_SIZE_CLASS,
+  LINE_HEIGHT_CLASS,
   FONT_SIZES,
+  LINE_HEIGHTS,
   FONT_DISPLAY_SIZE_BIBLE as FONT_DISPLAY_SIZE,
 } from '../lib/font-config';
+import { useSettingsStore } from '../store/settings-store';
 
 const OT_COUNT = 39;
 const RECENT_BOOKS_KEY = 'bible-recent-books';
@@ -55,9 +59,7 @@ export const BiblePage = () => {
   const [tab, setTab] = useState<'ot' | 'nt'>('ot');
   const [selectedBook, setSelectedBook] = useState<BibleBookEntry | null>(null);
   const [reading, setReading] = useState<ReadingState | null>(null);
-  const [fontSize, setFontSize] = useState<FontSize>(
-    () => (localStorage.getItem('bible-font-size') as FontSize) ?? 'md',
-  );
+  const { fontSize, lineHeight, setFontSize, setLineHeight } = useSettingsStore();
   const [search, setSearch] = useState('');
   const [recentBooks, setRecentBooks] = useState<RecentEntry[]>(() => loadRecentBooks());
   const [isQuickJumpOpen, setIsQuickJumpOpen] = useState(false);
@@ -74,11 +76,6 @@ export const BiblePage = () => {
     },
     [books],
   );
-
-  const handleFontSize = (size: FontSize) => {
-    setFontSize(size);
-    localStorage.setItem('bible-font-size', size);
-  };
 
   const handleSetReading = (state: ReadingState) => {
     saveRecentBook(state.book, state.chapter);
@@ -122,7 +119,9 @@ export const BiblePage = () => {
         book={reading.book}
         chapter={reading.chapter}
         fontSize={fontSize}
-        onFontSize={handleFontSize}
+        lineHeight={lineHeight}
+        onFontSize={setFontSize}
+        onLineHeight={setLineHeight}
         onBack={() => setReading(null)}
         onSelectChapter={(ch) => handleSetReading({ book: reading.book, chapter: ch })}
       />
@@ -418,7 +417,9 @@ type BibleReaderProps = {
   book: BibleBookEntry;
   chapter: number;
   fontSize: FontSize;
+  lineHeight: LineHeight;
   onFontSize: (size: FontSize) => void;
+  onLineHeight: (height: LineHeight) => void;
   onBack: () => void;
   onSelectChapter: (ch: number) => void;
 };
@@ -427,7 +428,9 @@ const BibleReader = ({
   book,
   chapter,
   fontSize,
+  lineHeight,
   onFontSize,
+  onLineHeight,
   onBack,
   onSelectChapter,
 }: BibleReaderProps) => {
@@ -462,21 +465,55 @@ const BibleReader = ({
           <span aria-hidden>←</span>
           <span>{book.nameKo}</span>
         </button>
-        <div className="flex items-center gap-0.5">
-          {FONT_SIZES.map((size, i) => (
-            <button
-              key={size}
-              onClick={() => onFontSize(size)}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg font-medium transition-colors ${
-                fontSize === size
-                  ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
-                  : 'text-stone-400 hover:text-stone-600'
-              }`}
-              style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
-            >
-              가
-            </button>
-          ))}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-0.5">
+            {FONT_SIZES.map((size, i) => (
+              <button
+                key={size}
+                onClick={() => onFontSize(size)}
+                className={`flex h-8 w-8 items-center justify-center rounded-lg font-medium transition-colors ${
+                  fontSize === size
+                    ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
+                    : 'text-stone-400 hover:text-stone-600'
+                }`}
+                style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
+                aria-label={`글자 크기 ${size}`}
+              >
+                가
+              </button>
+            ))}
+          </div>
+          <div className="h-5 w-px bg-stone-200 dark:bg-stone-600" />
+          <div className="flex items-center gap-0.5">
+            {LINE_HEIGHTS.map((height) => (
+              <button
+                key={height}
+                onClick={() => onLineHeight(height)}
+                className={`flex h-8 items-center justify-center rounded-lg px-1.5 transition-colors ${
+                  lineHeight === height
+                    ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
+                    : 'text-stone-400 hover:text-stone-600'
+                }`}
+                aria-label={`줄간격 ${height}`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={14}
+                  height={14}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="21" y1="6" x2="3" y2="6" />
+                  <line x1="21" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="18" x2="3" y2="18" />
+                </svg>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -502,7 +539,9 @@ const BibleReader = ({
         )}
         {isError && <p className="text-center text-sm text-red-500">본문을 불러오지 못했습니다.</p>}
         {chapterData && (
-          <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
+          <div
+            className={`space-y-1 text-stone-800 dark:text-stone-100 ${FONT_SIZE_CLASS[fontSize]} ${LINE_HEIGHT_CLASS[lineHeight]}`}
+          >
             {chapterData.verses.map((v) => {
               const color = highlightMap.get(v.verse);
               const isActive = activeVerse === v.verse;

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { usePassage } from '../features/bible/usePassage';
 import { useBookmarks } from '../features/bookmarks/useBookmarks';
 import { BookmarkButton } from '../features/bookmarks/BookmarkButton';
@@ -7,11 +7,13 @@ import { LoadingSpinner } from './LoadingSpinner';
 import { useT } from '../lib/i18n';
 import { BOOK_NAMES_KO } from '../lib/bible-abbr-map';
 import {
-  type FontSize,
   FONT_SIZE_CLASS,
+  LINE_HEIGHT_CLASS,
   FONT_SIZES,
+  LINE_HEIGHTS,
   FONT_DISPLAY_SIZE_BIBLE as FONT_DISPLAY_SIZE,
 } from '../lib/font-config';
+import { useSettingsStore } from '../store/settings-store';
 
 type Props = {
   bookAbbr: string;
@@ -23,16 +25,9 @@ type Props = {
 export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => {
   const { data, isLoading, isError } = usePassage(bookAbbr, chapters);
   const t = useT();
-  const [fontSize, setFontSize] = useState<FontSize>(
-    () => (localStorage.getItem('bible-font-size') as FontSize) ?? 'md',
-  );
+  const { fontSize, lineHeight, setFontSize, setLineHeight } = useSettingsStore();
   const [activeChapterIdx, setActiveChapterIdx] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
-
-  const handleFontSize = (size: FontSize) => {
-    setFontSize(size);
-    localStorage.setItem('bible-font-size', size);
-  };
 
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -74,22 +69,55 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
               {label}
             </h3>
           </div>
-          <div className="ml-3 flex items-center gap-0.5">
-            {FONT_SIZES.map((size, i) => (
-              <button
-                key={size}
-                onClick={() => handleFontSize(size)}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg font-medium transition-colors ${
-                  fontSize === size
-                    ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
-                    : 'text-stone-400 hover:text-stone-600'
-                }`}
-                style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
-                aria-label={`폰트 크기 ${size}`}
-              >
-                가
-              </button>
-            ))}
+          <div className="ml-3 flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
+              {FONT_SIZES.map((size, i) => (
+                <button
+                  key={size}
+                  onClick={() => setFontSize(size)}
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg font-medium transition-colors ${
+                    fontSize === size
+                      ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
+                      : 'text-stone-400 hover:text-stone-600'
+                  }`}
+                  style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
+                  aria-label={`글자 크기 ${size}`}
+                >
+                  가
+                </button>
+              ))}
+            </div>
+            <div className="h-5 w-px bg-stone-200 dark:bg-stone-600" />
+            <div className="flex items-center gap-0.5">
+              {LINE_HEIGHTS.map((height) => (
+                <button
+                  key={height}
+                  onClick={() => setLineHeight(height)}
+                  className={`flex h-8 items-center justify-center rounded-lg px-1.5 transition-colors ${
+                    lineHeight === height
+                      ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
+                      : 'text-stone-400 hover:text-stone-600'
+                  }`}
+                  aria-label={`줄간격 ${height}`}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={14}
+                    height={14}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="21" y1="6" x2="3" y2="6" />
+                    <line x1="21" y1="12" x2="3" y2="12" />
+                    <line x1="21" y1="18" x2="3" y2="18" />
+                  </svg>
+                </button>
+              ))}
+            </div>
             <button
               onClick={onClose}
               className="ml-1 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 dark:bg-stone-700 hover:text-stone-600"
@@ -145,7 +173,9 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
               <p className="mb-4 text-xs font-bold tracking-widest text-stone-400 dark:text-stone-500">
                 {data.bookName} {activeChapter.chapter}장
               </p>
-              <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
+              <div
+                className={`space-y-1 text-stone-800 dark:text-stone-100 ${FONT_SIZE_CLASS[fontSize]} ${LINE_HEIGHT_CLASS[lineHeight]}`}
+              >
                 {activeChapter.verses.map((v) => (
                   <p key={v.verse} className="group flex gap-3">
                     <span
