@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useBibleBooks, type BibleBookEntry } from '../features/bible/useBibles';
 import { usePassage } from '../features/bible/usePassage';
 import { QuickJumpModal } from '../features/bible/QuickJumpModal';
+import { BibleSearchModal } from '../features/bible/BibleSearchModal';
 import { VerseActions } from '../features/bible/VerseActions';
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
@@ -53,6 +54,7 @@ export const BiblePage = () => {
   const [search, setSearch] = useState('');
   const [recentBooks, setRecentBooks] = useState<RecentEntry[]>(() => loadRecentBooks());
   const [isQuickJumpOpen, setIsQuickJumpOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { lastPosition, savePosition } = useReadingPositionStore();
 
   const handleQuickJump = useCallback(
@@ -138,23 +140,46 @@ export const BiblePage = () => {
           <h1 className="text-2xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
             성경
           </h1>
-          <button
-            onClick={() => setIsQuickJumpOpen(true)}
-            className="flex h-9 items-center gap-1.5 rounded-lg bg-stone-100 dark:bg-stone-700 px-3 text-xs font-medium text-stone-600 dark:text-stone-300 transition-colors hover:bg-stone-200 dark:hover:bg-stone-600"
-            aria-label="장/절 바로가기"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-3.5 w-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex h-9 items-center gap-1.5 rounded-lg bg-stone-100 dark:bg-stone-700 px-3 text-xs font-medium text-stone-600 dark:text-stone-300 transition-colors hover:bg-stone-200 dark:hover:bg-stone-600"
+              aria-label="구절 검색"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-            바로가기
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+                />
+              </svg>
+              검색
+            </button>
+            <button
+              onClick={() => setIsQuickJumpOpen(true)}
+              className="flex h-9 items-center gap-1.5 rounded-lg bg-stone-100 dark:bg-stone-700 px-3 text-xs font-medium text-stone-600 dark:text-stone-300 transition-colors hover:bg-stone-200 dark:hover:bg-stone-600"
+              aria-label="장/절 바로가기"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-3.5 w-3.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+              바로가기
+            </button>
+          </div>
         </div>
 
         {/* Search */}
@@ -324,6 +349,20 @@ export const BiblePage = () => {
             books={books}
             onJump={handleQuickJump}
             onClose={() => setIsQuickJumpOpen(false)}
+          />
+        )}
+
+        {/* Bible Search Modal */}
+        {isSearchOpen && (
+          <BibleSearchModal
+            onSelect={(result) => {
+              const book = books?.find((b) => b.abbrKo === result.bookAbbr);
+              if (book) {
+                handleSetReading({ book, chapter: result.chapter });
+                setIsSearchOpen(false);
+              }
+            }}
+            onClose={() => setIsSearchOpen(false)}
           />
         )}
       </div>
