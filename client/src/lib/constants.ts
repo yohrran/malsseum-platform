@@ -17,4 +17,5 @@ export const ROUTES = {
   PROFILE: '/profile',
   STATS: '/stats',
   SETTINGS: '/settings',
+  READING_HISTORY: '/reading-history',
 } as const;

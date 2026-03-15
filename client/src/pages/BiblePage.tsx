@@ -15,6 +15,7 @@ import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
 import { useReadingPositionStore } from '../store/reading-position-store';
 import { useSwipe } from '../hooks/use-swipe';
+import { useReadingHistoryStore } from '../store/reading-history-store';
 import {
   type FontSize,
   type LineHeight,
@@ -66,6 +67,7 @@ export const BiblePage = () => {
   const [isQuickJumpOpen, setIsQuickJumpOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { lastPosition, savePosition } = useReadingPositionStore();
+  const addHistoryEntry = useReadingHistoryStore((s) => s.addEntry);
 
   const handleQuickJump = useCallback(
     (bookAbbr: string, chapter: number) => {
@@ -82,6 +84,11 @@ export const BiblePage = () => {
     saveRecentBook(state.book, state.chapter);
     setRecentBooks(loadRecentBooks());
     savePosition({
+      bookAbbr: state.book.abbrKo,
+      bookName: state.book.nameKo,
+      chapter: state.chapter,
+    });
+    addHistoryEntry({
       bookAbbr: state.book.abbrKo,
       bookName: state.book.nameKo,
       chapter: state.chapter,

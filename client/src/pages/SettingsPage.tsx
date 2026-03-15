@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
 import { useThemeStore } from '../store/theme-store';
 import { useSettingsStore } from '../store/settings-store';
 import { SEOHead } from '../shared/SEOHead';
+import { ROUTES } from '../lib/constants';
 import {
   FONT_SIZES,
   FONT_SIZE_LABEL,
@@ -96,6 +98,22 @@ export const SettingsPage = () => {
             하나님의 영은 수면 위에 운행하시니라
           </div>
         </SettingSection>
+
+        {/* Reading history */}
+        <Link
+          to={ROUTES.READING_HISTORY}
+          className="flex items-center justify-between rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
+        >
+          <div>
+            <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">
+              읽기 히스토리
+            </p>
+            <p className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
+              최근 읽은 성경 기록 보기
+            </p>
+          </div>
+          <span className="text-sm text-stone-300 dark:text-stone-500">→</span>
+        </Link>
 
         {/* App info */}
         <SettingSection title="앱 정보">
