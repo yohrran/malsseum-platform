@@ -487,7 +487,10 @@ const BibleReader = ({
           <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
             {chapterData.verses.map((v) => (
               <p key={v.verse} className="group flex gap-3">
-                <span className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300">
+                <span
+                  aria-hidden="true"
+                  className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300"
+                >
                   {v.verse}
                 </span>
                 <span className="flex-1">{v.text}</span>

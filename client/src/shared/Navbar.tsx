@@ -34,7 +34,10 @@ export const Navbar = () => {
   return (
     <>
       {/* Desktop top navbar */}
-      <nav className="sticky top-0 z-50 border-b border-stone-200/60 bg-white/80 backdrop-blur-lg dark:border-stone-700/60 dark:bg-stone-900/80">
+      <nav
+        aria-label="메인 내비게이션"
+        className="sticky top-0 z-50 border-b border-stone-200/60 bg-white/80 backdrop-blur-lg dark:border-stone-700/60 dark:bg-stone-900/80"
+      >
         <div className="mx-auto flex max-w-2xl items-center justify-between px-5 py-3">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-1.5">
@@ -70,6 +73,13 @@ export const Navbar = () => {
             <button
               onClick={handleToggleTheme}
               className="rounded-lg p-2 text-stone-400 transition-colors hover:bg-stone-100 hover:text-stone-600 dark:text-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-300"
+              aria-label={
+                theme === 'light'
+                  ? '다크 모드로 전환'
+                  : theme === 'dark'
+                    ? '시스템 설정으로 전환'
+                    : '라이트 모드로 전환'
+              }
               title={
                 theme === 'light' ? '다크 모드' : theme === 'dark' ? '시스템 설정' : '라이트 모드'
               }
@@ -111,7 +121,8 @@ export const Navbar = () => {
       </nav>
 
       {/* Mobile bottom tab bar */}
-      <div
+      <nav
+        aria-label="모바일 내비게이션"
         className="fixed bottom-0 left-0 right-0 z-50 border-t border-stone-200/60 bg-white/80 backdrop-blur-lg dark:border-stone-700/60 dark:bg-stone-900/80 sm:hidden"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
@@ -144,7 +155,7 @@ export const Navbar = () => {
             );
           })}
         </div>
-      </div>
+      </nav>
     </>
   );
 };
