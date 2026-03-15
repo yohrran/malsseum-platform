@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useUpdateBookmarkNote } from './useBookmarks';
+import { useUpdateBookmarkNote, useUpdateBookmarkTags } from './useBookmarks';
+import { TagEditor } from './TagEditor';
 
 type Props = {
   bookmarkId: string;
@@ -7,6 +8,7 @@ type Props = {
   chapter: number;
   verse: number;
   initialNote: string;
+  initialTags: string[];
   onClose: () => void;
 };
 
@@ -16,10 +18,13 @@ export const NoteModal = ({
   chapter,
   verse,
   initialNote,
+  initialTags,
   onClose,
 }: Props) => {
   const [note, setNote] = useState(initialNote);
+  const [tags, setTags] = useState<string[]>(initialTags);
   const updateNote = useUpdateBookmarkNote();
+  const updateTags = useUpdateBookmarkTags();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -34,8 +39,18 @@ export const NoteModal = ({
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
+  const isSaving = updateNote.isPending || updateTags.isPending;
+
   const handleSave = async () => {
-    await updateNote.mutateAsync({ id: bookmarkId, note });
+    const noteChanged = note !== initialNote;
+    const tagsChanged = JSON.stringify(tags) !== JSON.stringify(initialTags);
+
+    if (noteChanged) {
+      await updateNote.mutateAsync({ id: bookmarkId, note });
+    }
+    if (tagsChanged) {
+      await updateTags.mutateAsync({ id: bookmarkId, tags });
+    }
     onClose();
   };
 
@@ -57,16 +72,23 @@ export const NoteModal = ({
           </h3>
         </div>
 
-        <div className="p-5">
-          <textarea
-            ref={textareaRef}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="이 구절에 대한 묵상이나 메모를 남겨보세요..."
-            className="h-32 w-full resize-none rounded-xl border-0 bg-stone-50 dark:bg-stone-700 p-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none ring-1 ring-stone-200/60 dark:ring-stone-600 transition-all focus:ring-2 focus:ring-stone-400"
-            maxLength={500}
-          />
-          <p className="mt-1 text-right text-xs text-stone-400">{note.length}/500</p>
+        <div className="space-y-4 p-5">
+          <div>
+            <textarea
+              ref={textareaRef}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="이 구절에 대한 묵상이나 메모를 남겨보세요..."
+              className="h-32 w-full resize-none rounded-xl border-0 bg-stone-50 dark:bg-stone-700 p-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none ring-1 ring-stone-200/60 dark:ring-stone-600 transition-all focus:ring-2 focus:ring-stone-400"
+              maxLength={500}
+            />
+            <p className="mt-1 text-right text-xs text-stone-400">{note.length}/500</p>
+          </div>
+
+          <div>
+            <p className="mb-1.5 text-xs font-medium text-stone-500 dark:text-stone-400">태그</p>
+            <TagEditor tags={tags} onChange={setTags} />
+          </div>
         </div>
 
         <div className="flex items-center justify-end gap-2 border-t border-stone-100 dark:border-stone-700 px-5 py-3">
@@ -78,10 +100,10 @@ export const NoteModal = ({
           </button>
           <button
             onClick={handleSave}
-            disabled={updateNote.isPending}
+            disabled={isSaving}
             className="rounded-lg bg-stone-800 dark:bg-stone-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-stone-700 dark:hover:bg-stone-500 disabled:opacity-50"
           >
-            {updateNote.isPending ? '저장 중...' : '저장'}
+            {isSaving ? '저장 중...' : '저장'}
           </button>
         </div>
       </div>

@@ -81,6 +81,7 @@ export type Bookmark = {
   chapter: number;
   verse: number;
   note: string;
+  tags: string[];
   createdAt: string;
 };
 

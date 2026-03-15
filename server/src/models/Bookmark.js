@@ -7,6 +7,7 @@ const bookmarkSchema = new mongoose.Schema(
     chapter: { type: Number, required: true },
     verse: { type: Number, required: true },
     note: { type: String, default: '' },
+    tags: { type: [String], default: [] },
   },
   { timestamps: true },
 );

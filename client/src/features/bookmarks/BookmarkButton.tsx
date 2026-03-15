@@ -82,6 +82,7 @@ export const BookmarkButton = ({ bookId, chapter, verse, isBookmarked }: Props) 
           chapter={chapter}
           verse={verse}
           initialNote={bookmark.note}
+          initialTags={bookmark.tags ?? []}
           onClose={() => setIsNoteOpen(false)}
         />
       )}

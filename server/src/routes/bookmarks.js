@@ -66,26 +66,60 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// PATCH bookmark note
+// PATCH bookmark (note and/or tags)
 router.patch('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { note } = req.body;
+    const { note, tags } = req.body;
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, error: 'Invalid ID format' });
     }
-    if (typeof note !== 'string') {
-      return res.status(400).json({ success: false, error: 'note must be a string' });
+
+    const update = {};
+    if (typeof note === 'string') update.note = note;
+    if (Array.isArray(tags)) {
+      update.tags = tags
+        .filter((t) => typeof t === 'string')
+        .map((t) => t.trim().toLowerCase())
+        .filter((t) => t.length > 0)
+        .slice(0, 10);
     }
-    const bookmark = await Bookmark.findOneAndUpdate(
-      { _id: id, userId: req.user._id },
-      { note },
-      { new: true },
-    );
+
+    if (Object.keys(update).length === 0) {
+      return res.status(400).json({ success: false, error: 'note or tags required' });
+    }
+
+    const bookmark = await Bookmark.findOneAndUpdate({ _id: id, userId: req.user._id }, update, {
+      new: true,
+    });
     if (!bookmark) {
       return res.status(404).json({ success: false, error: 'Bookmark not found' });
     }
     res.json({ success: true, data: bookmark });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET all tags for user
+router.get('/tags/all', async (req, res, next) => {
+  try {
+    const tags = await Bookmark.distinct('tags', { userId: req.user._id });
+    res.json({ success: true, data: tags.sort() });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET bookmarks by tag
+router.get('/tags/:tag', async (req, res, next) => {
+  try {
+    const { tag } = req.params;
+    const bookmarks = await Bookmark.find({
+      userId: req.user._id,
+      tags: tag.toLowerCase(),
+    }).sort({ createdAt: -1 });
+    res.json({ success: true, data: bookmarks });
   } catch (err) {
     next(err);
   }
