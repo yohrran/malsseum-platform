@@ -14,6 +14,7 @@ import { HighlightPicker, HIGHLIGHT_BG } from '../features/highlights/HighlightP
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
 import { useReadingPositionStore } from '../store/reading-position-store';
+import { useSwipe } from '../hooks/use-swipe';
 import {
   type FontSize,
   type LineHeight,
@@ -441,6 +442,16 @@ const BibleReader = ({
   const [activeVerse, setActiveVerse] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const { handlers: swipeHandlers } = useSwipe({
+    onSwipe: (dir) => {
+      if (dir === 'left' && chapter < book.chapterCount) {
+        onSelectChapter(chapter + 1);
+      } else if (dir === 'right' && chapter > 1) {
+        onSelectChapter(chapter - 1);
+      }
+    },
+  });
+
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     setActiveVerse(null);
@@ -525,7 +536,13 @@ const BibleReader = ({
       </div>
 
       {/* Content */}
-      <div ref={contentRef} className="flex-1 overflow-y-auto py-5">
+      <div
+        ref={contentRef}
+        className="flex-1 overflow-y-auto py-5"
+        onTouchStart={swipeHandlers.onTouchStart}
+        onTouchMove={swipeHandlers.onTouchMove}
+        onTouchEnd={swipeHandlers.onTouchEnd}
+      >
         {isLoading && (
           <div className="space-y-3 px-1">
             {Array.from({ length: 8 }).map((_, i) => (
