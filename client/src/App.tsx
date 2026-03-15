@@ -12,12 +12,21 @@ import { ProfilePage } from './pages/ProfilePage';
 import { BiblePage } from './pages/BiblePage';
 import { StatsPage } from './pages/StatsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { OnboardingPage } from './pages/OnboardingPage';
 
 export const App = () => {
   return (
     <ErrorBoundary>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/onboarding"
+          element={
+            <AuthGuard>
+              <OnboardingPage />
+            </AuthGuard>
+          }
+        />
         <Route
           element={
             <AuthGuard>

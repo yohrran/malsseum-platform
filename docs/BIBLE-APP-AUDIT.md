@@ -44,7 +44,7 @@
 | 직접 장/절 이동                 | :white_check_mark: | QuickJumpModal ("창 3:16" 단축 입력 지원)         |
 | 오프라인 성경 텍스트            | :x:                | PWA 셸만 캐싱                                     |
 | 최근 읽은 위치 기억             | :white_check_mark: | Zustand persist + 이어서 읽기 배너                |
-| 온보딩/튜토리얼                 | :x:                |                                                   |
+| 온보딩/튜토리얼                 | :white_check_mark: | 3단계 온보딩 (환영 → 계획 선택 → 완료)            |
 | 구절 하이라이트                 | :x:                |                                                   |
 | 노트 기능                       | :x:                | 북마크 note 필드 존재하나 UI 없음                 |
 | 읽기 알림                       | :x:                |                                                   |
