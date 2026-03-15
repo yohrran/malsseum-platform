@@ -4,6 +4,7 @@ import { useTodayReading } from '../features/reading/useTodayReading';
 import { usePointsBalance } from '../features/points/usePoints';
 import { useReadingPlan } from '../features/reading/useReadingPlan';
 import { useStreak } from '../features/auth/useStreak';
+import { useDailyVerse } from '../features/bible/useDailyVerse';
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
 import { ROUTES } from '../lib/constants';
@@ -31,6 +32,7 @@ export const DashboardPage = () => {
   const pointsBalance = usePointsBalance();
   const { data: plans, isLoading: plansLoading } = useReadingPlan();
   const { data: streakData } = useStreak();
+  const dailyVerse = useDailyVerse();
   const t = useT();
 
   if (plansLoading) return <DashboardSkeleton />;
@@ -62,6 +64,8 @@ export const DashboardPage = () => {
           streak={streakData?.currentStreak ?? 0}
           lastReadDate={streakData?.lastReadDate ?? null}
         />
+
+        <DailyVerseCard dailyVerse={dailyVerse} />
 
         <TodayReadingCard todayReading={todayReading} t={t} />
 
@@ -355,6 +359,28 @@ const StreakBanner = ({
           내일도 읽으면 연속 기록이 시작돼요
         </p>
       </div>
+    </div>
+  );
+};
+
+const DailyVerseCard = ({ dailyVerse }: { dailyVerse: ReturnType<typeof useDailyVerse> }) => {
+  if (dailyVerse.isLoading) {
+    return <Skeleton className="h-28 rounded-2xl" />;
+  }
+
+  if (!dailyVerse.data) return null;
+
+  const { bookName, chapter, verse, text } = dailyVerse.data;
+
+  return (
+    <div className="rounded-2xl bg-amber-50 dark:bg-amber-950/30 p-5 ring-1 ring-amber-200/60 dark:ring-amber-800/40">
+      <p className="text-xs font-semibold tracking-wide text-amber-600 dark:text-amber-400">
+        오늘의 말씀
+      </p>
+      <p className="mt-2.5 text-sm leading-relaxed text-stone-700 dark:text-stone-200">{text}</p>
+      <p className="mt-2 text-xs font-medium text-amber-600/70 dark:text-amber-400/70">
+        {bookName} {chapter}:{verse}
+      </p>
     </div>
   );
 };

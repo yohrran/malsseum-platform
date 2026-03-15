@@ -47,6 +47,7 @@
 | 온보딩/튜토리얼                 | :white_check_mark: | 3단계 온보딩 (환영 → 계획 선택 → 완료)             |
 | 구절 하이라이트                 | :white_check_mark: | 5색 팔레트 (서버 Highlight 모델 + HighlightPicker) |
 | 노트 기능                       | :white_check_mark: | NoteModal + PATCH API (북마크 확장)                |
+| 오늘의 말씀                     | :white_check_mark: | 87개 큐레이션 구절 + 대시보드 위젯                 |
 | 읽기 알림                       | :x:                |                                                    |
 | 스와이프 네비게이션             | :x:                |                                                    |
 | 다중 번역본                     | :x:                |                                                    |
@@ -77,7 +78,7 @@
 | 소셜/커뮤니티    |        :x:         |     :white_check_mark:     |           :x:            |           :x:           |
 | 병렬 번역 보기   |        :x:         |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 | 교차 참조        |        :x:         |     :white_check_mark:     |           :x:            |   :white_check_mark:    |
-| 오늘의 말씀      |        :x:         |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
+| 오늘의 말씀      | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
 | PWA 지원         | :white_check_mark: |       :x: (네이티브)       |      :x: (네이티브)      |   :white_check_mark:    |
 | 글꼴 조절        | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 
@@ -243,11 +244,11 @@
 - 북마크 목록에서 노트 미리보기
 - 노트 전체 검색 기능
 
-### 4.3 오늘의 말씀
+### 4.3 오늘의 말씀 :white_check_mark:
 
 | 항목      | 내용                                                 |
 | --------- | ---------------------------------------------------- |
-| 현재 상태 | 없음                                                 |
+| 현재 상태 | 완료                                                 |
 | 복잡도    | **S**                                                |
 | 구현 방향 | 매일 다른 구절 표시 (사전 큐레이션 또는 랜덤)        |
 | 관련 파일 | 새 `server/src/routes/daily-verse.js`, 대시보드 위젯 |
