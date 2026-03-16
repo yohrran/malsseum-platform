@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
 
-const daySchema = new mongoose.Schema({
-  date: String,
-  bookAbbr: String,
-  chapters: [Number],
-  isCompleted: { type: Boolean, default: false },
-  completedAt: Date
-}, { _id: false });
+const daySchema = new mongoose.Schema(
+  {
+    date: String,
+    bookAbbr: String,
+    chapters: [Number],
+    isCompleted: { type: Boolean, default: false },
+    completedAt: Date,
+  },
+  { _id: false },
+);
 
 const seasonSchema = new mongoose.Schema({
   seasonNumber: Number,
@@ -16,7 +19,7 @@ const seasonSchema = new mongoose.Schema({
   label: String,
   days: [daySchema],
   isCompleted: { type: Boolean, default: false },
-  completedAt: Date
+  completedAt: Date,
 });
 
 const customPlanSchema = new mongoose.Schema({
@@ -24,7 +27,7 @@ const customPlanSchema = new mongoose.Schema({
   title: { type: String, required: true },
   seasons: [seasonSchema],
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  updatedAt: { type: Date, default: Date.now },
 });
 
 customPlanSchema.pre('save', function (next) {

@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   currentStreak: { type: Number, default: 0 },
   longestStreak: { type: Number, default: 0 },
   lastReadDate: { type: Date, default: null },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
 // M-1: 리더보드 쿼리 최적화

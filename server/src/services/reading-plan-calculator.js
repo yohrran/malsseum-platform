@@ -64,7 +64,7 @@ const BIBLE_BOOKS = [
   { id: '2JN', name: '2 John', chapters: 1 },
   { id: '3JN', name: '3 John', chapters: 1 },
   { id: 'JUD', name: 'Jude', chapters: 1 },
-  { id: 'REV', name: 'Revelation', chapters: 22 }
+  { id: 'REV', name: 'Revelation', chapters: 22 },
 ];
 
 const TOTAL_CHAPTERS = BIBLE_BOOKS.reduce((sum, b) => sum + b.chapters, 0);
@@ -101,7 +101,7 @@ const calculateReadingPlan = (startDate, endDate) => {
       dayNumber: i + 1,
       scheduledDate,
       chapterRefs: dayRefs,
-      isCompleted: false
+      isCompleted: false,
     });
 
     refIndex += chaptersPerDay;

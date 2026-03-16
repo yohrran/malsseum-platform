@@ -36,21 +36,23 @@ Stack: **MongoDB Atlas** (DB) + **Railway** (backend) + **Vercel** (frontend)
 3. **Settings** → **Root Directory**: `server` 로 설정
 4. **Variables** 탭에서 환경변수 설정:
 
-| Key | Value |
-|-----|-------|
-| `MONGO_URI` | Atlas connection string |
-| `JWT_SECRET` | 랜덤 32자 이상 문자열 |
-| `GOOGLE_CLIENT_ID` | Google OAuth Client ID |
-| `CLIENT_URL` | `https://your-app.vercel.app` |
-| `BIBLE_API_KEY` | api.bible 키 (선택) |
-| `NODE_ENV` | `production` |
+| Key                | Value                         |
+| ------------------ | ----------------------------- |
+| `MONGO_URI`        | Atlas connection string       |
+| `JWT_SECRET`       | 랜덤 32자 이상 문자열         |
+| `GOOGLE_CLIENT_ID` | Google OAuth Client ID        |
+| `CLIENT_URL`       | `https://your-app.vercel.app` |
+| `BIBLE_API_KEY`    | api.bible 키 (선택)           |
+| `NODE_ENV`         | `production`                  |
 
 5. Deploy → 완료 후 **Domain** 생성 → URL 복사 (예: `https://malsseum-api.up.railway.app`)
 
 ### 헬스 체크 확인
+
 ```
 GET https://malsseum-api.up.railway.app/health
 ```
+
 응답: `{ "status": "ok" }`
 
 ---
@@ -64,14 +66,15 @@ GET https://malsseum-api.up.railway.app/health
 3. **Root Directory**: `client`
 4. **Environment Variables** 설정:
 
-| Key | Value |
-|-----|-------|
-| `VITE_API_URL` | Railway URL (예: `https://malsseum-api.up.railway.app`) |
-| `VITE_GOOGLE_CLIENT_ID` | Google OAuth Client ID |
+| Key                     | Value                                                   |
+| ----------------------- | ------------------------------------------------------- |
+| `VITE_API_URL`          | Railway URL (예: `https://malsseum-api.up.railway.app`) |
+| `VITE_GOOGLE_CLIENT_ID` | Google OAuth Client ID                                  |
 
 5. **Deploy** → 완료 후 URL 복사 (예: `https://malsseum.vercel.app`)
 
 ### 배포 후 Google Console 업데이트
+
 - Authorized JavaScript origins에 Vercel URL 추가
 - Railway의 `CLIENT_URL` 환경변수를 Vercel URL로 업데이트 → Redeploy
 
@@ -80,6 +83,7 @@ GET https://malsseum-api.up.railway.app/health
 ## 5. 로컬 개발 환경
 
 ### Server
+
 ```bash
 cd server
 cp .env.example .env
@@ -89,6 +93,7 @@ npm run dev   # nodemon으로 자동 재시작
 ```
 
 ### Client
+
 ```bash
 cd client
 cp .env.local.example .env.local
@@ -102,6 +107,7 @@ npm run dev   # http://localhost:8000
 ## 6. 환경변수 요약
 
 ### server/.env
+
 ```
 MONGO_URI=mongodb+srv://...
 JWT_SECRET=...
@@ -113,6 +119,7 @@ NODE_ENV=development
 ```
 
 ### client/.env.local
+
 ```
 VITE_API_URL=http://localhost:5000
 VITE_GOOGLE_CLIENT_ID=...

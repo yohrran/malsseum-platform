@@ -8,16 +8,11 @@ const addPoints = async (userId, eventType, points, referenceId, description) =>
   try {
     session.startTransaction();
 
-    await PointsLedger.create(
-      [{ userId, eventType, points, referenceId, description }],
-      { session }
-    );
+    await PointsLedger.create([{ userId, eventType, points, referenceId, description }], {
+      session,
+    });
 
-    await User.findByIdAndUpdate(
-      userId,
-      { $inc: { totalPoints: points } },
-      { session }
-    );
+    await User.findByIdAndUpdate(userId, { $inc: { totalPoints: points } }, { session });
 
     await session.commitTransaction();
   } catch (err) {
@@ -91,8 +86,15 @@ const checkStreak = async (userId) => {
       try {
         session.startTransaction();
         await PointsLedger.create(
-          [{ userId, eventType: 'streak_30', points: 500, description: `30-day streak on ${todayStr}` }],
-          { session }
+          [
+            {
+              userId,
+              eventType: 'streak_30',
+              points: 500,
+              description: `30-day streak on ${todayStr}`,
+            },
+          ],
+          { session },
         );
         await User.findByIdAndUpdate(userId, { $inc: { totalPoints: 500 } }, { session });
         await session.commitTransaction();
@@ -114,8 +116,15 @@ const checkStreak = async (userId) => {
       try {
         session.startTransaction();
         await PointsLedger.create(
-          [{ userId, eventType: 'streak_7', points: 100, description: `7-day streak on ${todayStr}` }],
-          { session }
+          [
+            {
+              userId,
+              eventType: 'streak_7',
+              points: 100,
+              description: `7-day streak on ${todayStr}`,
+            },
+          ],
+          { session },
         );
         await User.findByIdAndUpdate(userId, { $inc: { totalPoints: 100 } }, { session });
         await session.commitTransaction();

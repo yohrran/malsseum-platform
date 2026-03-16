@@ -73,7 +73,7 @@ router.put('/:id', async (req, res, next) => {
     const plan = await CustomPlan.findOneAndUpdate(
       { _id: req.params.id, userId: req.user._id },
       { title: title.trim(), seasons, updatedAt: new Date() },
-      { new: true }
+      { new: true },
     );
     if (!plan) {
       return res.status(404).json({ success: false, error: 'Plan not found' });
@@ -145,7 +145,13 @@ router.patch('/:planId/seasons/:seasonIdx/days/:dayIdx', async (req, res, next) 
     await plan.save();
 
     if (isCompleted) {
-      await addPoints(req.user._id, 'custom_day_complete', 30, plan._id, `${season.name} - ${day.date} completed`);
+      await addPoints(
+        req.user._id,
+        'custom_day_complete',
+        30,
+        plan._id,
+        `${season.name} - ${day.date} completed`,
+      );
     }
 
     res.json({ success: true, data: plan });
@@ -184,7 +190,7 @@ router.patch('/:planId/seasons/:seasonIdx/complete', async (req, res, next) => {
     }
 
     // H-4: 모든 날짜 완료 여부 검증
-    const allDaysCompleted = season.days.length > 0 && season.days.every(d => d.isCompleted);
+    const allDaysCompleted = season.days.length > 0 && season.days.every((d) => d.isCompleted);
     if (!allDaysCompleted) {
       return res.status(400).json({
         success: false,

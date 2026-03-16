@@ -9,16 +9,16 @@
 
 ### 핵심 문제들
 
-| 문제 | 위치 | 심각도 |
-|------|------|--------|
-| 성경 본문을 읽을 수 없음 | ReadingPage | 치명적 |
-| Dashboard가 너무 빈약함 | DashboardPage | 높음 |
-| 통독 플랜과 커스텀 플랜이 별도 페이지로 분리 | 네비게이션 | 높음 |
-| PassageViewer가 작은 모달로만 존재 | PassageViewer | 높음 |
-| 연속 읽기(스트릭) 표시 없음 | 전체 | 중간 |
-| 온보딩 없음 (플랜 없으면 폼만 보임) | ReadingPage | 중간 |
-| 진행률 시각화가 너무 단조로움 | ReadingPage | 중간 |
-| 모바일 UX 미흡 | 전체 | 중간 |
+| 문제                                         | 위치          | 심각도 |
+| -------------------------------------------- | ------------- | ------ |
+| 성경 본문을 읽을 수 없음                     | ReadingPage   | 치명적 |
+| Dashboard가 너무 빈약함                      | DashboardPage | 높음   |
+| 통독 플랜과 커스텀 플랜이 별도 페이지로 분리 | 네비게이션    | 높음   |
+| PassageViewer가 작은 모달로만 존재           | PassageViewer | 높음   |
+| 연속 읽기(스트릭) 표시 없음                  | 전체          | 중간   |
+| 온보딩 없음 (플랜 없으면 폼만 보임)          | ReadingPage   | 중간   |
+| 진행률 시각화가 너무 단조로움                | ReadingPage   | 중간   |
+| 모바일 UX 미흡                               | 전체          | 중간   |
 
 ### 현재 기술 스택
 
@@ -92,6 +92,7 @@
 ```
 
 **구현 항목**:
+
 - ReadingPage에 PassageViewer를 인라인으로 통합 (모달 제거)
 - 장(Chapter) 탭 네비게이션
 - 폰트 크기 조절 버튼
@@ -128,6 +129,7 @@
 ```
 
 **구현 항목**:
+
 - 스트릭 표시 컴포넌트 (backend에 streak 계산 추가)
 - 주간 읽기 현황 미니 캘린더
 - 진행률 바 개선 (숫자 + 색상)
@@ -153,6 +155,7 @@
 **목표**: "내 플랜" 하나로 통합
 
 네비게이션 변경:
+
 ```
 기존: 홈 | 통독 | 말씀읽기 | 순위표
 신규: 홈 | 읽기 | 플랜 | 순위표
@@ -206,10 +209,12 @@
 #### 3-1. 스트릭 시스템
 
 **Backend 변경**:
+
 - User 모델에 `currentStreak`, `longestStreak`, `lastReadDate` 필드 추가
 - 읽기 완료 시 streak 자동 계산
 
 **Frontend**:
+
 - 대시보드 스트릭 배너
 - 7일, 30일, 100일 달성 뱃지
 - 스트릭 끊길 것 같을 때 리마인더 UX
@@ -261,25 +266,25 @@
 
 ### 신규 생성 필요
 
-| 컴포넌트 | 위치 | 설명 |
-|---------|------|------|
-| `BibleReader` | `shared/BibleReader.tsx` | 인라인 성경 읽기 (풀스크린) |
-| `StreakBadge` | `shared/StreakBadge.tsx` | 연속 읽기 배지 |
-| `WeeklyCalendar` | `shared/WeeklyCalendar.tsx` | 주간 읽기 현황 |
-| `ProgressRing` | `shared/ProgressRing.tsx` | 원형 진행률 |
-| `PlanPresetCard` | `features/reading/PlanPresetCard.tsx` | 플랜 프리셋 선택 카드 |
-| `MonthlyCalendar` | `features/reading/MonthlyCalendar.tsx` | 월별 통독 캘린더 |
-| `ChapterTabs` | `features/bible/ChapterTabs.tsx` | 장 탭 네비게이션 |
+| 컴포넌트          | 위치                                   | 설명                        |
+| ----------------- | -------------------------------------- | --------------------------- |
+| `BibleReader`     | `shared/BibleReader.tsx`               | 인라인 성경 읽기 (풀스크린) |
+| `StreakBadge`     | `shared/StreakBadge.tsx`               | 연속 읽기 배지              |
+| `WeeklyCalendar`  | `shared/WeeklyCalendar.tsx`            | 주간 읽기 현황              |
+| `ProgressRing`    | `shared/ProgressRing.tsx`              | 원형 진행률                 |
+| `PlanPresetCard`  | `features/reading/PlanPresetCard.tsx`  | 플랜 프리셋 선택 카드       |
+| `MonthlyCalendar` | `features/reading/MonthlyCalendar.tsx` | 월별 통독 캘린더            |
+| `ChapterTabs`     | `features/bible/ChapterTabs.tsx`       | 장 탭 네비게이션            |
 
 ### 개선 필요
 
-| 컴포넌트 | 개선 내용 |
-|---------|---------|
-| `PassageViewer` | 모달 → 풀스크린 패널, 폰트 크기 조절 |
-| `DashboardPage` | 스트릭 + 주간캘린더 + CTA 추가 |
-| `ReadingPage` | 인라인 본문 읽기 통합 |
-| `Navbar` | 아이콘 추가, 탭 구조 개선 |
-| `LoadingSpinner` | 스켈레톤 로딩으로 교체 |
+| 컴포넌트         | 개선 내용                            |
+| ---------------- | ------------------------------------ |
+| `PassageViewer`  | 모달 → 풀스크린 패널, 폰트 크기 조절 |
+| `DashboardPage`  | 스트릭 + 주간캘린더 + CTA 추가       |
+| `ReadingPage`    | 인라인 본문 읽기 통합                |
+| `Navbar`         | 아이콘 추가, 탭 구조 개선            |
+| `LoadingSpinner` | 스켈레톤 로딩으로 교체               |
 
 ---
 
@@ -295,13 +300,13 @@ lastReadDate: { type: Date },
 
 ### 새 API 엔드포인트
 
-| Method | Path | 설명 |
-|--------|------|------|
-| GET | `/api/user/streak` | 현재 스트릭 조회 |
-| GET | `/api/bible/books` | 성경 책 목록 (이미 있음) |
-| GET | `/api/bible/passage/:bookAbbr/:chapters` | 본문 조회 (이미 있음) |
-| GET | `/api/reading/weekly` | 이번 주 읽기 현황 |
-| GET | `/api/leaderboard?period=week` | 기간별 리더보드 |
+| Method | Path                                     | 설명                     |
+| ------ | ---------------------------------------- | ------------------------ |
+| GET    | `/api/user/streak`                       | 현재 스트릭 조회         |
+| GET    | `/api/bible/books`                       | 성경 책 목록 (이미 있음) |
+| GET    | `/api/bible/passage/:bookAbbr/:chapters` | 본문 조회 (이미 있음)    |
+| GET    | `/api/reading/weekly`                    | 이번 주 읽기 현황        |
+| GET    | `/api/leaderboard?period=week`           | 기간별 리더보드          |
 
 ### 포인트 서비스 개선
 
@@ -313,16 +318,19 @@ lastReadDate: { type: Date },
 ## 디자인 시스템 방향
 
 ### 현재 색상 (유지)
+
 - Primary: `blue-700` (#1d4ed8)
 - Success: `green-500/600`
 - Warning: `amber-500`
 
 ### 추가 정의 필요
+
 - 완료 상태 배경: `green-50`
 - 스트릭 강조: `orange-500` (불꽃 느낌)
 - 읽기 텍스트: `slate-800`, line-height 넉넉하게 (1.8)
 
 ### 폰트 크기 (읽기 모드)
+
 - 소: 14px
 - 중: 16px (기본)
 - 대: 18px
@@ -333,12 +341,14 @@ lastReadDate: { type: Date },
 ## 구현 우선순위
 
 ### 즉시 (이번 세션)
+
 - [x] ReadingPage에 성경 본문 인라인 읽기 추가 (groupChapterRefs로 GEN.1 → 창 변환)
 - [x] DashboardPage 개편 (주간캘린더 + 진행률 + CTA, 스트릭은 backend 준비 후 활성화)
 - [x] PassageViewer 풀스크린 개선 (92vh 패널, 장탭, 폰트크기 조절)
 - [x] bible-abbr-map.ts에 BOOK_ID_TO_ABBR_KO 매핑 및 groupChapterRefs 추가
 
 ### 다음 단계 (Phase 2)
+
 - [x] 플랜 생성 UI 개선 (1년/6개월/90일 프리셋 카드)
 - [x] CustomPlanPage 한국어화 + indigo 테마 적용
 - [x] CustomPlanDetailPage 개선 (진행률 바, 커스텀 체크박스, indigo 테마)
@@ -349,10 +359,12 @@ lastReadDate: { type: Date },
 - [ ] Backend streak 시스템 (User 모델 currentStreak/longestStreak)
 
 ### Phase 3 완료
+
 - [x] 성경 탐색 페이지 (/bible) - 구약/신약 탭, 책 목록, 장 선택, 인라인 읽기
 - [x] streak 시스템 backend + frontend 연동
 
 ### 이후 (Phase 4+)
+
 - [ ] 완료 축하 애니메이션 (confetti 등)
 - [ ] 하이라이트/메모 기능
 - [ ] 커스텀 플랜 접근 경로 개선 (Dashboard에서 바로가기)

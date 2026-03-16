@@ -104,9 +104,7 @@ const seed = async () => {
   const bibleData = await fetchJson(BIBLE_JSON_URL);
   console.log(`Downloaded ${bibleData.length} books`);
 
-  const metaByAbbrev = Object.fromEntries(
-    BOOK_META.map((m) => [m.abbrev, m])
-  );
+  const metaByAbbrev = Object.fromEntries(BOOK_META.map((m) => [m.abbrev, m]));
 
   const docs = bibleData.map((book, idx) => {
     const meta = metaByAbbrev[book.abbrev];

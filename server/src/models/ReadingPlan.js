@@ -5,7 +5,7 @@ const dayPlanSchema = new mongoose.Schema({
   scheduledDate: Date,
   chapterRefs: [String],
   isCompleted: { type: Boolean, default: false },
-  completedAt: Date
+  completedAt: Date,
 });
 
 const readingPlanSchema = new mongoose.Schema({
@@ -16,7 +16,7 @@ const readingPlanSchema = new mongoose.Schema({
   chaptersPerDay: Number,
   isActive: { type: Boolean, default: true },
   days: [dayPlanSchema],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
 });
 
 // M-1: userId + isActive 복합 조건으로 자주 조회
