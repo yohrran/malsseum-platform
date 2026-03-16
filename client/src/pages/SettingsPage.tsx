@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useThemeStore } from '../store/theme-store';
 import { useSettingsStore } from '../store/settings-store';
+import { useOfflineDownload } from '../features/bible/useOfflineDownload';
 import { SEOHead } from '../shared/SEOHead';
 import { ROUTES } from '../lib/constants';
 import {
@@ -23,6 +24,7 @@ const THEME_OPTIONS: { value: Theme; label: string }[] = [
 export const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
   const { fontSize, lineHeight, setFontSize, setLineHeight } = useSettingsStore();
+  const offline = useOfflineDownload();
 
   return (
     <>
@@ -97,6 +99,69 @@ export const SettingsPage = () => {
             태초에 하나님이 천지를 창조하시니라 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고
             하나님의 영은 수면 위에 운행하시니라
           </div>
+        </SettingSection>
+
+        {/* Offline Bible */}
+        <SettingSection title="오프라인 성경">
+          {offline.status === 'completed' && offline.downloadedAt ? (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="inline-block h-2 w-2 rounded-full bg-green-500" />
+                <span className="text-sm text-stone-600 dark:text-stone-300">다운로드 완료</span>
+              </div>
+              <p className="text-xs text-stone-400 dark:text-stone-500">
+                {new Date(offline.downloadedAt).toLocaleDateString('ko-KR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+                에 저장됨
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={offline.download}
+                  className="flex-1 rounded-xl bg-stone-100 px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-200 dark:bg-stone-700 dark:text-stone-300 dark:hover:bg-stone-600"
+                >
+                  다시 받기
+                </button>
+                <button
+                  onClick={offline.remove}
+                  className="rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                >
+                  삭제
+                </button>
+              </div>
+            </div>
+          ) : offline.status === 'downloading' ? (
+            <div className="space-y-3">
+              <p className="text-sm text-stone-600 dark:text-stone-300">
+                다운로드 중... ({offline.progress}/{offline.total})
+              </p>
+              <div className="h-2 overflow-hidden rounded-full bg-stone-200 dark:bg-stone-600">
+                <div
+                  className="h-full rounded-full bg-stone-800 transition-all dark:bg-stone-200"
+                  style={{
+                    width: `${offline.total > 0 ? (offline.progress / offline.total) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-xs text-stone-400 dark:text-stone-500">
+                성경 전체를 기기에 저장하면 인터넷 없이도 읽을 수 있습니다.
+              </p>
+              {offline.status === 'error' && offline.errorMessage && (
+                <p className="text-xs text-red-500">{offline.errorMessage}</p>
+              )}
+              <button
+                onClick={offline.download}
+                className="w-full rounded-xl bg-stone-800 px-4 py-3 text-sm font-medium text-white transition-all hover:bg-stone-700 dark:bg-stone-100 dark:text-stone-800 dark:hover:bg-stone-200"
+              >
+                성경 다운로드
+              </button>
+            </div>
+          )}
         </SettingSection>
 
         {/* Reading history */}

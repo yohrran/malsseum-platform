@@ -42,7 +42,7 @@
 | 구절 검색                       | :white_check_mark: | 서버 API + BibleSearchModal (키워드 하이라이트)    |
 | 절 복사/공유                    | :white_check_mark: | VerseActions 컴포넌트 (Clipboard + Web Share API)  |
 | 직접 장/절 이동                 | :white_check_mark: | QuickJumpModal ("창 3:16" 단축 입력 지원)          |
-| 오프라인 성경 텍스트            | :x:                | PWA 셸만 캐싱                                      |
+| 오프라인 성경 텍스트            | :white_check_mark: | IndexedDB 전체 성경 저장 + 오프라인 fallback       |
 | 최근 읽은 위치 기억             | :white_check_mark: | Zustand persist + 이어서 읽기 배너                 |
 | 온보딩/튜토리얼                 | :white_check_mark: | 3단계 온보딩 (환영 → 계획 선택 → 완료)             |
 | 구절 하이라이트                 | :white_check_mark: | 5색 팔레트 (서버 Highlight 모델 + HighlightPicker) |
@@ -153,23 +153,22 @@
 - 자동완성 책 검색 (한글/영문 약어 모두)
 - `창 3:16` 또는 `요 3:16` 같은 단축 입력 파싱
 
-### 3.4 오프라인 성경 텍스트
+### 3.4 오프라인 성경 텍스트 :white_check_mark:
 
-| 항목      | 내용                                                                         |
-| --------- | ---------------------------------------------------------------------------- |
-| 현재 상태 | PWA 셸(앱 프레임)만 캐싱, 성경 데이터는 매번 서버 호출                       |
-| 복잡도    | **L** (Large)                                                                |
-| 영향도    | 매우 높음 - 지하철, 비행기 등 오프라인 환경에서 사용 불가                    |
-| 구현 방향 | IndexedDB에 성경 텍스트 사전 다운로드                                        |
-| 관련 파일 | `client/vite.config.ts` (Workbox 설정), 새 `client/src/lib/offline-bible.ts` |
+| 항목      | 내용                                                                                |
+| --------- | ----------------------------------------------------------------------------------- |
+| 현재 상태 | 완료 - IndexedDB 전체 성경 저장 + 오프라인 fallback                                 |
+| 복잡도    | **L** (Large)                                                                       |
+| 구현 방향 | idb 라이브러리 + bulk API + 훅 레벨 오프라인 fallback                               |
+| 관련 파일 | `client/src/lib/offline-bible.ts`, `client/src/store/offline-store.ts`, 설정 페이지 |
 
 **구현 세부:**
 
-- IndexedDB 스토어 (Dexie.js 또는 idb 라이브러리)
-- 초기 다운로드: 전체 성경 텍스트 (~5MB gzip)
-- Service Worker에서 API 요청 가로채기 → IndexedDB 우선 조회
-- 다운로드 진행률 UI + 저장소 관리 (설정 페이지)
-- 버전 관리: 서버 데이터 변경 시 증분 업데이트
+- `idb` 라이브러리로 IndexedDB 래퍼 (books, chapters, meta 스토어)
+- `GET /api/bible/bulk` 서버 API로 전체 성경 일괄 다운로드
+- `usePassage`, `useBibleBooks`, `useBibleSearch` 훅에 오프라인 fallback 내장
+- 설정 페이지에 다운로드/삭제/재다운로드 UI (진행률 표시)
+- `useOfflineStore` (Zustand persist)로 다운로드 상태 관리
 
 ### 3.5 최근 읽은 위치 기억
 

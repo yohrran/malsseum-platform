@@ -122,4 +122,19 @@ router.get('/search', async (req, res, next) => {
   }
 });
 
+router.get('/bulk', async (req, res, next) => {
+  try {
+    const books = await BibleBook.find({}).sort({ bookIndex: 1 }).lean();
+    const data = books.map((b) => ({
+      abbrKo: b.abbrKo,
+      nameKo: b.nameKo,
+      chapterCount: b.chapterCount,
+      chapters: b.chapters,
+    }));
+    res.json({ success: true, data });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
