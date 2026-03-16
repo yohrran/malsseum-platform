@@ -8,9 +8,10 @@ export const useGoogleAuth = () => {
 
   return useMutation({
     mutationFn: async (credential: string) => {
-      const { data } = await apiClient.post<
-        ApiResponse<{ token: string; user: User }>
-      >('/api/auth/google', { credential });
+      const { data } = await apiClient.post<ApiResponse<{ token: string; user: User }>>(
+        '/api/auth/google',
+        { credential },
+      );
       if (!data.data) throw new Error(data.error ?? 'Auth failed');
       return data.data;
     },

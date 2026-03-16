@@ -15,7 +15,7 @@ export const useCheckDayReading = () => {
     mutationFn: async ({ planId, dayId, isCompleted }: CheckDayReadingParams) => {
       const { data } = await apiClient.patch<ApiResponse<DayPlan>>(
         `/api/reading-plans/${planId}/days/${dayId}`,
-        { isCompleted }
+        { isCompleted },
       );
       if (!data.data) throw new Error(data.error ?? 'Failed to update day');
       return data.data;

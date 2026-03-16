@@ -6,9 +6,8 @@ export const useLeaderboard = () => {
   return useQuery({
     queryKey: ['leaderboard'],
     queryFn: async () => {
-      const { data } = await apiClient.get<ApiResponse<LeaderboardEntry[]>>(
-        '/api/points/leaderboard'
-      );
+      const { data } =
+        await apiClient.get<ApiResponse<LeaderboardEntry[]>>('/api/points/leaderboard');
       if (!data.data) throw new Error(data.error ?? 'Failed to load leaderboard');
       return data.data;
     },

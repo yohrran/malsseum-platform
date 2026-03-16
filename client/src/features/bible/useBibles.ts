@@ -12,9 +12,7 @@ export const useBibleBooks = () => {
   return useQuery({
     queryKey: ['bible-books'],
     queryFn: async () => {
-      const { data } = await apiClient.get<ApiResponse<BibleBookEntry[]>>(
-        '/api/bible/books'
-      );
+      const { data } = await apiClient.get<ApiResponse<BibleBookEntry[]>>('/api/bible/books');
       if (!data.data) throw new Error(data.error ?? 'Failed to load books');
       return data.data;
     },

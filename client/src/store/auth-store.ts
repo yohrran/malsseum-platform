@@ -31,6 +31,6 @@ export const useAuthStore = create<AuthState>()(
         setItem: (key, value) => sessionStorage.setItem(key, JSON.stringify(value)),
         removeItem: (key) => sessionStorage.removeItem(key),
       },
-    }
-  )
+    },
+  ),
 );

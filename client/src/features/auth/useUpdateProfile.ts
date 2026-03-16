@@ -12,10 +12,7 @@ export const useUpdateProfile = () => {
 
   return useMutation({
     mutationFn: async (params: UpdateProfileParams) => {
-      const { data } = await apiClient.patch<ApiResponse<User>>(
-        '/api/auth/profile',
-        params
-      );
+      const { data } = await apiClient.patch<ApiResponse<User>>('/api/auth/profile', params);
       if (!data.data) throw new Error(data.error ?? 'Failed to update profile');
       return data.data;
     },

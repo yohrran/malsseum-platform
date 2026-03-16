@@ -25,7 +25,7 @@ export const usePassage = (bookAbbr: string, chapters: number[]) => {
     queryKey: ['passage', bookAbbr, chaptersParam],
     queryFn: async () => {
       const { data } = await apiClient.get<ApiResponse<PassageData>>(
-        `/api/bible/passage/${encodeURIComponent(bookAbbr)}/${chaptersParam}`
+        `/api/bible/passage/${encodeURIComponent(bookAbbr)}/${chaptersParam}`,
       );
       if (!data.data) throw new Error(data.error ?? 'Failed to load passage');
       return data.data;

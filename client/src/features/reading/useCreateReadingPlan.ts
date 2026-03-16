@@ -12,10 +12,7 @@ export const useCreateReadingPlan = () => {
 
   return useMutation({
     mutationFn: async (params: CreatePlanParams) => {
-      const { data } = await apiClient.post<ApiResponse<ReadingPlan>>(
-        '/api/reading-plans',
-        params
-      );
+      const { data } = await apiClient.post<ApiResponse<ReadingPlan>>('/api/reading-plans', params);
       if (!data.data) throw new Error(data.error ?? 'Failed to create plan');
       return data.data;
     },

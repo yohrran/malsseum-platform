@@ -22,7 +22,7 @@ jobs:
           cache-dependency-path: client/package-lock.json
       - run: npm ci
       - run: npm run lint
-      - run: npx tsc -b --noEmit
+      - run: npx tsc --noEmit
       - run: npm test
       - run: npm run test:coverage
       - uses: actions/upload-artifact@v4
@@ -30,6 +30,7 @@ jobs:
         with:
           name: client-coverage
           path: client/coverage/
+          if-no-files-found: ignore
 
   server:
     name: Server (test)

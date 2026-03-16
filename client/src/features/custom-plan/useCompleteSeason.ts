@@ -13,7 +13,7 @@ export const useCompleteSeason = () => {
   return useMutation({
     mutationFn: async ({ planId, seasonIdx }: CompleteSeasonParams) => {
       const { data } = await apiClient.patch<ApiResponse<CustomPlan>>(
-        `/api/custom-plans/${planId}/seasons/${seasonIdx}/complete`
+        `/api/custom-plans/${planId}/seasons/${seasonIdx}/complete`,
       );
       if (!data.data) throw new Error(data.error ?? 'Failed to complete season');
       return data.data;

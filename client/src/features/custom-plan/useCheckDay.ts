@@ -16,7 +16,7 @@ export const useCheckDay = () => {
     mutationFn: async ({ planId, seasonIdx, dayIdx, isCompleted }: CheckDayParams) => {
       const { data } = await apiClient.patch<ApiResponse<CustomPlan>>(
         `/api/custom-plans/${planId}/seasons/${seasonIdx}/days/${dayIdx}`,
-        { isCompleted }
+        { isCompleted },
       );
       if (!data.data) throw new Error(data.error ?? 'Failed to update day');
       return data.data;
@@ -24,10 +24,7 @@ export const useCheckDay = () => {
     onMutate: async ({ planId, seasonIdx, dayIdx, isCompleted }) => {
       await queryClient.cancelQueries({ queryKey: ['customPlan', planId] });
 
-      const previous = queryClient.getQueryData<CustomPlan>([
-        'customPlan',
-        planId,
-      ]);
+      const previous = queryClient.getQueryData<CustomPlan>(['customPlan', planId]);
 
       if (previous) {
         if (seasonIdx < 0 || seasonIdx >= previous.seasons.length) return { previous };
@@ -46,10 +43,10 @@ export const useCheckDay = () => {
                           isCompleted,
                           completedAt: isCompleted ? new Date().toISOString() : undefined,
                         }
-                      : day
+                      : day,
                   ),
                 }
-              : season
+              : season,
           ),
         };
         queryClient.setQueryData(['customPlan', planId], updated);
