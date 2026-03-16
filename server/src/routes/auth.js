@@ -102,7 +102,7 @@ router.get('/me', authenticate, (req, res) => {
 router.get('/streak', authenticate, async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id).select(
-      'currentStreak longestStreak lastReadDate',
+      'currentStreak longestStreak lastReadDate graceDaysRemaining graceDaysUsedDates',
     );
     res.json({
       success: true,
@@ -110,6 +110,8 @@ router.get('/streak', authenticate, async (req, res, next) => {
         currentStreak: user?.currentStreak ?? 0,
         longestStreak: user?.longestStreak ?? 0,
         lastReadDate: user?.lastReadDate ?? null,
+        graceDaysRemaining: user?.graceDaysRemaining ?? 2,
+        graceDaysUsedDates: user?.graceDaysUsedDates ?? [],
       },
     });
   } catch (err) {

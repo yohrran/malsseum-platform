@@ -29,7 +29,25 @@ const addPoints = async (userId, eventType, points, referenceId, description) =>
   }
 };
 
+const resetGraceDaysIfNeeded = async (userId) => {
+  const user = await User.findById(userId).select('graceDayResetDate graceDaysRemaining');
+  if (!user) return;
+
+  const now = new Date();
+  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  if (!user.graceDayResetDate || user.graceDayResetDate < thisMonth) {
+    await User.findByIdAndUpdate(userId, {
+      graceDaysRemaining: 2,
+      graceDaysUsedDates: [],
+      graceDayResetDate: thisMonth,
+    });
+  }
+};
+
 const checkStreak = async (userId) => {
+  await resetGraceDaysIfNeeded(userId);
+
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -49,33 +67,50 @@ const checkStreak = async (userId) => {
     uniqueDays.add(`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`);
   }
 
-  // M-3: 최대 반복 횟수 제한
+  const user = await User.findById(userId).select(
+    'currentStreak longestStreak graceDaysRemaining graceDaysUsedDates',
+  );
+  if (!user) return 0;
+
+  // Grace day: 빈 날을 자동으로 채워서 스트릭 유지
   let streak = 0;
+  let graceDaysUsedNow = 0;
+  const newGraceDates = [];
   const checkDate = new Date(today);
-  while (streak <= 365) {
+
+  while (streak + graceDaysUsedNow <= 365) {
     const key = `${checkDate.getFullYear()}-${checkDate.getMonth()}-${checkDate.getDate()}`;
     if (uniqueDays.has(key)) {
       streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else if (graceDaysUsedNow < (user.graceDaysRemaining ?? 0) && streak > 0) {
+      // 스트릭이 1일 이상일 때만 grace day 자동 사용
+      graceDaysUsedNow++;
+      newGraceDates.push(new Date(checkDate));
       checkDate.setDate(checkDate.getDate() - 1);
     } else {
       break;
     }
   }
 
+  const totalStreak = streak + graceDaysUsedNow;
   const todayStr = today.toISOString().slice(0, 10);
 
-  // Persist streak to User document
-  const user = await User.findById(userId).select('currentStreak longestStreak');
-  if (user) {
-    const longestStreak = Math.max(streak, user.longestStreak ?? 0);
-    await User.findByIdAndUpdate(userId, {
-      currentStreak: streak,
-      longestStreak,
-      lastReadDate: streak > 0 ? today : user.lastReadDate,
-    });
+  // Grace day 사용 기록 업데이트
+  const updateFields = {
+    currentStreak: totalStreak,
+    longestStreak: Math.max(totalStreak, user.longestStreak ?? 0),
+    lastReadDate: totalStreak > 0 ? today : user.lastReadDate,
+  };
+
+  if (graceDaysUsedNow > 0) {
+    updateFields.graceDaysRemaining = (user.graceDaysRemaining ?? 2) - graceDaysUsedNow;
+    updateFields.graceDaysUsedDates = [...(user.graceDaysUsedDates ?? []), ...newGraceDates];
   }
 
-  if (streak >= 30) {
+  await User.findByIdAndUpdate(userId, updateFields);
+
+  if (totalStreak >= 30) {
     const existing = await PointsLedger.findOne({
       userId,
       eventType: 'streak_30',
@@ -105,7 +140,7 @@ const checkStreak = async (userId) => {
         session.endSession();
       }
     }
-  } else if (streak >= 7) {
+  } else if (totalStreak >= 7) {
     const existing = await PointsLedger.findOne({
       userId,
       eventType: 'streak_7',
@@ -137,7 +172,7 @@ const checkStreak = async (userId) => {
     }
   }
 
-  return streak;
+  return totalStreak;
 };
 
 module.exports = { addPoints, checkStreak };

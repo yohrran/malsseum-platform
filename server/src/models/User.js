@@ -10,6 +10,9 @@ const userSchema = new mongoose.Schema({
   currentStreak: { type: Number, default: 0 },
   longestStreak: { type: Number, default: 0 },
   lastReadDate: { type: Date, default: null },
+  graceDaysRemaining: { type: Number, default: 2 },
+  graceDaysUsedDates: { type: [Date], default: [] },
+  graceDayResetDate: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now },
 });
 

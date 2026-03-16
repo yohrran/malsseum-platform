@@ -6,7 +6,11 @@ type StreakData = {
   currentStreak: number;
   longestStreak: number;
   lastReadDate: string | null;
+  graceDaysRemaining: number;
+  graceDaysUsedDates: string[];
 };
+
+export type { StreakData };
 
 export const useStreak = () => {
   return useQuery({
@@ -16,6 +20,6 @@ export const useStreak = () => {
       if (!data.data) throw new Error(data.error ?? 'Failed to load streak');
       return data.data;
     },
-    staleTime: 1000 * 60 * 5, // 5분 캐시
+    staleTime: 1000 * 60 * 5,
   });
 };

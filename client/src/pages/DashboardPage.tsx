@@ -63,6 +63,7 @@ export const DashboardPage = () => {
         <StreakBanner
           streak={streakData?.currentStreak ?? 0}
           lastReadDate={streakData?.lastReadDate ?? null}
+          graceDaysRemaining={streakData?.graceDaysRemaining ?? 2}
         />
 
         <DailyVerseCard dailyVerse={dailyVerse} />
@@ -281,12 +282,23 @@ const getDaysSinceLastRead = (lastReadDate: string | null): number | null => {
   return Math.floor((today.getTime() - last.getTime()) / (1000 * 60 * 60 * 24));
 };
 
+const GraceDayBadge = ({ remaining }: { remaining: number }) => (
+  <div className="mt-2 flex items-center gap-1.5">
+    <span className="text-xs" aria-hidden>
+      🛡️
+    </span>
+    <span className="text-xs text-stone-400 dark:text-stone-500">면제권 {remaining}/2 남음</span>
+  </div>
+);
+
 const StreakBanner = ({
   streak,
   lastReadDate,
+  graceDaysRemaining,
 }: {
   streak: number;
   lastReadDate: string | null;
+  graceDaysRemaining: number;
 }) => {
   const daysSince = getDaysSinceLastRead(lastReadDate);
 
@@ -306,6 +318,7 @@ const StreakBanner = ({
           <p className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
             매일 읽으면 스트릭이 쌓여요
           </p>
+          <GraceDayBadge remaining={graceDaysRemaining} />
         </div>
       </div>
     );
@@ -315,7 +328,7 @@ const StreakBanner = ({
   if (daysSince <= 1 && streak >= 2) {
     return (
       <div className="flex items-center gap-3 rounded-2xl bg-amber-50 px-5 py-4 ring-1 ring-amber-200/60">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-stone-800 dark:bg-stone-800">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-stone-800">
           <span className="text-lg" aria-hidden>
             🔥
           </span>
@@ -323,6 +336,7 @@ const StreakBanner = ({
         <div>
           <p className="text-sm font-semibold text-amber-800">연속 {streak}일째 읽고 있어요!</p>
           <p className="mt-0.5 text-xs text-amber-600/70">계속 이어가 보세요</p>
+          <GraceDayBadge remaining={graceDaysRemaining} />
         </div>
       </div>
     );
@@ -332,7 +346,7 @@ const StreakBanner = ({
   if (daysSince >= 2) {
     return (
       <div className="flex items-center gap-3 rounded-2xl bg-blue-50 px-5 py-4 ring-1 ring-blue-200/60">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-stone-800 dark:bg-stone-800">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-stone-800">
           <span className="text-lg" aria-hidden>
             📖
           </span>
@@ -340,6 +354,7 @@ const StreakBanner = ({
         <div>
           <p className="text-sm font-semibold text-blue-800">{daysSince}일 만에 돌아오셨네요!</p>
           <p className="mt-0.5 text-xs text-blue-600/70">오늘 말씀을 읽어볼까요?</p>
+          <GraceDayBadge remaining={graceDaysRemaining} />
         </div>
       </div>
     );
@@ -358,6 +373,7 @@ const StreakBanner = ({
         <p className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
           내일도 읽으면 연속 기록이 시작돼요
         </p>
+        <GraceDayBadge remaining={graceDaysRemaining} />
       </div>
     </div>
   );
