@@ -10,6 +10,15 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recha
 export const StatsPage = () => {
   const { data: stats, isLoading } = useReadingStats();
   const { data: streakData } = useStreak();
+  const {
+    goalPeriod,
+    goalChapters,
+    isGoalEnabled,
+    setGoalPeriod,
+    setGoalChapters,
+    setGoalEnabled,
+  } = useReadingGoalStore();
+  const [isGoalEditing, setIsGoalEditing] = useState(false);
 
   if (isLoading) {
     return (
@@ -23,16 +32,6 @@ export const StatsPage = () => {
       </div>
     );
   }
-
-  const {
-    goalPeriod,
-    goalChapters,
-    isGoalEnabled,
-    setGoalPeriod,
-    setGoalChapters,
-    setGoalEnabled,
-  } = useReadingGoalStore();
-  const [isGoalEditing, setIsGoalEditing] = useState(false);
 
   const weeklyData = (stats?.weekly ?? []).map((w) => ({
     name: w.week.replace(/^\d{4}-W/, 'W'),
