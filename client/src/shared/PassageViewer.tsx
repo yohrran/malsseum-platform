@@ -1,8 +1,16 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { usePassage } from '../features/bible/usePassage';
 import { useBookmarks } from '../features/bookmarks/useBookmarks';
 import { BookmarkButton } from '../features/bookmarks/BookmarkButton';
 import { VerseActions } from '../features/bible/VerseActions';
+import { CrossReferenceButton } from '../features/bible/CrossReferencePopup';
+import {
+  useHighlights,
+  useSetHighlight,
+  useRemoveHighlight,
+  type HighlightColor,
+} from '../features/highlights/useHighlights';
+import { HighlightPicker, HIGHLIGHT_BG } from '../features/highlights/HighlightPicker';
 import { LoadingSpinner } from './LoadingSpinner';
 import { useT } from '../lib/i18n';
 import { BOOK_NAMES_KO } from '../lib/bible-abbr-map';
@@ -14,6 +22,7 @@ import {
   FONT_DISPLAY_SIZE_BIBLE as FONT_DISPLAY_SIZE,
 } from '../lib/font-config';
 import { useSettingsStore } from '../store/settings-store';
+import { useSwipe } from '../lib/use-swipe';
 
 type Props = {
   bookAbbr: string;
@@ -49,6 +58,36 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
     bookmarks?.forEach((b) => set.add(b.verse));
     return set;
   }, [bookmarks]);
+
+  const { data: highlights } = useHighlights(bookAbbr, currentChapterNum);
+  const setHighlight = useSetHighlight();
+  const removeHighlight = useRemoveHighlight();
+  const [pickerVerse, setPickerVerse] = useState<number | null>(null);
+
+  const highlightMap = useMemo(() => {
+    const map = new Map<number, HighlightColor>();
+    highlights?.forEach((h) => map.set(h.verse, h.color));
+    return map;
+  }, [highlights]);
+
+  const handleHighlightSelect = useCallback(
+    (verse: number, color: HighlightColor) => {
+      setHighlight.mutate({ bookId: bookAbbr, chapter: currentChapterNum, verse, color });
+    },
+    [setHighlight, bookAbbr, currentChapterNum],
+  );
+
+  const handleHighlightRemove = useCallback(
+    (verse: number) => {
+      removeHighlight.mutate({ bookId: bookAbbr, chapter: currentChapterNum, verse });
+    },
+    [removeHighlight, bookAbbr, currentChapterNum],
+  );
+
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: () => setActiveChapterIdx((i) => Math.min(chapters.length - 1, i + 1)),
+    onSwipeRight: () => setActiveChapterIdx((i) => Math.max(0, i - 1)),
+  });
 
   return (
     <div
@@ -161,7 +200,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
         )}
 
         {/* Content */}
-        <div ref={contentRef} className="flex-1 overflow-y-auto px-5 py-5">
+        <div ref={contentRef} className="flex-1 overflow-y-auto px-5 py-5" {...swipeHandlers}>
           {isLoading && (
             <div className="flex h-32 items-center justify-center">
               <LoadingSpinner />
@@ -176,33 +215,79 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
               <div
                 className={`space-y-1 text-stone-800 dark:text-stone-100 ${FONT_SIZE_CLASS[fontSize]} ${LINE_HEIGHT_CLASS[lineHeight]}`}
               >
-                {activeChapter.verses.map((v) => (
-                  <p key={v.verse} className="group flex gap-3">
-                    <span
-                      aria-hidden="true"
-                      className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300"
+                {activeChapter.verses.map((v) => {
+                  const verseColor = highlightMap.get(v.verse);
+                  const hasAction = bookmarkedVerses.has(v.verse) || !!verseColor;
+                  return (
+                    <p
+                      key={v.verse}
+                      className={`group relative flex gap-3 rounded-md px-1 -mx-1 ${verseColor ? HIGHLIGHT_BG[verseColor] : ''}`}
                     >
-                      {v.verse}
-                    </span>
-                    <span className="flex-1">{v.text}</span>
-                    <span
-                      className={`shrink-0 pt-0.5 flex items-center gap-0.5 ${bookmarkedVerses.has(v.verse) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}
-                    >
-                      <VerseActions
-                        bookName={data.bookName}
-                        chapter={activeChapter.chapter}
-                        verse={v.verse}
-                        text={v.text}
-                      />
-                      <BookmarkButton
-                        bookId={bookAbbr}
-                        chapter={activeChapter.chapter}
-                        verse={v.verse}
-                        isBookmarked={bookmarkedVerses.has(v.verse)}
-                      />
-                    </span>
-                  </p>
-                ))}
+                      <span
+                        aria-hidden="true"
+                        className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300"
+                      >
+                        {v.verse}
+                      </span>
+                      <span className="flex-1">{v.text}</span>
+                      <span
+                        className={`shrink-0 pt-0.5 flex items-center gap-0.5 ${hasAction ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}
+                      >
+                        <button
+                          onClick={() => setPickerVerse(pickerVerse === v.verse ? null : v.verse)}
+                          className={`flex h-6 w-6 items-center justify-center rounded-md transition-colors ${
+                            verseColor
+                              ? 'text-amber-500 dark:text-amber-400'
+                              : 'text-stone-300 hover:text-stone-500 dark:text-stone-500 dark:hover:text-stone-300'
+                          }`}
+                          aria-label="하이라이트"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="13"
+                            height="13"
+                            viewBox="0 0 24 24"
+                            fill={verseColor ? 'currentColor' : 'none'}
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                          </svg>
+                        </button>
+                        {pickerVerse === v.verse && (
+                          <div className="absolute right-0 top-8 z-50">
+                            <HighlightPicker
+                              currentColor={verseColor ?? null}
+                              onSelect={(color) => handleHighlightSelect(v.verse, color)}
+                              onRemove={() => handleHighlightRemove(v.verse)}
+                              onClose={() => setPickerVerse(null)}
+                            />
+                          </div>
+                        )}
+                        <CrossReferenceButton
+                          bookAbbr={bookAbbr}
+                          chapter={activeChapter.chapter}
+                          verse={v.verse}
+                        />
+                        <VerseActions
+                          bookName={data.bookName}
+                          chapter={activeChapter.chapter}
+                          verse={v.verse}
+                          text={v.text}
+                        />
+                        <BookmarkButton
+                          bookId={bookAbbr}
+                          chapter={activeChapter.chapter}
+                          verse={v.verse}
+                          isBookmarked={bookmarkedVerses.has(v.verse)}
+                        />
+                      </span>
+                    </p>
+                  );
+                })}
               </div>
             </div>
           )}
