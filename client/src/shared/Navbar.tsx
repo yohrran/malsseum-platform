@@ -52,6 +52,7 @@ export const Navbar = () => {
                   <Link
                     key={link.to}
                     to={link.to}
+                    aria-current={isActive ? 'page' : undefined}
                     className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-all ${
                       isActive
                         ? 'bg-stone-100 dark:bg-stone-700 font-semibold text-stone-800 dark:bg-stone-800 dark:text-stone-100'
@@ -133,6 +134,7 @@ export const Navbar = () => {
               <Link
                 key={link.to}
                 to={link.to}
+                aria-current={isActive ? 'page' : undefined}
                 className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-center transition-colors ${
                   isActive
                     ? 'text-stone-800 dark:text-stone-100'

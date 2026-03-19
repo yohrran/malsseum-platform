@@ -242,9 +242,11 @@ export const BiblePage = () => {
 
         {/* OT / NT tabs */}
         {!isSearching && (
-          <div className="flex gap-1 rounded-xl bg-stone-100 dark:bg-stone-700 p-1">
+          <div className="flex gap-1 rounded-xl bg-stone-100 dark:bg-stone-700 p-1" role="tablist">
             <button
               onClick={() => setTab('ot')}
+              role="tab"
+              aria-selected={tab === 'ot'}
               className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
                 tab === 'ot'
                   ? 'bg-white dark:bg-stone-800 text-stone-800 shadow-sm'
@@ -255,6 +257,8 @@ export const BiblePage = () => {
             </button>
             <button
               onClick={() => setTab('nt')}
+              role="tab"
+              aria-selected={tab === 'nt'}
               className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
                 tab === 'nt'
                   ? 'bg-white dark:bg-stone-800 text-stone-800 shadow-sm'
