@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useReadingStats } from '../features/reading/useReadingStats';
 import { useStreak } from '../features/auth/useStreak';
 import { useReadingGoalStore } from '../store/reading-goal-store';
+import { ROUTES } from '../lib/constants';
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
 import { StatCard } from '../shared/StatCard';
@@ -161,6 +163,20 @@ export const StatsPage = () => {
             ))}
           </div>
         </div>
+
+        {/* Yearly report link */}
+        <Link
+          to={ROUTES.YEARLY_REPORT}
+          className="flex items-center justify-between rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
+        >
+          <div>
+            <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">연간 리포트</p>
+            <p className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
+              올해 읽기 통계 요약 보기
+            </p>
+          </div>
+          <span className="text-sm text-stone-300 dark:text-stone-500">&rarr;</span>
+        </Link>
       </div>
     </>
   );

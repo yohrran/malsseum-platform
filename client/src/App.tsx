@@ -14,6 +14,7 @@ import { StatsPage } from './pages/StatsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { ReadingHistoryPage } from './pages/ReadingHistoryPage';
+import { YearlyReportPage } from './pages/YearlyReportPage';
 
 export const App = () => {
   return (
@@ -45,6 +46,7 @@ export const App = () => {
           <Route path="/stats" element={<StatsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/reading-history" element={<ReadingHistoryPage />} />
+          <Route path="/yearly-report" element={<YearlyReportPage />} />
         </Route>
       </Routes>
     </ErrorBoundary>

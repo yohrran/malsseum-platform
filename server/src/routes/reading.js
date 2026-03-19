@@ -169,6 +169,100 @@ router.get('/stats', async (req, res, next) => {
   }
 });
 
+router.get('/yearly-report', async (req, res, next) => {
+  try {
+    const year = parseInt(req.query.year, 10) || new Date().getFullYear();
+    const yearStart = new Date(year, 0, 1);
+    const yearEnd = new Date(year, 11, 31, 23, 59, 59);
+
+    const ReadingPlan = require('../models/ReadingPlan');
+    const CustomPlan = require('../models/CustomPlan');
+    const User = require('../models/User');
+
+    const [plans, customPlans, user] = await Promise.all([
+      ReadingPlan.find({ userId: req.user._id }),
+      CustomPlan.find({ userId: req.user._id }),
+      User.findById(req.user._id).select('totalPoints currentStreak longestStreak createdAt'),
+    ]);
+
+    const monthlyChapters = {};
+    const bookCounts = {};
+    let totalChapters = 0;
+    let totalDays = 0;
+    const completedDates = new Set();
+
+    for (const plan of plans) {
+      for (const day of plan.days) {
+        if (!day.isCompleted || !day.completedAt) continue;
+        const d = new Date(day.completedAt);
+        if (d < yearStart || d > yearEnd) continue;
+
+        const dateStr = d.toISOString().slice(0, 10);
+        const monthKey = d.getMonth();
+        const chapters = day.chapterRefs.length;
+
+        monthlyChapters[monthKey] = (monthlyChapters[monthKey] || 0) + chapters;
+        totalChapters += chapters;
+        completedDates.add(dateStr);
+
+        for (const ref of day.chapterRefs) {
+          const bookName = ref.split(' ')[0];
+          bookCounts[bookName] = (bookCounts[bookName] || 0) + 1;
+        }
+      }
+    }
+
+    for (const plan of customPlans) {
+      for (const season of plan.seasons) {
+        for (const day of season.days) {
+          if (!day.isCompleted || !day.completedAt) continue;
+          const d = new Date(day.completedAt);
+          if (d < yearStart || d > yearEnd) continue;
+
+          const dateStr = d.toISOString().slice(0, 10);
+          const monthKey = d.getMonth();
+          const chapters = day.chapters.length;
+
+          monthlyChapters[monthKey] = (monthlyChapters[monthKey] || 0) + chapters;
+          totalChapters += chapters;
+          completedDates.add(dateStr);
+
+          if (day.bookAbbr) {
+            bookCounts[day.bookAbbr] = (bookCounts[day.bookAbbr] || 0) + chapters;
+          }
+        }
+      }
+    }
+
+    totalDays = completedDates.size;
+
+    const topBooks = Object.entries(bookCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([book, count]) => ({ book, count }));
+
+    const monthly = Array.from({ length: 12 }, (_, i) => ({
+      month: i,
+      chapters: monthlyChapters[i] || 0,
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        year,
+        totalChapters,
+        totalDays,
+        totalPoints: user?.totalPoints ?? 0,
+        longestStreak: user?.longestStreak ?? 0,
+        monthly,
+        topBooks,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 function getWeekKey(date) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
