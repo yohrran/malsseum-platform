@@ -22,6 +22,7 @@ import {
   FONT_DISPLAY_SIZE_BIBLE as FONT_DISPLAY_SIZE,
 } from '../lib/font-config';
 import { useSettingsStore } from '../store/settings-store';
+import { useLastReadStore } from '../store/last-read-store';
 import { useSwipe } from '../lib/use-swipe';
 
 type Props = {
@@ -38,9 +39,21 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
   const [activeChapterIdx, setActiveChapterIdx] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  const setLastPosition = useLastReadStore((s) => s.setLastPosition);
+
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [activeChapterIdx]);
+
+  useEffect(() => {
+    if (data) {
+      setLastPosition({
+        bookAbbr,
+        bookName: data.bookName,
+        chapter: chapters[activeChapterIdx],
+      });
+    }
+  }, [data, bookAbbr, activeChapterIdx, chapters, setLastPosition]);
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {

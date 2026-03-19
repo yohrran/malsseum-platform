@@ -10,6 +10,7 @@ import { SEOHead } from '../shared/SEOHead';
 import { ROUTES } from '../lib/constants';
 import { useT } from '../lib/i18n';
 import { groupChapterRefs } from '../lib/bible-abbr-map';
+import { useLastReadStore } from '../store/last-read-store';
 
 const DashboardSkeleton = () => (
   <div className="space-y-5 pb-6">
@@ -33,6 +34,7 @@ export const DashboardPage = () => {
   const { data: plans, isLoading: plansLoading } = useReadingPlan();
   const { data: streakData } = useStreak();
   const dailyVerse = useDailyVerse();
+  const lastPosition = useLastReadStore((s) => s.lastPosition);
   const t = useT();
 
   if (plansLoading) return <DashboardSkeleton />;
@@ -65,6 +67,8 @@ export const DashboardPage = () => {
           lastReadDate={streakData?.lastReadDate ?? null}
           graceDaysRemaining={streakData?.graceDaysRemaining ?? 2}
         />
+
+        {lastPosition && <LastReadCard position={lastPosition} />}
 
         <DailyVerseCard dailyVerse={dailyVerse} />
 
@@ -399,6 +403,59 @@ const DailyVerseCard = ({ dailyVerse }: { dailyVerse: ReturnType<typeof useDaily
       </p>
     </div>
   );
+};
+
+const LastReadCard = ({
+  position,
+}: {
+  position: { bookAbbr: string; bookName: string; chapter: number; timestamp: number };
+}) => {
+  const timeAgo = getTimeAgo(position.timestamp);
+
+  return (
+    <Link
+      to={`${ROUTES.BIBLE}?book=${position.bookAbbr}&chapter=${position.chapter}`}
+      className="group flex items-center gap-4 rounded-2xl bg-white dark:bg-stone-800 p-4 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
+    >
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/30">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-amber-600 dark:text-amber-400"
+        >
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-stone-700 dark:text-stone-200 truncate">
+          {position.bookName} {position.chapter}장 이어읽기
+        </p>
+        <p className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">{timeAgo}</p>
+      </div>
+      <span className="text-sm text-stone-300 transition-colors group-hover:text-stone-500 dark:text-stone-500">
+        →
+      </span>
+    </Link>
+  );
+};
+
+const getTimeAgo = (timestamp: number): string => {
+  const diff = Date.now() - timestamp;
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return '방금 전';
+  if (minutes < 60) return `${minutes}분 전`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}시간 전`;
+  const days = Math.floor(hours / 24);
+  return `${days}일 전`;
 };
 
 const DAY_LABELS = ['월', '화', '수', '목', '금', '토', '일'];
