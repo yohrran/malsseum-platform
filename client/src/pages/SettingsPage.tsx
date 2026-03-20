@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useThemeStore } from '../store/theme-store';
 import { useSettingsStore } from '../store/settings-store';
+import { useLangStore, type Lang } from '../store/lang-store';
 import { useOfflineDownload } from '../features/bible/useOfflineDownload';
 import { SEOHead } from '../shared/SEOHead';
 import { ROUTES } from '../lib/constants';
@@ -21,9 +22,15 @@ const THEME_OPTIONS: { value: Theme; label: string }[] = [
   { value: 'system', label: '시스템' },
 ];
 
+const LANG_OPTIONS: { value: Lang; label: string }[] = [
+  { value: 'ko', label: '한국어' },
+  { value: 'en', label: 'English' },
+];
+
 export const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
   const { fontSize, lineHeight, setFontSize, setLineHeight } = useSettingsStore();
+  const { lang, setLang } = useLangStore();
   const offline = useOfflineDownload();
 
   return (
@@ -43,6 +50,25 @@ export const SettingsPage = () => {
                 onClick={() => setTheme(option.value)}
                 className={`flex-1 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
                   theme === option.value
+                    ? 'bg-stone-800 text-white dark:bg-stone-100 dark:text-stone-800'
+                    : 'bg-stone-100 text-stone-500 hover:bg-stone-200 dark:bg-stone-700 dark:text-stone-400 dark:hover:bg-stone-600'
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </SettingSection>
+
+        {/* Language */}
+        <SettingSection title="언어 / Language">
+          <div className="flex gap-2">
+            {LANG_OPTIONS.map((option) => (
+              <button
+                key={option.value}
+                onClick={() => setLang(option.value)}
+                className={`flex-1 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                  lang === option.value
                     ? 'bg-stone-800 text-white dark:bg-stone-100 dark:text-stone-800'
                     : 'bg-stone-100 text-stone-500 hover:bg-stone-200 dark:bg-stone-700 dark:text-stone-400 dark:hover:bg-stone-600'
                 }`}
