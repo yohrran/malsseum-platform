@@ -78,9 +78,7 @@ export const LoginPage = () => {
             {googleAuth.isPending && (
               <div className="flex items-center gap-2">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-stone-800 border-t-transparent" />
-                <p className="text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">
-                  로그인 중...
-                </p>
+                <p className="text-sm text-stone-500 dark:text-stone-400">로그인 중...</p>
               </div>
             )}
           </div>

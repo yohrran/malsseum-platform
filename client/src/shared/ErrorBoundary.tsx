@@ -22,7 +22,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100">
             오류가 발생했습니다
           </h2>
-          <p className="text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">
+          <p className="text-sm text-stone-500 dark:text-stone-400">
             예상치 못한 오류가 발생했습니다. 다시 시도해 주세요.
           </p>
           <button

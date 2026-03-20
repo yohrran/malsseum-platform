@@ -272,7 +272,7 @@ const DayList = ({ days, today, todayItemRef, remaining, onShowMore, t }: DayLis
       {remaining > 0 && (
         <button
           onClick={onShowMore}
-          className="mt-3 flex w-full items-center justify-center rounded-xl bg-white dark:bg-stone-800 py-2.5 text-xs font-medium text-stone-500 ring-1 ring-stone-200/60 transition-colors hover:bg-stone-50 dark:bg-stone-800"
+          className="mt-3 flex w-full items-center justify-center rounded-xl bg-white dark:bg-stone-800 py-2.5 text-xs font-medium text-stone-500 dark:text-stone-400 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-colors hover:bg-stone-50 dark:hover:bg-stone-700"
         >
           더 보기 ({remaining}일 남음)
         </button>
@@ -546,7 +546,7 @@ const CreatePlanView = ({
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-stone-500 dark:text-stone-400 dark:text-stone-500">
+              <label className="mb-1.5 block text-xs font-medium text-stone-500 dark:text-stone-400">
                 {t.startDate}
               </label>
               <input
@@ -556,12 +556,12 @@ const CreatePlanView = ({
                   onStartDate(e.target.value);
                   setSelectedPreset(null);
                 }}
-                className="h-11 w-full rounded-xl border-0 bg-stone-50 dark:bg-stone-800 px-3 text-sm ring-1 ring-stone-200/60 transition-all focus:bg-white dark:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-400"
+                className="h-11 w-full rounded-xl border-0 bg-stone-50 dark:bg-stone-800 px-3 text-sm text-stone-800 dark:text-stone-100 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all focus:bg-white dark:focus:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400 dark:focus:ring-stone-500"
                 required
               />
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-stone-500 dark:text-stone-400 dark:text-stone-500">
+              <label className="mb-1.5 block text-xs font-medium text-stone-500 dark:text-stone-400">
                 {t.endDate}
               </label>
               <input
@@ -571,7 +571,7 @@ const CreatePlanView = ({
                   onEndDate(e.target.value);
                   setSelectedPreset(null);
                 }}
-                className="h-11 w-full rounded-xl border-0 bg-stone-50 dark:bg-stone-800 px-3 text-sm ring-1 ring-stone-200/60 transition-all focus:bg-white dark:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-400"
+                className="h-11 w-full rounded-xl border-0 bg-stone-50 dark:bg-stone-800 px-3 text-sm text-stone-800 dark:text-stone-100 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all focus:bg-white dark:focus:bg-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400 dark:focus:ring-stone-500"
                 required
               />
             </div>

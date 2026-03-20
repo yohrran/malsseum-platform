@@ -234,12 +234,12 @@ export const BiblePage = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="성경 검색 (예: 창세기, 마태복음)"
-            className="h-11 w-full rounded-xl border-0 bg-white dark:bg-stone-800 pl-9 pr-4 text-sm text-stone-800 placeholder-stone-400 outline-none ring-1 ring-stone-200/60 transition-all focus:ring-2 focus:ring-stone-400"
+            className="h-11 w-full rounded-xl border-0 bg-white dark:bg-stone-800 pl-9 pr-4 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 outline-none ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all focus:ring-2 focus:ring-stone-400 dark:focus:ring-stone-500"
           />
           {isSearching && (
             <button
               onClick={() => setSearch('')}
-              className="absolute inset-y-0 right-3 flex items-center text-stone-400 hover:text-stone-600"
+              className="absolute inset-y-0 right-3 flex items-center text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -264,8 +264,8 @@ export const BiblePage = () => {
               aria-selected={tab === 'ot'}
               className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
                 tab === 'ot'
-                  ? 'bg-white dark:bg-stone-800 text-stone-800 shadow-sm'
-                  : 'text-stone-400'
+                  ? 'bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 shadow-sm'
+                  : 'text-stone-400 dark:text-stone-500'
               }`}
             >
               구약 ({OT_COUNT}권)
@@ -276,8 +276,8 @@ export const BiblePage = () => {
               aria-selected={tab === 'nt'}
               className={`flex h-9 flex-1 items-center justify-center rounded-lg text-sm font-medium transition-all ${
                 tab === 'nt'
-                  ? 'bg-white dark:bg-stone-800 text-stone-800 shadow-sm'
-                  : 'text-stone-400'
+                  ? 'bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 shadow-sm'
+                  : 'text-stone-400 dark:text-stone-500'
               }`}
             >
               신약 ({(books?.length ?? 66) - OT_COUNT}권)
@@ -341,7 +341,7 @@ export const BiblePage = () => {
                   <button
                     key={`${entry.abbrKo}-${entry.chapter}`}
                     onClick={() => handleSetReading({ book, chapter: entry.chapter })}
-                    className="shrink-0 rounded-lg bg-white dark:bg-stone-800 px-3 py-1.5 text-xs font-medium text-stone-600 ring-1 ring-stone-200/60 transition-colors hover:bg-stone-50 dark:bg-stone-800"
+                    className="shrink-0 rounded-lg bg-white dark:bg-stone-800 px-3 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-400 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-colors hover:bg-stone-50 dark:hover:bg-stone-700"
                   >
                     {entry.abbrKo} {entry.chapter}장
                   </button>
@@ -362,12 +362,14 @@ export const BiblePage = () => {
               <button
                 key={book.abbrKo}
                 onClick={() => setSelectedBook(book)}
-                className="flex flex-col items-start rounded-xl bg-white dark:bg-stone-800 p-3.5 text-left ring-1 ring-stone-200/60 transition-all hover:bg-stone-50 dark:bg-stone-800 hover:ring-stone-300 active:bg-stone-100 dark:bg-stone-700"
+                className="flex flex-col items-start rounded-xl bg-white dark:bg-stone-800 p-3.5 text-left ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:bg-stone-50 dark:hover:bg-stone-700 hover:ring-stone-300 active:bg-stone-100 dark:active:bg-stone-600"
               >
                 <span className="text-sm font-bold text-stone-800 dark:text-stone-100">
                   {book.abbrKo}
                 </span>
-                <span className="mt-1 text-xs text-stone-400 line-clamp-1">{book.nameKo}</span>
+                <span className="mt-1 text-xs text-stone-400 dark:text-stone-500 line-clamp-1">
+                  {book.nameKo}
+                </span>
                 <span className="mt-1.5 text-xs tabular-nums text-stone-400 dark:text-stone-500">
                   {book.chapterCount}장
                 </span>
@@ -430,7 +432,7 @@ const ChapterSelector = ({ book, onSelect, onBack }: ChapterSelectorProps) => {
           <button
             key={ch}
             onClick={() => onSelect(ch)}
-            className="flex h-12 items-center justify-center rounded-xl bg-white dark:bg-stone-800 text-sm font-medium tabular-nums text-stone-700 ring-1 ring-stone-200/60 transition-all hover:bg-stone-50 dark:bg-stone-800 hover:ring-stone-300 active:bg-stone-100 dark:bg-stone-700"
+            className="flex h-12 items-center justify-center rounded-xl bg-white dark:bg-stone-800 text-sm font-medium tabular-nums text-stone-700 dark:text-stone-200 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:bg-stone-50 dark:hover:bg-stone-700 hover:ring-stone-300 active:bg-stone-100 dark:active:bg-stone-600"
           >
             {ch}
           </button>

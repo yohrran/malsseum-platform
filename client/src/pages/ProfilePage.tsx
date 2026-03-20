@@ -79,7 +79,7 @@ export const ProfilePage = () => {
             </h2>
 
             <div className="mt-3 flex items-end justify-between">
-              <span className="text-sm tabular-nums text-stone-500 dark:text-stone-400 dark:text-stone-500">
+              <span className="text-sm tabular-nums text-stone-500 dark:text-stone-400">
                 {completedDays} / {totalDays}일
               </span>
               <span className="text-sm font-bold tabular-nums text-stone-800 dark:text-stone-100">
