@@ -316,7 +316,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
             <button
               onClick={() => setActiveChapterIdx((i) => Math.max(0, i - 1))}
               disabled={activeChapterIdx === 0}
-              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:bg-stone-700 disabled:opacity-30"
+              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 disabled:opacity-30"
             >
               ← 이전 장
             </button>
@@ -326,7 +326,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
             <button
               onClick={() => setActiveChapterIdx((i) => Math.min(chapters.length - 1, i + 1))}
               disabled={activeChapterIdx === chapters.length - 1}
-              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:bg-stone-700 disabled:opacity-30"
+              className="flex h-10 items-center rounded-lg px-3 text-xs font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 disabled:opacity-30"
             >
               다음 장 →
             </button>

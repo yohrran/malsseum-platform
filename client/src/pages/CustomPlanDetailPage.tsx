@@ -70,7 +70,7 @@ export const CustomPlanDetailPage = () => {
               className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 py-2 text-sm transition-all ${
                 idx === activeSeasonIdx
                   ? 'bg-stone-800 font-semibold text-white'
-                  : 'text-stone-400 hover:bg-stone-100 dark:bg-stone-700 hover:text-stone-600'
+                  : 'text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-stone-600'
               }`}
             >
               SEASON {season.seasonNumber}
@@ -134,16 +134,16 @@ export const CustomPlanDetailPage = () => {
                           : 'text-stone-700 dark:text-stone-200'
                       }`}
                     >
-                      <span className="font-medium text-stone-500 dark:text-stone-400 dark:text-stone-500">
+                      <span className="font-medium text-stone-500 dark:text-stone-400">
                         {day.date}
                       </span>
-                      <span className="mx-1.5 text-stone-200">·</span>
+                      <span className="mx-1.5 text-stone-200 dark:text-stone-600">·</span>
                       {BOOK_NAMES_KO[day.bookAbbr] ?? day.bookAbbr} {day.chapters.join(', ')}장
                     </span>
 
                     <button
                       onClick={() => handleViewPassage(day.bookAbbr, day.chapters, day.date)}
-                      className="flex h-8 shrink-0 items-center rounded-lg px-3 text-xs font-medium text-stone-400 transition-colors hover:bg-stone-50 dark:bg-stone-800 hover:text-stone-600 active:bg-stone-100 dark:bg-stone-700"
+                      className="flex h-8 shrink-0 items-center rounded-lg px-3 text-xs font-medium text-stone-400 transition-colors hover:bg-stone-50 dark:hover:bg-stone-700 hover:text-stone-600 dark:hover:text-stone-300 active:bg-stone-100 dark:active:bg-stone-600"
                     >
                       {t.viewPassage}
                     </button>
@@ -155,7 +155,9 @@ export const CustomPlanDetailPage = () => {
             {/* Season complete banner */}
             {activeSeason.isCompleted && (
               <div className="flex items-center justify-center gap-2 rounded-2xl bg-stone-100 dark:bg-stone-700 py-5">
-                <p className="text-sm font-semibold text-stone-600">{t.seasonComplete} ✓</p>
+                <p className="text-sm font-semibold text-stone-600 dark:text-stone-200">
+                  {t.seasonComplete} ✓
+                </p>
               </div>
             )}
 

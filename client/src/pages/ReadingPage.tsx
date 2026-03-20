@@ -236,7 +236,7 @@ const DayList = ({ days, today, todayItemRef, remaining, onShowMore, t }: DayLis
                     {day.isCompleted ? '✓' : day.dayNumber}
                   </div>
                   <div>
-                    <span className="text-xs font-medium text-stone-500 dark:text-stone-400 dark:text-stone-500">
+                    <span className="text-xs font-medium text-stone-500 dark:text-stone-400">
                       {new Date(day.scheduledDate).toLocaleDateString('ko-KR', {
                         month: 'short',
                         day: 'numeric',
@@ -380,7 +380,9 @@ const InlineBibleReader = ({
                 <h3 className="mb-4 text-xs font-bold tracking-widest text-stone-400 dark:text-stone-500">
                   {data.bookName} {ch.chapter}장
                 </h3>
-                <div className={`space-y-1 text-stone-800 ${FONT_SIZE_CLASS[fontSize]}`}>
+                <div
+                  className={`space-y-1 text-stone-800 dark:text-stone-100 ${FONT_SIZE_CLASS[fontSize]}`}
+                >
                   {ch.verses.map((v) => (
                     <p key={v.verse} className="flex gap-3">
                       <span className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300">

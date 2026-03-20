@@ -29,14 +29,14 @@ export const ProfilePage = () => {
   return (
     <>
       <SEOHead title="프로필" />
-      <div className="mx-auto max-w-lg space-y-5 pb-10">
+      <div className="space-y-5 pb-6">
         <h1 className="text-2xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
           {t.profile}
         </h1>
 
         {/* Profile header */}
         <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-stone-800 ring-1 ring-stone-200/60 dark:ring-stone-700/60">
-          <div className="h-24 bg-gradient-to-br from-stone-100 to-stone-200/60" />
+          <div className="h-24 bg-gradient-to-br from-stone-100 to-stone-200/60 dark:from-stone-700 dark:to-stone-600/60" />
           <div className="px-6 pb-6">
             <div className="-mt-12 flex flex-col items-center text-center">
               {user?.picture ? (
@@ -89,7 +89,7 @@ export const ProfilePage = () => {
 
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-stone-100 dark:bg-stone-700">
               <div
-                className="h-full rounded-full bg-amber-500 transition-all duration-300"
+                className="h-full rounded-full bg-amber-500 transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -124,7 +124,7 @@ export const ProfilePage = () => {
         <div className="pt-2">
           <button
             onClick={logout}
-            className="flex h-11 w-full items-center justify-center rounded-xl text-sm font-medium text-stone-400 transition-colors hover:bg-stone-100 dark:bg-stone-700 hover:text-stone-600 active:bg-stone-200"
+            className="flex h-11 w-full items-center justify-center rounded-xl text-sm font-medium text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-stone-600 active:bg-stone-200 dark:active:bg-stone-600"
           >
             {t.logout}
           </button>

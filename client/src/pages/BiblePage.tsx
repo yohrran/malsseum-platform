@@ -477,7 +477,7 @@ const BibleReader = ({
   const chapterData = data?.chapters[0];
 
   return (
-    <div className="flex h-[calc(100vh-140px)] flex-col">
+    <div className="flex h-[calc(100dvh-140px)] flex-col">
       {/* Top controls */}
       <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-700 pb-3">
         <button
@@ -628,7 +628,7 @@ const BibleReader = ({
         <button
           onClick={() => onSelectChapter(Math.max(1, chapter - 1))}
           disabled={chapter <= 1}
-          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:bg-stone-700 disabled:opacity-30"
+          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 disabled:opacity-30"
         >
           ← 이전 장
         </button>
@@ -638,7 +638,7 @@ const BibleReader = ({
         <button
           onClick={() => onSelectChapter(Math.min(book.chapterCount, chapter + 1))}
           disabled={chapter >= book.chapterCount}
-          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:bg-stone-700 disabled:opacity-30"
+          className="flex h-10 items-center rounded-lg px-4 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 disabled:opacity-30"
         >
           다음 장 →
         </button>

@@ -13,7 +13,7 @@ export const LoginPage = () => {
   return (
     <>
       <SEOHead title="로그인" />
-      <div className="relative flex min-h-screen flex-col items-center justify-center bg-stone-50 dark:bg-stone-800 px-5">
+      <div className="relative flex min-h-screen flex-col items-center justify-center bg-stone-50 dark:bg-stone-900 px-5">
         {/* Soft background accent */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-100/60 blur-[100px]" />
