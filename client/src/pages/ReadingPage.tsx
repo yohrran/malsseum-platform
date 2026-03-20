@@ -4,7 +4,7 @@ import { useTodayReading } from '../features/reading/useTodayReading';
 import { useCreateReadingPlan } from '../features/reading/useCreateReadingPlan';
 import { useCheckDayReading } from '../features/reading/useCheckDayReading';
 import { usePassage } from '../features/bible/usePassage';
-import { LoadingSpinner } from '../shared/LoadingSpinner';
+import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
 import { useT } from '../lib/i18n';
 import { groupChapterRefs, type ParsedChapterGroup } from '../lib/bible-abbr-map';
@@ -40,7 +40,16 @@ export const ReadingPage = () => {
     localStorage.setItem('bible-font-size', size);
   };
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) {
+    return (
+      <div className="space-y-5 pb-6">
+        <Skeleton className="h-8 w-40" />
+        <Skeleton className="h-48 rounded-2xl" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-24 rounded-2xl" />
+      </div>
+    );
+  }
 
   const handleCreatePlan = (e: React.FormEvent) => {
     e.preventDefault();

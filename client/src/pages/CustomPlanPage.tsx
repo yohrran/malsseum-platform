@@ -86,7 +86,7 @@ export const CustomPlanPage = () => {
                     {progress}%
                   </span>
                 </div>
-                <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-stone-100 dark:bg-stone-700">
+                <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-stone-100 dark:bg-stone-700">
                   <div
                     className="h-full rounded-full bg-amber-500 transition-all duration-500"
                     style={{ width: `${progress}%` }}

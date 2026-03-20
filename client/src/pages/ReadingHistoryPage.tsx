@@ -46,7 +46,11 @@ export const ReadingHistoryPage = () => {
           </h1>
           {entries.length > 0 && (
             <button
-              onClick={clearHistory}
+              onClick={() => {
+                if (window.confirm('읽기 히스토리를 모두 삭제하시겠습니까?')) {
+                  clearHistory();
+                }
+              }}
               className="text-xs font-medium text-stone-400 transition-colors hover:text-stone-600"
             >
               전체 삭제

@@ -362,15 +362,19 @@ const StreakBanner = ({
   // 오늘 또는 어제 읽었고 연속 2일 이상
   if (daysSince <= 1 && streak >= 2) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl bg-amber-50 px-5 py-4 ring-1 ring-amber-200/60">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-stone-800">
+      <div className="flex items-center gap-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 px-5 py-4 ring-1 ring-amber-200/60 dark:ring-amber-800/40">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-amber-900/30">
           <span className="text-lg" aria-hidden>
             🔥
           </span>
         </div>
         <div>
-          <p className="text-sm font-semibold text-amber-800">연속 {streak}일째 읽고 있어요!</p>
-          <p className="mt-0.5 text-xs text-amber-600/70">계속 이어가 보세요</p>
+          <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
+            연속 {streak}일째 읽고 있어요!
+          </p>
+          <p className="mt-0.5 text-xs text-amber-600/70 dark:text-amber-400/70">
+            계속 이어가 보세요
+          </p>
           <GraceDayBadge remaining={graceDaysRemaining} />
         </div>
       </div>
@@ -380,15 +384,19 @@ const StreakBanner = ({
   // 2일 이상 안 읽음 - 다시 돌아옴
   if (daysSince >= 2) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl bg-blue-50 px-5 py-4 ring-1 ring-blue-200/60">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-stone-800">
+      <div className="flex items-center gap-3 rounded-2xl bg-blue-50 dark:bg-blue-950/30 px-5 py-4 ring-1 ring-blue-200/60 dark:ring-blue-800/40">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-blue-900/30">
           <span className="text-lg" aria-hidden>
             📖
           </span>
         </div>
         <div>
-          <p className="text-sm font-semibold text-blue-800">{daysSince}일 만에 돌아오셨네요!</p>
-          <p className="mt-0.5 text-xs text-blue-600/70">오늘 말씀을 읽어볼까요?</p>
+          <p className="text-sm font-semibold text-blue-800 dark:text-blue-200">
+            {daysSince}일 만에 돌아오셨네요!
+          </p>
+          <p className="mt-0.5 text-xs text-blue-600/70 dark:text-blue-400/70">
+            오늘 말씀을 읽어볼까요?
+          </p>
           <GraceDayBadge remaining={graceDaysRemaining} />
         </div>
       </div>

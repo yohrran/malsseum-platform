@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useCustomPlanDetail } from '../features/custom-plan/useCustomPlanDetail';
 import { useCheckDay } from '../features/custom-plan/useCheckDay';
 import { useCompleteSeason } from '../features/custom-plan/useCompleteSeason';
-import { LoadingSpinner } from '../shared/LoadingSpinner';
+import { Skeleton } from '../shared/Skeleton';
 import { PassageViewer } from '../shared/PassageViewer';
 import { SEOHead } from '../shared/SEOHead';
 import { useT } from '../lib/i18n';
@@ -21,7 +21,24 @@ export const CustomPlanDetailPage = () => {
   const [activeSeasonIdx, setActiveSeasonIdx] = useState(0);
   const [selectedPassage, setSelectedPassage] = useState<SelectedPassage | null>(null);
 
-  if (isLoading || !plan) return <LoadingSpinner />;
+  if (isLoading) {
+    return (
+      <div className="space-y-5 pb-6">
+        <Skeleton className="h-8 w-48" />
+        <Skeleton className="h-10 w-full rounded-lg" />
+        <Skeleton className="h-40 rounded-2xl" />
+        <Skeleton className="h-64 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!plan) {
+    return (
+      <div className="rounded-2xl bg-white dark:bg-stone-800 p-8 text-center ring-1 ring-stone-200/60 dark:ring-stone-700/60">
+        <p className="text-sm text-stone-400 dark:text-stone-500">플랜을 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
 
   const activeSeason = plan.seasons[activeSeasonIdx];
   const completedCount = activeSeason?.days.filter((d) => d.isCompleted).length ?? 0;

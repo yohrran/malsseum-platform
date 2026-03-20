@@ -65,8 +65,8 @@ export const LeaderboardPage = () => {
                 <div
                   key={entry._id}
                   className={`flex items-center gap-3 px-4 py-3.5 ${
-                    idx > 0 ? 'border-t border-stone-100' : ''
-                  } ${isMe ? 'bg-amber-50/50' : ''}`}
+                    idx > 0 ? 'border-t border-stone-100 dark:border-stone-700' : ''
+                  } ${isMe ? 'bg-amber-50/50 dark:bg-amber-950/20' : ''}`}
                 >
                   {/* Rank */}
                   <span
