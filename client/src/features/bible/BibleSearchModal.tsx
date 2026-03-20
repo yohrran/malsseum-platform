@@ -11,11 +11,7 @@ export const BibleSearchModal = ({ onSelect, onClose }: Props) => {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const trapRef = useFocusTrap<HTMLDivElement>();
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+  const trapRef = useFocusTrap<HTMLDivElement>({ initialFocusRef: inputRef });
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query), 300);

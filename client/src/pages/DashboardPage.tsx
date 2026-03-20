@@ -155,7 +155,7 @@ export const DashboardPage = () => {
               오늘의 묵상을 기록해 보세요
             </p>
           </div>
-          <span className="text-sm text-stone-300 transition-colors group-hover:text-stone-500 dark:text-stone-400 dark:text-stone-500">
+          <span className="text-sm text-stone-300 transition-colors group-hover:text-stone-500 dark:text-stone-400">
             →
           </span>
         </Link>
@@ -190,7 +190,7 @@ export const DashboardPage = () => {
               나만의 성경 읽기 계획 만들기
             </p>
           </div>
-          <span className="text-sm text-stone-300 transition-colors group-hover:text-stone-500 dark:text-stone-400 dark:text-stone-500">
+          <span className="text-sm text-stone-300 transition-colors group-hover:text-stone-500 dark:text-stone-400">
             →
           </span>
         </Link>
@@ -212,7 +212,7 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
   if (!todayReading.data) {
     return (
       <div className="rounded-2xl bg-stone-100 dark:bg-stone-700 p-6">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white dark:bg-stone-800 dark:bg-stone-800">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white dark:bg-stone-800">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="22"
@@ -232,9 +232,7 @@ const TodayReadingCard = ({ todayReading, t }: TodayReadingCardProps) => {
         <p className="text-base font-semibold text-stone-700 dark:text-stone-200">
           통독 계획이 없어요
         </p>
-        <p className="mt-1 text-sm text-stone-500 dark:text-stone-400 dark:text-stone-500">
-          {t.noActivePlan}
-        </p>
+        <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">{t.noActivePlan}</p>
         <Link
           to={ROUTES.READING}
           className="mt-4 inline-flex h-10 items-center gap-1.5 rounded-xl bg-stone-800 px-5 text-sm font-semibold text-white transition-opacity hover:opacity-90 active:opacity-80"

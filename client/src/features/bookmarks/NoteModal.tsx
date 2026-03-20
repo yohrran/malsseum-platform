@@ -27,11 +27,7 @@ export const NoteModal = ({
   const updateNote = useUpdateBookmarkNote();
   const updateTags = useUpdateBookmarkTags();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const trapRef = useFocusTrap<HTMLDivElement>();
-
-  useEffect(() => {
-    textareaRef.current?.focus();
-  }, []);
+  const trapRef = useFocusTrap<HTMLDivElement>({ initialFocusRef: textareaRef });
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -44,16 +40,20 @@ export const NoteModal = ({
   const isSaving = updateNote.isPending || updateTags.isPending;
 
   const handleSave = async () => {
-    const noteChanged = note !== initialNote;
-    const tagsChanged = JSON.stringify(tags) !== JSON.stringify(initialTags);
+    try {
+      const noteChanged = note !== initialNote;
+      const tagsChanged = JSON.stringify(tags) !== JSON.stringify(initialTags);
 
-    if (noteChanged) {
-      await updateNote.mutateAsync({ id: bookmarkId, note });
+      if (noteChanged) {
+        await updateNote.mutateAsync({ id: bookmarkId, note });
+      }
+      if (tagsChanged) {
+        await updateTags.mutateAsync({ id: bookmarkId, tags });
+      }
+      onClose();
+    } catch {
+      // mutation error is handled by React Query - modal stays open for retry
     }
-    if (tagsChanged) {
-      await updateTags.mutateAsync({ id: bookmarkId, tags });
-    }
-    onClose();
   };
 
   return (

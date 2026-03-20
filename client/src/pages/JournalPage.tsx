@@ -23,8 +23,10 @@ export const JournalPage = () => {
   const handleSave = useCallback(
     (content: string) => {
       if (content.trim().length === 0) return;
-      saveJournal.mutate({ date: selectedDate, content: content.trim() });
-      setIsEditing(false);
+      saveJournal.mutate(
+        { date: selectedDate, content: content.trim() },
+        { onSuccess: () => setIsEditing(false) },
+      );
     },
     [selectedDate, saveJournal],
   );

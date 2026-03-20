@@ -16,11 +16,7 @@ export const QuickJumpModal = ({ books, onJump, onClose }: Props) => {
   const [query, setQuery] = useState('');
   const [selectedBook, setSelectedBook] = useState<BibleBookEntry | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const trapRef = useFocusTrap<HTMLDivElement>();
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [step]);
+  const trapRef = useFocusTrap<HTMLDivElement>({ initialFocusRef: inputRef });
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {

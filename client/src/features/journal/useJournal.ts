@@ -81,6 +81,7 @@ export const useDeleteJournal = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['journals'] });
+      queryClient.invalidateQueries({ queryKey: ['journal'] });
     },
   });
 };

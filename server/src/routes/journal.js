@@ -1,6 +1,9 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const Journal = require('../models/Journal');
 const { authenticate } = require('../middleware/auth');
+
+const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
 const router = express.Router();
 router.use(authenticate);
@@ -31,6 +34,9 @@ router.get('/', async (req, res, next) => {
 router.get('/date/:date', async (req, res, next) => {
   try {
     const { date } = req.params;
+    if (!DATE_REGEX.test(date)) {
+      return res.status(400).json({ success: false, error: 'Invalid date format' });
+    }
     const journal = await Journal.findOne({ userId: req.user._id, date }).lean();
     res.json({ success: true, data: journal });
   } catch (err) {
@@ -44,6 +50,9 @@ router.post('/', async (req, res, next) => {
     const { date, content, linkedVerses } = req.body;
     if (!date || !content) {
       return res.status(400).json({ success: false, error: 'date and content are required' });
+    }
+    if (!DATE_REGEX.test(date)) {
+      return res.status(400).json({ success: false, error: 'Invalid date format' });
     }
 
     if (content.length > 5000) {
@@ -72,6 +81,9 @@ router.post('/', async (req, res, next) => {
 router.delete('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, error: 'Invalid ID' });
+    }
     await Journal.deleteOne({ _id: id, userId: req.user._id });
     res.json({ success: true, data: null });
   } catch (err) {

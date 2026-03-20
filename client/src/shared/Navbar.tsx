@@ -55,7 +55,7 @@ export const Navbar = () => {
                     aria-current={isActive ? 'page' : undefined}
                     className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-all ${
                       isActive
-                        ? 'bg-stone-100 dark:bg-stone-700 font-semibold text-stone-800 dark:bg-stone-800 dark:text-stone-100'
+                        ? 'bg-stone-100 dark:bg-stone-800 font-semibold text-stone-800 dark:text-stone-100'
                         : 'text-stone-400 hover:bg-stone-50 hover:text-stone-600 dark:text-stone-500 dark:hover:bg-stone-800 dark:hover:text-stone-300'
                     }`}
                   >
