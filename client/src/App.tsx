@@ -15,6 +15,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { ReadingHistoryPage } from './pages/ReadingHistoryPage';
 import { YearlyReportPage } from './pages/YearlyReportPage';
+import { JournalPage } from './pages/JournalPage';
 
 export const App = () => {
   return (
@@ -47,6 +48,7 @@ export const App = () => {
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/reading-history" element={<ReadingHistoryPage />} />
           <Route path="/yearly-report" element={<YearlyReportPage />} />
+          <Route path="/journal" element={<JournalPage />} />
         </Route>
       </Routes>
     </ErrorBoundary>

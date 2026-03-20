@@ -19,4 +19,5 @@ export const ROUTES = {
   SETTINGS: '/settings',
   READING_HISTORY: '/reading-history',
   YEARLY_REPORT: '/yearly-report',
+  JOURNAL: '/journal',
 } as const;

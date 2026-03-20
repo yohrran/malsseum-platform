@@ -127,6 +127,39 @@ export const DashboardPage = () => {
           </Link>
         </div>
 
+        {/* Journal shortcut */}
+        <Link
+          to={ROUTES.JOURNAL}
+          className="group flex items-center gap-4 rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
+        >
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-stone-100 dark:bg-stone-700 transition-colors group-hover:bg-amber-50">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-stone-400 transition-colors group-hover:text-amber-600"
+            >
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">묵상 일지</p>
+            <p className="mt-0.5 text-xs text-stone-400 dark:text-stone-500">
+              오늘의 묵상을 기록해 보세요
+            </p>
+          </div>
+          <span className="text-sm text-stone-300 transition-colors group-hover:text-stone-500 dark:text-stone-400 dark:text-stone-500">
+            →
+          </span>
+        </Link>
+
         {/* Custom plan shortcut */}
         <Link
           to={ROUTES.CUSTOM_PLAN}
