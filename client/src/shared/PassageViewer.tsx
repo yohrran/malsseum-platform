@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useFocusTrap } from '../lib/use-focus-trap';
 import { usePassage } from '../features/bible/usePassage';
 import { useBookmarks } from '../features/bookmarks/useBookmarks';
 import { BookmarkButton } from '../features/bookmarks/BookmarkButton';
@@ -97,6 +98,8 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
     [removeHighlight, bookAbbr, currentChapterNum],
   );
 
+  const trapRef = useFocusTrap<HTMLDivElement>();
+
   const swipeHandlers = useSwipe({
     onSwipeLeft: () => setActiveChapterIdx((i) => Math.min(chapters.length - 1, i + 1)),
     onSwipeRight: () => setActiveChapterIdx((i) => Math.max(0, i - 1)),
@@ -111,6 +114,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
       aria-label={label}
     >
       <div
+        ref={trapRef}
         className="flex h-[92vh] w-full max-w-2xl flex-col rounded-t-3xl bg-white dark:bg-stone-800 shadow-2xl sm:h-[85vh] sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >

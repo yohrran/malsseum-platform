@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useUpdateBookmarkNote, useUpdateBookmarkTags } from './useBookmarks';
 import { TagEditor } from './TagEditor';
+import { useFocusTrap } from '../../lib/use-focus-trap';
 
 type Props = {
   bookmarkId: string;
@@ -26,6 +27,7 @@ export const NoteModal = ({
   const updateNote = useUpdateBookmarkNote();
   const updateTags = useUpdateBookmarkTags();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const trapRef = useFocusTrap<HTMLDivElement>();
 
   useEffect(() => {
     textareaRef.current?.focus();
@@ -63,6 +65,7 @@ export const NoteModal = ({
       aria-label="노트 편집"
     >
       <div
+        ref={trapRef}
         className="w-full max-w-md rounded-2xl bg-white dark:bg-stone-800 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >

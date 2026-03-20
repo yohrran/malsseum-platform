@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { BOOK_NAMES_KO } from '../../lib/bible-abbr-map';
 import type { BibleBookEntry } from './useBibles';
+import { useFocusTrap } from '../../lib/use-focus-trap';
 
 type Props = {
   books: BibleBookEntry[];
@@ -15,6 +16,7 @@ export const QuickJumpModal = ({ books, onJump, onClose }: Props) => {
   const [query, setQuery] = useState('');
   const [selectedBook, setSelectedBook] = useState<BibleBookEntry | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const trapRef = useFocusTrap<HTMLDivElement>();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -81,6 +83,7 @@ export const QuickJumpModal = ({ books, onJump, onClose }: Props) => {
       aria-label="성경 바로가기"
     >
       <div
+        ref={trapRef}
         className="w-full max-w-md rounded-2xl bg-white dark:bg-stone-800 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >

@@ -434,16 +434,16 @@
 
 ### 현재 상태 분석
 
-| 항목              | 상태               | 설명                                       |
-| ----------------- | ------------------ | ------------------------------------------ |
-| 키보드 네비게이션 | :x:                | Tab 순서 미정의, 포커스 트랩 없음          |
-| aria-label        | :warning:          | 일부 아이콘 버튼에 누락                    |
-| 색상 대비         | :warning:          | 다크모드 텍스트 대비 검증 필요             |
-| 스크린리더 호환   | :x:                | 구절 번호/본문 구분 불가, 랜드마크 미설정  |
-| 포커스 관리       | :x:                | 모달 열림 시 포커스 미이동, 닫힘 시 미복귀 |
-| 텍스트 크기       | :white_check_mark: | 4단계 조절 가능 (개선 여지 있음)           |
-| 모션 감소         | :x:                | `prefers-reduced-motion` 미적용            |
-| 언어 속성         | :warning:          | `<html lang="ko">` 확인 필요               |
+| 항목              | 상태               | 설명                                      |
+| ----------------- | ------------------ | ----------------------------------------- |
+| 키보드 네비게이션 | :white_check_mark: | 스킵 네비게이션 + 포커스 트랩 적용        |
+| aria-label        | :white_check_mark: | 모든 아이콘 버튼에 aria-label 적용됨      |
+| 색상 대비         | :warning:          | 다크모드 텍스트 대비 검증 필요            |
+| 스크린리더 호환   | :white_check_mark: | 구절 번호 aria-hidden, 랜드마크/role 설정 |
+| 포커스 관리       | :white_check_mark: | useFocusTrap 훅 - 모달 포커스 트랩 + 복귀 |
+| 텍스트 크기       | :white_check_mark: | 6단계 조절 가능                           |
+| 모션 감소         | :white_check_mark: | `prefers-reduced-motion` CSS 전역 적용    |
+| 언어 속성         | :white_check_mark: | lang-store 연동 동적 `<html lang>` 설정   |
 
 ### 권장 개선사항
 

@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import { useFocusTrap } from '../../lib/use-focus-trap';
 
 type Props = {
   bookName: string;
@@ -24,6 +25,7 @@ export const ShareCard = ({ bookName, chapter, verse, text, onClose }: Props) =>
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [themeIdx, setThemeIdx] = useState(0);
   const [isSharing, setIsSharing] = useState(false);
+  const trapRef = useFocusTrap<HTMLDivElement>();
 
   const theme = THEMES[themeIdx];
 
@@ -146,6 +148,7 @@ export const ShareCard = ({ bookName, chapter, verse, text, onClose }: Props) =>
       aria-label="공유 카드"
     >
       <div
+        ref={trapRef}
         className="w-full max-w-md rounded-2xl bg-white dark:bg-stone-800 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useBibleSearch, type SearchResult } from './useBibleSearch';
+import { useFocusTrap } from '../../lib/use-focus-trap';
 
 type Props = {
   onSelect: (result: SearchResult) => void;
@@ -10,6 +11,7 @@ export const BibleSearchModal = ({ onSelect, onClose }: Props) => {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const trapRef = useFocusTrap<HTMLDivElement>();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -54,6 +56,7 @@ export const BibleSearchModal = ({ onSelect, onClose }: Props) => {
       aria-label="구절 검색"
     >
       <div
+        ref={trapRef}
         className="w-full max-w-lg rounded-2xl bg-white dark:bg-stone-800 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
