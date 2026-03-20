@@ -79,7 +79,7 @@ export const ReadingHistoryPage = () => {
                   {group.entries.map((entry, i) => (
                     <Link
                       key={`${entry.timestamp}-${i}`}
-                      to={ROUTES.BIBLE}
+                      to={`${ROUTES.BIBLE}?book=${entry.bookAbbr}&chapter=${entry.chapter}`}
                       className="flex items-center gap-3 rounded-xl bg-white dark:bg-stone-800 px-4 py-3 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
                     >
                       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-stone-100 dark:bg-stone-700">

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useReadingStats } from '../features/reading/useReadingStats';
 import { useStreak } from '../features/auth/useStreak';
@@ -9,9 +9,22 @@ import { SEOHead } from '../shared/SEOHead';
 import { StatCard } from '../shared/StatCard';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
+const useIsDark = () => {
+  const [isDark, setIsDark] = useState(document.documentElement.classList.contains('dark'));
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+  return isDark;
+};
+
 export const StatsPage = () => {
   const { data: stats, isLoading } = useReadingStats();
   const { data: streakData } = useStreak();
+  const isDark = useIsDark();
   const {
     goalPeriod,
     goalChapters,
@@ -116,12 +129,12 @@ export const StatsPage = () => {
               <BarChart data={weeklyData}>
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 11, fill: '#a8a29e' }}
+                  tick={{ fontSize: 11, fill: isDark ? '#78716c' : '#a8a29e' }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fontSize: 11, fill: '#a8a29e' }}
+                  tick={{ fontSize: 11, fill: isDark ? '#78716c' : '#a8a29e' }}
                   axisLine={false}
                   tickLine={false}
                   width={30}
@@ -244,6 +257,9 @@ const GoalEditor = ({
     <div className="flex items-center justify-between mb-4">
       <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-200">읽기 목표</h2>
       <button
+        role="switch"
+        aria-checked={isEnabled}
+        aria-label="읽기 목표 활성화"
         onClick={() => onToggle(!isEnabled)}
         className={`relative h-6 w-11 rounded-full transition-colors ${
           isEnabled ? 'bg-stone-800 dark:bg-stone-200' : 'bg-stone-200 dark:bg-stone-600'

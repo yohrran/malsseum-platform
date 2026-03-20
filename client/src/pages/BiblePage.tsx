@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useBibleBooks, type BibleBookEntry } from '../features/bible/useBibles';
 import { usePassage } from '../features/bible/usePassage';
 import { QuickJumpModal } from '../features/bible/QuickJumpModal';
@@ -58,6 +59,7 @@ const saveRecentBook = (book: BibleBookEntry, chapter: number) => {
 
 export const BiblePage = () => {
   const { data: books, isLoading } = useBibleBooks();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<'ot' | 'nt'>('ot');
   const [selectedBook, setSelectedBook] = useState<BibleBookEntry | null>(null);
   const [reading, setReading] = useState<ReadingState | null>(null);
@@ -68,6 +70,19 @@ export const BiblePage = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { lastPosition, savePosition } = useReadingPositionStore();
   const addHistoryEntry = useReadingHistoryStore((s) => s.addEntry);
+
+  useEffect(() => {
+    const bookParam = searchParams.get('book');
+    const chapterParam = searchParams.get('chapter');
+    if (!bookParam || !chapterParam || !books) return;
+
+    const book = books.find((b) => b.abbrKo === bookParam);
+    const chapter = parseInt(chapterParam, 10);
+    if (!book || isNaN(chapter) || chapter < 1 || chapter > book.chapterCount) return;
+
+    setSearchParams({}, { replace: true });
+    handleSetReading({ book, chapter });
+  }, [books, searchParams]);
 
   const handleQuickJump = useCallback(
     (bookAbbr: string, chapter: number) => {
