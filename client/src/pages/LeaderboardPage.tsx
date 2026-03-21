@@ -92,7 +92,7 @@ export const LeaderboardPage = () => {
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-200 text-xs font-semibold text-stone-600">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-200 dark:bg-stone-700 text-xs font-semibold text-stone-600 dark:text-stone-300">
                       {entry.displayName.charAt(0)}
                     </div>
                   )}

@@ -134,7 +134,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                   className={`flex h-8 w-8 items-center justify-center rounded-lg font-medium transition-colors ${
                     fontSize === size
                       ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
-                      : 'text-stone-400 hover:text-stone-600'
+                      : 'text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
                   }`}
                   style={{ fontSize: FONT_DISPLAY_SIZE[i] }}
                   aria-label={`글자 크기 ${size}`}
@@ -152,7 +152,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                   className={`flex h-8 items-center justify-center rounded-lg px-1.5 transition-colors ${
                     lineHeight === height
                       ? 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-100'
-                      : 'text-stone-400 hover:text-stone-600'
+                      : 'text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
                   }`}
                   aria-label={`줄간격 ${height}`}
                 >
@@ -176,7 +176,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
             </div>
             <button
               onClick={onClose}
-              className="ml-1 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 dark:bg-stone-700 hover:text-stone-600"
+              className="ml-1 flex h-8 w-8 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-stone-600 dark:hover:text-stone-300"
               aria-label={t.close}
             >
               <svg
@@ -207,7 +207,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                 className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                   i === activeChapterIdx
                     ? 'bg-stone-800 text-white'
-                    : 'bg-stone-100 dark:bg-stone-700 text-stone-500 hover:bg-stone-200'
+                    : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-600'
                 }`}
               >
                 {BOOK_NAMES_KO[bookAbbr] ?? bookAbbr} {ch}장
@@ -242,7 +242,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                     >
                       <span
                         aria-hidden="true"
-                        className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300"
+                        className="inline-block w-7 shrink-0 pt-0.5 text-right text-xs font-medium tabular-nums text-stone-300 dark:text-stone-500"
                       >
                         {v.verse}
                       </span>

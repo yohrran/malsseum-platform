@@ -34,7 +34,7 @@ export const InstallPrompt = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-50 mx-auto max-w-sm rounded-xl border border-stone-200 bg-white dark:bg-stone-800 p-4 shadow-lg sm:bottom-4">
+    <div className="fixed bottom-20 left-4 right-4 z-50 mx-auto max-w-sm rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 p-4 shadow-lg sm:bottom-4">
       <p className="mb-3 text-sm font-medium text-stone-700 dark:text-stone-200">
         홈 화면에 추가하면 더 빠르게 접근할 수 있어요
       </p>
@@ -47,7 +47,7 @@ export const InstallPrompt = () => {
         </button>
         <button
           onClick={handleDismiss}
-          className="rounded-lg px-4 py-2 text-sm text-stone-500 transition-colors hover:bg-stone-100 dark:bg-stone-700"
+          className="rounded-lg px-4 py-2 text-sm text-stone-500 dark:text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-600"
         >
           나중에
         </button>
