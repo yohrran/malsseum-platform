@@ -25,7 +25,7 @@ export const HIGHLIGHT_BG: Record<HighlightColor, string> = {
 
 export const HighlightPicker = ({ currentColor, onSelect, onRemove, onClose }: Props) => {
   return (
-    <div className="flex items-center gap-1.5 rounded-full bg-white dark:bg-stone-700 px-2 py-1.5 shadow-lg ring-1 ring-stone-200/60 dark:ring-stone-600">
+    <div className="flex items-center gap-1.5 rounded-full bg-white dark:bg-stone-700 px-2 py-1.5 shadow-lg ring-1 ring-stone-200/60 dark:ring-stone-600/60">
       {COLORS.map(({ value, bg, ring }) => (
         <button
           key={value}
@@ -45,7 +45,7 @@ export const HighlightPicker = ({ currentColor, onSelect, onRemove, onClose }: P
             onRemove();
             onClose();
           }}
-          className="ml-0.5 flex h-6 w-6 items-center justify-center rounded-full text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-stone-600"
+          className="ml-0.5 flex h-6 w-6 items-center justify-center rounded-full text-stone-400 dark:text-stone-500 transition-colors hover:bg-stone-100 dark:hover:bg-stone-600 hover:text-stone-600 dark:hover:text-stone-300"
           aria-label="하이라이트 제거"
         >
           <svg

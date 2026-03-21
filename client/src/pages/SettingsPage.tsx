@@ -178,7 +178,7 @@ export const SettingsPage = () => {
                 성경 전체를 기기에 저장하면 인터넷 없이도 읽을 수 있습니다.
               </p>
               {offline.status === 'error' && offline.errorMessage && (
-                <p className="text-xs text-red-500">{offline.errorMessage}</p>
+                <p className="text-xs text-red-500 dark:text-red-400">{offline.errorMessage}</p>
               )}
               <button
                 onClick={offline.download}
@@ -193,7 +193,7 @@ export const SettingsPage = () => {
         {/* Reading history */}
         <Link
           to={ROUTES.READING_HISTORY}
-          className="flex items-center justify-between rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
+          className="flex items-center justify-between rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300 dark:hover:ring-stone-600"
         >
           <div>
             <p className="text-sm font-semibold text-stone-700 dark:text-stone-200">
