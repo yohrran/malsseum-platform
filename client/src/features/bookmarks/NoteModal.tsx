@@ -85,7 +85,9 @@ export const NoteModal = ({
               className="h-32 w-full resize-none rounded-xl border-0 bg-stone-50 dark:bg-stone-700 p-3 text-sm text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none ring-1 ring-stone-200/60 dark:ring-stone-600 transition-all focus:ring-2 focus:ring-stone-400"
               maxLength={500}
             />
-            <p className="mt-1 text-right text-xs text-stone-400">{note.length}/500</p>
+            <p className="mt-1 text-right text-xs text-stone-400 dark:text-stone-500">
+              {note.length}/500
+            </p>
           </div>
 
           <div>

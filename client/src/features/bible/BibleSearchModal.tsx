@@ -59,7 +59,7 @@ export const BibleSearchModal = ({ onSelect, onClose }: Props) => {
         {/* Search input */}
         <div className="border-b border-stone-100 dark:border-stone-700 p-4">
           <div className="relative">
-            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-stone-400">
+            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-stone-400 dark:text-stone-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"
@@ -87,7 +87,7 @@ export const BibleSearchModal = ({ onSelect, onClose }: Props) => {
             {query && (
               <button
                 onClick={() => setQuery('')}
-                className="absolute inset-y-0 right-3 flex items-center text-stone-400 hover:text-stone-600"
+                className="absolute inset-y-0 right-3 flex items-center text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
                 aria-label="검색어 지우기"
               >
                 <svg
@@ -108,15 +108,19 @@ export const BibleSearchModal = ({ onSelect, onClose }: Props) => {
         {/* Results */}
         <div className="max-h-[60vh] overflow-y-auto">
           {debouncedQuery.trim().length < 2 && (
-            <div className="p-8 text-center text-sm text-stone-400">2글자 이상 입력하세요</div>
+            <div className="p-8 text-center text-sm text-stone-400 dark:text-stone-500">
+              2글자 이상 입력하세요
+            </div>
           )}
 
           {isLoading && debouncedQuery.trim().length >= 2 && (
-            <div className="p-8 text-center text-sm text-stone-400">검색 중...</div>
+            <div className="p-8 text-center text-sm text-stone-400 dark:text-stone-500">
+              검색 중...
+            </div>
           )}
 
           {data && data.results.length === 0 && (
-            <div className="p-8 text-center text-sm text-stone-400">
+            <div className="p-8 text-center text-sm text-stone-400 dark:text-stone-500">
               "{data.query}"에 대한 검색 결과가 없습니다
             </div>
           )}
@@ -124,7 +128,7 @@ export const BibleSearchModal = ({ onSelect, onClose }: Props) => {
           {data && data.results.length > 0 && (
             <div>
               <div className="border-b border-stone-100 dark:border-stone-700 px-4 py-2">
-                <p className="text-xs text-stone-400">{data.total}개 결과</p>
+                <p className="text-xs text-stone-400 dark:text-stone-500">{data.total}개 결과</p>
               </div>
               <div className="divide-y divide-stone-100 dark:divide-stone-700">
                 {data.results.map((result) => (

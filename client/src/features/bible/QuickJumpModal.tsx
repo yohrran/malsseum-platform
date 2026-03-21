@@ -86,7 +86,7 @@ export const QuickJumpModal = ({ books, onJump, onClose }: Props) => {
         {/* Search input */}
         <div className="border-b border-stone-100 dark:border-stone-700 p-4">
           <div className="relative">
-            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-stone-400">
+            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-stone-400 dark:text-stone-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-4 w-4"
@@ -141,7 +141,7 @@ export const QuickJumpModal = ({ books, onJump, onClose }: Props) => {
                 setSelectedBook(null);
                 setQuery('');
               }}
-              className="mt-2 flex items-center gap-1 text-xs text-stone-400 hover:text-stone-600 transition-colors"
+              className="mt-2 flex items-center gap-1 text-xs text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 transition-colors"
             >
               <span>←</span>
               <span>다른 책 선택</span>
@@ -162,13 +162,13 @@ export const QuickJumpModal = ({ books, onJump, onClose }: Props) => {
                   <span className="text-xs font-bold text-stone-700 dark:text-stone-200">
                     {book.abbrKo}
                   </span>
-                  <span className="mt-0.5 text-[10px] text-stone-400 line-clamp-1">
+                  <span className="mt-0.5 text-[10px] text-stone-400 dark:text-stone-500 line-clamp-1">
                     {book.chapterCount}장
                   </span>
                 </button>
               ))}
               {filteredBooks.length === 0 && (
-                <p className="col-span-4 py-6 text-center text-sm text-stone-400">
+                <p className="col-span-4 py-6 text-center text-sm text-stone-400 dark:text-stone-500">
                   검색 결과가 없습니다
                 </p>
               )}
