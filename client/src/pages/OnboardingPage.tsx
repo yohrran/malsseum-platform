@@ -151,7 +151,7 @@ export const OnboardingPage = () => {
                     <div>
                       <p className="font-bold">{option.label}</p>
                       <p
-                        className={`text-xs ${selectedPlan === i ? 'text-white/70' : 'text-stone-400'}`}
+                        className={`text-xs ${selectedPlan === i ? 'text-white/70' : 'text-stone-400 dark:text-stone-500'}`}
                       >
                         {option.description}
                       </p>
@@ -170,7 +170,7 @@ export const OnboardingPage = () => {
                 </button>
                 <button
                   onClick={handleSkip}
-                  className="w-full py-2 text-xs text-stone-400 transition-colors hover:text-stone-600"
+                  className="w-full py-2 text-xs text-stone-400 transition-colors hover:text-stone-600 dark:hover:text-stone-300"
                 >
                   나중에 설정하기
                 </button>
@@ -237,7 +237,7 @@ const FeatureItem = ({ icon, title, description }: FeatureItemProps) => (
     </div>
     <div>
       <p className="text-sm font-bold text-stone-800 dark:text-stone-100">{title}</p>
-      <p className="text-xs text-stone-400">{description}</p>
+      <p className="text-xs text-stone-400 dark:text-stone-500">{description}</p>
     </div>
   </div>
 );

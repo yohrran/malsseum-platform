@@ -73,7 +73,7 @@ export const CustomPlanPage = () => {
               <Link
                 key={plan._id}
                 to={`/custom-plan/${plan._id}`}
-                className="group block rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
+                className="group block rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
               >
                 <div className="flex items-start justify-between">
                   <div>

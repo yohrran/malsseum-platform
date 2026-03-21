@@ -115,7 +115,7 @@ export const DashboardPage = () => {
 
           <Link
             to={ROUTES.LEADERBOARD}
-            className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
+            className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
           >
             <p className="text-xs font-medium text-stone-400 dark:text-stone-500">순위표</p>
             <div>
@@ -130,7 +130,7 @@ export const DashboardPage = () => {
         {/* Journal shortcut */}
         <Link
           to={ROUTES.JOURNAL}
-          className="group flex items-center gap-4 rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
+          className="group flex items-center gap-4 rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
         >
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-stone-100 dark:bg-stone-700 transition-colors group-hover:bg-amber-50">
             <svg
@@ -163,7 +163,7 @@ export const DashboardPage = () => {
         {/* Custom plan shortcut */}
         <Link
           to={ROUTES.CUSTOM_PLAN}
-          className="group flex items-center gap-4 rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 transition-all hover:ring-stone-300"
+          className="group flex items-center gap-4 rounded-2xl bg-white dark:bg-stone-800 p-5 ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
         >
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-stone-100 dark:bg-stone-700 transition-colors group-hover:bg-amber-50">
             <svg

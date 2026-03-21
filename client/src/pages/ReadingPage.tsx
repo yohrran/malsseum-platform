@@ -526,7 +526,7 @@ const CreatePlanView = ({
               className={`rounded-xl p-3 text-left transition-all ${
                 isPresetActive(preset)
                   ? 'bg-stone-800 text-white ring-1 ring-stone-800'
-                  : 'bg-stone-50 dark:bg-stone-800 ring-1 ring-stone-200/60 hover:bg-stone-100'
+                  : 'bg-stone-50 dark:bg-stone-800 ring-1 ring-stone-200/60 dark:ring-stone-700/60 hover:bg-stone-100 dark:hover:bg-stone-700'
               }`}
             >
               <p
@@ -535,7 +535,7 @@ const CreatePlanView = ({
                 {preset.label}
               </p>
               <p
-                className={`mt-0.5 text-xs ${isPresetActive(preset) ? 'text-stone-300' : 'text-stone-400'}`}
+                className={`mt-0.5 text-xs ${isPresetActive(preset) ? 'text-stone-300' : 'text-stone-400 dark:text-stone-500'}`}
               >
                 {preset.desc}
               </p>
