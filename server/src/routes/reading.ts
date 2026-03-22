@@ -1,24 +1,26 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const ReadingPlan = require('../models/ReadingPlan');
-const { authenticate } = require('../middleware/auth');
-const { calculateReadingPlan } = require('../services/reading-plan-calculator');
-const { addPoints } = require('../services/points-service');
+import { Router, Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
+import ReadingPlan, { IDayPlan } from '../models/ReadingPlan';
+import CustomPlan from '../models/CustomPlan';
+import User from '../models/User';
+import { authenticate } from '../middleware/auth';
+import { calculateReadingPlan } from '../services/reading-plan-calculator';
+import { addPoints } from '../services/points-service';
 
-const router = express.Router();
+const router = Router();
 
 router.use(authenticate);
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const plans = await ReadingPlan.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    const plans = await ReadingPlan.find({ userId: req.user!._id }).sort({ createdAt: -1 });
     res.json({ success: true, data: plans });
   } catch (err) {
     next(err);
   }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { startDate, endDate, planType } = req.body;
     if (!startDate || !endDate) {
@@ -35,11 +37,11 @@ router.post('/', async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'endDate must be after startDate' });
     }
 
-    await ReadingPlan.updateMany({ userId: req.user._id, isActive: true }, { isActive: false });
+    await ReadingPlan.updateMany({ userId: req.user!._id, isActive: true }, { isActive: false });
 
     const { days, chaptersPerDay } = calculateReadingPlan(start, end);
     const plan = await ReadingPlan.create({
-      userId: req.user._id,
+      userId: req.user!._id,
       planType: planType || 'yearly',
       startDate: start,
       endDate: end,
@@ -53,9 +55,9 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.get('/today', async (req, res, next) => {
+router.get('/today', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const plan = await ReadingPlan.findOne({ userId: req.user._id, isActive: true });
+    const plan = await ReadingPlan.findOne({ userId: req.user!._id, isActive: true });
     if (!plan) {
       return res.status(404).json({ success: false, error: 'No active reading plan' });
     }
@@ -64,6 +66,7 @@ router.get('/today', async (req, res, next) => {
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     const todayPlan = plan.days.find((d) => {
+      if (!d.scheduledDate) return false;
       const scheduled = new Date(d.scheduledDate);
       const scheduledDay = new Date(
         scheduled.getFullYear(),
@@ -79,9 +82,10 @@ router.get('/today', async (req, res, next) => {
   }
 });
 
-router.patch('/:planId/days/:dayId', async (req, res, next) => {
+router.patch('/:planId/days/:dayId', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { planId, dayId } = req.params;
+    const planId = req.params.planId as string;
+    const dayId = req.params.dayId as string;
     const { isCompleted } = req.body;
 
     // H-1: ObjectId 형식 검증
@@ -89,24 +93,26 @@ router.patch('/:planId/days/:dayId', async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'Invalid ID format' });
     }
 
-    const plan = await ReadingPlan.findOne({ _id: planId, userId: req.user._id });
+    const plan = await ReadingPlan.findOne({ _id: planId, userId: req.user!._id });
     if (!plan) {
       return res.status(404).json({ success: false, error: 'Plan not found' });
     }
 
-    const day = plan.days.id(dayId);
+    const day = plan.days.find((d: IDayPlan & { _id?: mongoose.Types.ObjectId }) =>
+      d._id?.toString() === dayId,
+    );
     if (!day) {
       return res.status(404).json({ success: false, error: 'Day not found' });
     }
 
     const wasCompleted = day.isCompleted;
     day.isCompleted = isCompleted;
-    day.completedAt = isCompleted ? new Date() : null;
+    day.completedAt = isCompleted ? new Date() : undefined;
     await plan.save();
 
     if (isCompleted && !wasCompleted) {
       await addPoints(
-        req.user._id,
+        req.user!._id,
         'daily_complete',
         50,
         plan._id,
@@ -120,11 +126,11 @@ router.patch('/:planId/days/:dayId', async (req, res, next) => {
   }
 });
 
-router.get('/stats', async (req, res, next) => {
+router.get('/stats', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const plans = await ReadingPlan.find({ userId: req.user._id });
+    const plans = await ReadingPlan.find({ userId: req.user!._id });
 
-    const completedDays = [];
+    const completedDays: { date: string; chapters: number }[] = [];
     for (const plan of plans) {
       for (const day of plan.days) {
         if (day.isCompleted && day.completedAt) {
@@ -136,8 +142,8 @@ router.get('/stats', async (req, res, next) => {
       }
     }
 
-    const weeklyMap = {};
-    const monthlyMap = {};
+    const weeklyMap: Record<string, number> = {};
+    const monthlyMap: Record<string, number> = {};
     for (const entry of completedDays) {
       const d = new Date(entry.date);
       const weekKey = getWeekKey(d);
@@ -169,27 +175,23 @@ router.get('/stats', async (req, res, next) => {
   }
 });
 
-router.get('/yearly-report', async (req, res, next) => {
+router.get('/yearly-report', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const year = parseInt(req.query.year, 10) || new Date().getFullYear();
+    const year = parseInt(req.query.year as string, 10) || new Date().getFullYear();
     const yearStart = new Date(year, 0, 1);
     const yearEnd = new Date(year, 11, 31, 23, 59, 59);
 
-    const ReadingPlan = require('../models/ReadingPlan');
-    const CustomPlan = require('../models/CustomPlan');
-    const User = require('../models/User');
-
     const [plans, customPlans, user] = await Promise.all([
-      ReadingPlan.find({ userId: req.user._id }),
-      CustomPlan.find({ userId: req.user._id }),
-      User.findById(req.user._id).select('totalPoints currentStreak longestStreak createdAt'),
+      ReadingPlan.find({ userId: req.user!._id }),
+      CustomPlan.find({ userId: req.user!._id }),
+      User.findById(req.user!._id).select('totalPoints currentStreak longestStreak createdAt'),
     ]);
 
-    const monthlyChapters = {};
-    const bookCounts = {};
+    const monthlyChapters: Record<number, number> = {};
+    const bookCounts: Record<string, number> = {};
     let totalChapters = 0;
     let totalDays = 0;
-    const completedDates = new Set();
+    const completedDates = new Set<string>();
 
     for (const plan of plans) {
       for (const day of plan.days) {
@@ -263,13 +265,14 @@ router.get('/yearly-report', async (req, res, next) => {
   }
 });
 
-function getWeekKey(date) {
+function getWeekKey(date: Date): string {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
   const week1 = new Date(d.getFullYear(), 0, 4);
-  const weekNum = 1 + Math.round(((d - week1) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+  const weekNum =
+    1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
   return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
 }
 
-module.exports = router;
+export default router;

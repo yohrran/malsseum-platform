@@ -1,11 +1,13 @@
-const express = require('express');
-const { authenticate } = require('../middleware/auth');
-const BibleBook = require('../models/BibleBook');
+import { Router, Request, Response, NextFunction } from 'express';
+import { authenticate } from '../middleware/auth';
+import BibleBook from '../models/BibleBook';
 
-const router = express.Router();
+const router = Router();
 router.use(authenticate);
 
-const CURATED_VERSES = [
+type CuratedVerse = { bookAbbr: string; chapter: number; verse: number };
+
+const CURATED_VERSES: CuratedVerse[] = [
   { bookAbbr: '창', chapter: 1, verse: 1 },
   { bookAbbr: '시', chapter: 23, verse: 1 },
   { bookAbbr: '시', chapter: 46, verse: 1 },
@@ -96,7 +98,7 @@ const CURATED_VERSES = [
   // Fill rest of year with cycling
 ];
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
@@ -128,4 +130,4 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;
