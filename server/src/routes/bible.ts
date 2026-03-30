@@ -1,15 +1,15 @@
-const express = require('express');
-const { authenticate } = require('../middleware/auth');
-const BibleBook = require('../models/BibleBook');
+import { Router, Request, Response, NextFunction } from 'express';
+import { authenticate } from '../middleware/auth';
+import BibleBook from '../models/BibleBook';
 
-const router = express.Router();
+const router = Router();
 
 const ABBR_PATTERN = /^[\uAC00-\uD7A3a-zA-Z0-9]{1,4}$/;
 const CHAPTERS_PATTERN = /^[0-9,]+$/;
 
 router.use(authenticate);
 
-router.get('/books', async (req, res, next) => {
+router.get('/books', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const books = await BibleBook.find({}, { chapters: 0 }).sort({
       bookIndex: 1,
@@ -25,9 +25,10 @@ router.get('/books', async (req, res, next) => {
   }
 });
 
-router.get('/passage/:bookAbbr/:chapters', async (req, res, next) => {
+router.get('/passage/:bookAbbr/:chapters', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { bookAbbr, chapters: chaptersParam } = req.params;
+    const bookAbbr = req.params.bookAbbr as string;
+    const chaptersParam = req.params.chapters as string;
 
     if (!ABBR_PATTERN.test(bookAbbr)) {
       return res.status(400).json({ success: false, error: 'Invalid book abbreviation' });
@@ -38,8 +39,8 @@ router.get('/passage/:bookAbbr/:chapters', async (req, res, next) => {
 
     const chapterNums = chaptersParam
       .split(',')
-      .map(Number)
-      .filter((n) => n > 0);
+      .map((s: string) => Number(s))
+      .filter((n: number) => n > 0);
 
     if (chapterNums.length === 0 || chapterNums.length > 10) {
       return res.status(400).json({ success: false, error: 'Provide 1-10 chapters' });
@@ -51,10 +52,10 @@ router.get('/passage/:bookAbbr/:chapters', async (req, res, next) => {
     }
 
     const chaptersData = chapterNums
-      .filter((ch) => ch >= 1 && ch <= book.chapterCount)
-      .map((ch) => ({
+      .filter((ch: number) => ch >= 1 && ch <= book.chapterCount)
+      .map((ch: number) => ({
         chapter: ch,
-        verses: book.chapters[ch - 1].map((text, idx) => ({
+        verses: book.chapters[ch - 1].map((text: string, idx: number) => ({
           verse: idx + 1,
           text,
         })),
@@ -73,7 +74,7 @@ router.get('/passage/:bookAbbr/:chapters', async (req, res, next) => {
   }
 });
 
-router.get('/search', async (req, res, next) => {
+router.get('/search', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { q, book: bookFilter } = req.query;
 
@@ -86,11 +87,20 @@ router.get('/search', async (req, res, next) => {
     const keyword = q.trim();
     const MAX_RESULTS = 50;
 
-    const query = bookFilter && ABBR_PATTERN.test(bookFilter) ? { abbrKo: bookFilter } : {};
+    const query =
+      bookFilter && typeof bookFilter === 'string' && ABBR_PATTERN.test(bookFilter)
+        ? { abbrKo: bookFilter }
+        : {};
 
     const books = await BibleBook.find(query).sort({ bookIndex: 1 });
 
-    const results = [];
+    const results: {
+      bookAbbr: string;
+      bookName: string;
+      chapter: number;
+      verse: number;
+      text: string;
+    }[] = [];
     for (const book of books) {
       for (let chIdx = 0; chIdx < book.chapters.length && results.length < MAX_RESULTS; chIdx++) {
         const chapter = book.chapters[chIdx];
@@ -122,7 +132,7 @@ router.get('/search', async (req, res, next) => {
   }
 });
 
-router.get('/bulk', async (req, res, next) => {
+router.get('/bulk', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const books = await BibleBook.find({}).sort({ bookIndex: 1 }).lean();
     const data = books.map((b) => ({
@@ -137,4 +147,4 @@ router.get('/bulk', async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

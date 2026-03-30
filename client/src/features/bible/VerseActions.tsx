@@ -50,7 +50,7 @@ export const VerseActions = ({ bookName, chapter, verse, text }: Props) => {
       <span className="flex items-center gap-0.5 shrink-0">
         <button
           onClick={handleCopy}
-          className="flex h-6 w-6 items-center justify-center rounded text-stone-300 transition-colors hover:text-stone-500 dark:hover:text-stone-300"
+          className="flex h-6 w-6 items-center justify-center rounded text-stone-300 dark:text-stone-500 transition-colors hover:text-stone-500 dark:hover:text-stone-300"
           aria-label={`${bookName} ${chapter}:${verse} 복사`}
         >
           {isCopied ? (
@@ -80,7 +80,7 @@ export const VerseActions = ({ bookName, chapter, verse, text }: Props) => {
         </button>
         <button
           onClick={() => setIsCardOpen(true)}
-          className="flex h-6 w-6 items-center justify-center rounded text-stone-300 transition-colors hover:text-stone-500 dark:hover:text-stone-300"
+          className="flex h-6 w-6 items-center justify-center rounded text-stone-300 dark:text-stone-500 transition-colors hover:text-stone-500 dark:hover:text-stone-300"
           aria-label={`${bookName} ${chapter}:${verse} 카드 공유`}
         >
           <svg
@@ -98,7 +98,7 @@ export const VerseActions = ({ bookName, chapter, verse, text }: Props) => {
         {typeof navigator !== 'undefined' && 'share' in navigator && (
           <button
             onClick={handleShare}
-            className="flex h-6 w-6 items-center justify-center rounded text-stone-300 transition-colors hover:text-stone-500 dark:hover:text-stone-300"
+            className="flex h-6 w-6 items-center justify-center rounded text-stone-300 dark:text-stone-500 transition-colors hover:text-stone-500 dark:hover:text-stone-300"
             aria-label={`${bookName} ${chapter}:${verse} 공유`}
           >
             <svg

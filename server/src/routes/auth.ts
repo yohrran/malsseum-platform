@@ -1,10 +1,10 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const { OAuth2Client } = require('google-auth-library');
-const User = require('../models/User');
-const { authenticate } = require('../middleware/auth');
+import { Router, Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
+import User from '../models/User';
+import { authenticate } from '../middleware/auth';
 
-const router = express.Router();
+const router = Router();
 
 // OAuth2Client를 재사용 (요청마다 생성 방지)
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -12,7 +12,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const SAFE_USER_FIELDS =
   '_id email displayName picture preferredLanguage totalPoints currentStreak longestStreak lastReadDate';
 
-router.post('/google', async (req, res, next) => {
+router.post('/google', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { credential } = req.body;
     if (!credential) {
@@ -24,7 +24,7 @@ router.post('/google', async (req, res, next) => {
       audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
-    const { sub: googleId, email, name, picture } = payload;
+    const { sub: googleId, email, name, picture } = payload!;
 
     const user = await User.findOneAndUpdate(
       { googleId },
@@ -32,9 +32,12 @@ router.post('/google', async (req, res, next) => {
       { upsert: true, new: true, setDefaultsOnInsert: true },
     ).select(SAFE_USER_FIELDS);
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN || '7d',
-    });
+    const token = jwt.sign(
+      { userId: String(user!._id) },
+      process.env.JWT_SECRET as string,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') } as any,
+    );
 
     res.json({ success: true, data: { token, user } });
   } catch (err) {
@@ -42,10 +45,10 @@ router.post('/google', async (req, res, next) => {
   }
 });
 
-router.patch('/profile', authenticate, async (req, res, next) => {
+router.patch('/profile', authenticate, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { preferredLanguage } = req.body;
-    const update = {};
+    const update: Record<string, unknown> = {};
 
     if (preferredLanguage !== undefined) {
       if (!['ko', 'en'].includes(preferredLanguage)) {
@@ -60,7 +63,7 @@ router.patch('/profile', authenticate, async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'No valid fields to update' });
     }
 
-    const user = await User.findByIdAndUpdate(req.user._id, update, { new: true }).select(
+    const user = await User.findByIdAndUpdate(req.user!._id, update, { new: true }).select(
       SAFE_USER_FIELDS,
     );
 
@@ -71,7 +74,7 @@ router.patch('/profile', authenticate, async (req, res, next) => {
 });
 
 // M-7: googleId, __v 등 민감/불필요 필드 제외
-router.get('/me', authenticate, (req, res) => {
+router.get('/me', authenticate, (req: Request, res: Response) => {
   const {
     _id,
     email,
@@ -82,7 +85,7 @@ router.get('/me', authenticate, (req, res) => {
     currentStreak,
     longestStreak,
     lastReadDate,
-  } = req.user;
+  } = req.user!;
   res.json({
     success: true,
     data: {
@@ -99,9 +102,9 @@ router.get('/me', authenticate, (req, res) => {
   });
 });
 
-router.get('/streak', authenticate, async (req, res, next) => {
+router.get('/streak', authenticate, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await User.findById(req.user._id).select(
+    const user = await User.findById(req.user!._id).select(
       'currentStreak longestStreak lastReadDate graceDaysRemaining graceDaysUsedDates',
     );
     res.json({
@@ -119,16 +122,19 @@ router.get('/streak', authenticate, async (req, res, next) => {
   }
 });
 
-router.post('/refresh', authenticate, async (req, res, next) => {
+router.post('/refresh', authenticate, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await User.findById(req.user._id).select(SAFE_USER_FIELDS);
+    const user = await User.findById(req.user!._id).select(SAFE_USER_FIELDS);
     if (!user) {
       return res.status(401).json({ success: false, error: 'User not found' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN || '7d',
-    });
+    const token = jwt.sign(
+      { userId: String(user._id) },
+      process.env.JWT_SECRET as string,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') } as any,
+    );
 
     res.json({ success: true, data: { token, user } });
   } catch (err) {
@@ -136,4 +142,4 @@ router.post('/refresh', authenticate, async (req, res, next) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,19 +1,19 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const { errorHandler } = require('./middleware/error-handler');
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import { errorHandler } from './middleware/error-handler';
 
-const authRoutes = require('./routes/auth');
-const customPlanRoutes = require('./routes/custom-plan');
-const readingRoutes = require('./routes/reading');
-const pointsRoutes = require('./routes/points');
-const bibleRoutes = require('./routes/bible');
-const bookmarkRoutes = require('./routes/bookmarks');
-const highlightRoutes = require('./routes/highlights');
-const dailyVerseRoutes = require('./routes/daily-verse');
-const journalRoutes = require('./routes/journal');
+import authRoutes from './routes/auth';
+import customPlanRoutes from './routes/custom-plan';
+import readingRoutes from './routes/reading';
+import pointsRoutes from './routes/points';
+import bibleRoutes from './routes/bible';
+import bookmarkRoutes from './routes/bookmarks';
+import highlightRoutes from './routes/highlights';
+import dailyVerseRoutes from './routes/daily-verse';
+import journalRoutes from './routes/journal';
 
 const app = express();
 
@@ -65,4 +65,4 @@ app.use('/api/journals', journalRoutes);
 
 app.use(errorHandler);
 
-module.exports = app;
+export default app;

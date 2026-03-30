@@ -65,7 +65,7 @@
 | 절 복사/공유     | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 | 구절 하이라이트  | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
 | 노트/메모        | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |           :x:           |
-| 오프라인 읽기    |        :x:         |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
+| 오프라인 읽기    | :white_check_mark: |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 | 다중 번역본      |        :x:         | :white_check_mark: (2000+) | :white_check_mark: (10+) | :white_check_mark: (5+) |
 | 오디오 성경      |        :x:         |     :white_check_mark:     |    :white_check_mark:    |   :white_check_mark:    |
 | 통독 계획        | :white_check_mark: |     :white_check_mark:     |           :x:            |           :x:           |
@@ -93,10 +93,10 @@
 
 **매일 말씀의 약점:**
 
-- 성경앱 핵심 기능 부재 (검색, 복사, 직접 이동)
-- 오프라인 지원 없음 (인터넷 필수)
-- 단일 번역본 (개역개정만 추정)
-- 구절 상호작용 기능 부재 (하이라이트, 노트)
+- 단일 번역본 (개역개정만)
+- 오디오 성경 미지원
+- 읽기 알림/리마인더 미지원
+- 커뮤니티/소셜 기능 없음
 
 ---
 

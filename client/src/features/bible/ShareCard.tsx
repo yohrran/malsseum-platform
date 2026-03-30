@@ -173,12 +173,12 @@ export const ShareCard = ({ bookName, chapter, verse, text, onClose }: Props) =>
                 onClick={() => setThemeIdx(i)}
                 className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition-all ${
                   i === themeIdx
-                    ? 'ring-2 ring-stone-800 dark:ring-stone-200 ring-offset-1'
+                    ? 'ring-2 ring-stone-800 dark:ring-stone-200 ring-offset-1 dark:ring-offset-stone-800'
                     : 'opacity-60 hover:opacity-100'
                 }`}
               >
                 <span
-                  className="h-4 w-4 rounded-full border border-stone-200"
+                  className="h-4 w-4 rounded-full border border-stone-200 dark:border-stone-600"
                   style={{ backgroundColor: t.bg }}
                 />
                 {t.name}

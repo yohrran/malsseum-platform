@@ -90,7 +90,7 @@ export const JournalPage = () => {
               <div className="flex gap-1">
                 <button
                   onClick={handleStartEdit}
-                  className="rounded-lg px-2.5 py-1 text-xs font-medium text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-stone-600"
+                  className="rounded-lg px-2.5 py-1 text-xs font-medium text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-stone-600 dark:hover:text-stone-300"
                 >
                   수정
                 </button>
@@ -158,7 +158,7 @@ export const JournalPage = () => {
                     setSelectedDate(journal.date);
                     setIsEditing(false);
                   }}
-                  className="flex w-full items-start gap-3 rounded-xl bg-white dark:bg-stone-800 p-4 text-left ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300"
+                  className="flex w-full items-start gap-3 rounded-xl bg-white dark:bg-stone-800 p-4 text-left ring-1 ring-stone-200/60 dark:ring-stone-700/60 transition-all hover:ring-stone-300 dark:hover:ring-stone-600"
                 >
                   <div className="shrink-0 rounded-lg bg-stone-100 dark:bg-stone-700 px-2.5 py-1.5 text-center">
                     <p className="text-xs font-bold tabular-nums text-stone-600 dark:text-stone-300">
@@ -205,7 +205,7 @@ const JournalEditor = ({ initialContent, onSave, onCancel, isSaving }: JournalEd
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="오늘 읽은 말씀에서 느낀 점, 기도 제목, 묵상 내용을 자유롭게 적어보세요..."
-        className="h-40 w-full resize-none border-0 bg-transparent text-sm leading-relaxed text-stone-800 dark:text-stone-100 placeholder-stone-400 outline-none"
+        className="h-40 w-full resize-none border-0 bg-transparent text-sm leading-relaxed text-stone-800 dark:text-stone-100 placeholder-stone-400 dark:placeholder-stone-500 outline-none"
         maxLength={5000}
         autoFocus
       />
@@ -216,7 +216,7 @@ const JournalEditor = ({ initialContent, onSave, onCancel, isSaving }: JournalEd
         <div className="flex gap-2">
           <button
             onClick={onCancel}
-            className="rounded-xl px-4 py-2 text-sm font-medium text-stone-500 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700"
+            className="rounded-xl px-4 py-2 text-sm font-medium text-stone-500 dark:text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700"
           >
             취소
           </button>

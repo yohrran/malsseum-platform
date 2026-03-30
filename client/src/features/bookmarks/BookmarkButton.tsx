@@ -30,8 +30,8 @@ export const BookmarkButton = ({ bookId, chapter, verse, isBookmarked }: Props) 
           disabled={isPending}
           className={`inline-flex items-center justify-center rounded p-1 transition-colors ${
             isBookmarked
-              ? 'text-amber-500 hover:text-amber-600'
-              : 'text-stone-300 hover:text-stone-400'
+              ? 'text-amber-500 hover:text-amber-600 dark:text-amber-400 dark:hover:text-amber-300'
+              : 'text-stone-300 hover:text-stone-400 dark:text-stone-500 dark:hover:text-stone-300'
           } ${isPending ? 'opacity-50' : ''}`}
           aria-label={isBookmarked ? '북마크 제거' : '북마크 추가'}
         >
@@ -53,7 +53,9 @@ export const BookmarkButton = ({ bookId, chapter, verse, isBookmarked }: Props) 
           <button
             onClick={() => setIsNoteOpen(true)}
             className={`inline-flex items-center justify-center rounded p-1 transition-colors ${
-              hasNote ? 'text-stone-500 dark:text-stone-400' : 'text-stone-300 hover:text-stone-400'
+              hasNote
+                ? 'text-stone-500 dark:text-stone-400'
+                : 'text-stone-300 hover:text-stone-400 dark:text-stone-500 dark:hover:text-stone-300'
             }`}
             aria-label="노트 편집"
           >

@@ -38,7 +38,7 @@ export const TagEditor = ({ tags, onChange }: Props) => {
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-stone-50 dark:bg-stone-700 p-2 ring-1 ring-stone-200/60 dark:ring-stone-600">
+      <div className="flex flex-wrap items-center gap-1.5 rounded-xl bg-stone-50 dark:bg-stone-700 p-2 ring-1 ring-stone-200/60 dark:ring-stone-600/60">
         {tags.map((tag) => (
           <span
             key={tag}
@@ -47,7 +47,7 @@ export const TagEditor = ({ tags, onChange }: Props) => {
             {tag}
             <button
               onClick={() => handleRemove(tag)}
-              className="ml-0.5 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
+              className="ml-0.5 text-stone-400 dark:text-stone-500 hover:text-stone-600 dark:hover:text-stone-300"
               aria-label={`태그 ${tag} 제거`}
             >
               <svg
