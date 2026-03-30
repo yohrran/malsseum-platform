@@ -10,7 +10,7 @@ type OfflineBibleDB = {
     };
   };
   chapters: {
-    key: string;
+    key: [string, number];
     value: {
       abbrKo: string;
       chapter: number;
