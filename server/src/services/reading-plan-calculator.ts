@@ -1,20 +1,20 @@
 type BibleBook = {
-  id: string
-  name: string
-  chapters: number
-}
+  id: string;
+  name: string;
+  chapters: number;
+};
 
 type DayPlan = {
-  dayNumber: number
-  scheduledDate: Date
-  chapterRefs: string[]
-  isCompleted: boolean
-}
+  dayNumber: number;
+  scheduledDate: Date;
+  chapterRefs: string[];
+  isCompleted: boolean;
+};
 
 type ReadingPlanResult = {
-  days: DayPlan[]
-  chaptersPerDay: number
-}
+  days: DayPlan[];
+  chaptersPerDay: number;
+};
 
 export const BIBLE_BOOKS: BibleBook[] = [
   { id: 'GEN', name: 'Genesis', chapters: 50 },
@@ -83,47 +83,47 @@ export const BIBLE_BOOKS: BibleBook[] = [
   { id: '3JN', name: '3 John', chapters: 1 },
   { id: 'JUD', name: 'Jude', chapters: 1 },
   { id: 'REV', name: 'Revelation', chapters: 22 },
-]
+];
 
-export const TOTAL_CHAPTERS: number = BIBLE_BOOKS.reduce((sum, b) => sum + b.chapters, 0)
+export const TOTAL_CHAPTERS: number = BIBLE_BOOKS.reduce((sum, b) => sum + b.chapters, 0);
 
 const getAllChapterRefs = (): string[] => {
-  const refs: string[] = []
+  const refs: string[] = [];
   for (const book of BIBLE_BOOKS) {
     for (let ch = 1; ch <= book.chapters; ch++) {
-      refs.push(`${book.id}.${ch}`)
+      refs.push(`${book.id}.${ch}`);
     }
   }
-  return refs
-}
+  return refs;
+};
 
 export const calculateReadingPlan = (startDate: Date, endDate: Date): ReadingPlanResult => {
-  const start = new Date(startDate)
-  const end = new Date(endDate)
-  const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-  const allRefs = getAllChapterRefs()
-  const chaptersPerDay = Math.ceil(allRefs.length / totalDays)
+  const allRefs = getAllChapterRefs();
+  const chaptersPerDay = Math.ceil(allRefs.length / totalDays);
 
-  const days: DayPlan[] = []
-  let refIndex = 0
+  const days: DayPlan[] = [];
+  let refIndex = 0;
 
   for (let i = 0; i < totalDays; i++) {
-    const scheduledDate = new Date(start)
-    scheduledDate.setDate(scheduledDate.getDate() + i)
+    const scheduledDate = new Date(start);
+    scheduledDate.setDate(scheduledDate.getDate() + i);
 
-    const dayRefs = allRefs.slice(refIndex, refIndex + chaptersPerDay)
-    if (dayRefs.length === 0) break
+    const dayRefs = allRefs.slice(refIndex, refIndex + chaptersPerDay);
+    if (dayRefs.length === 0) break;
 
     days.push({
       dayNumber: i + 1,
       scheduledDate,
       chapterRefs: dayRefs,
       isCompleted: false,
-    })
+    });
 
-    refIndex += chaptersPerDay
+    refIndex += chaptersPerDay;
   }
 
-  return { days, chaptersPerDay }
-}
+  return { days, chaptersPerDay };
+};

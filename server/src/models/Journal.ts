@@ -1,20 +1,20 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export type ILinkedVerse = {
-  bookAbbr: string
-  bookName: string
-  chapter: number
-  verse: number
-}
+  bookAbbr: string;
+  bookName: string;
+  chapter: number;
+  verse: number;
+};
 
 export type IJournal = Document & {
-  userId: mongoose.Types.ObjectId
-  date: string
-  content: string
-  linkedVerses: ILinkedVerse[]
-  createdAt: Date
-  updatedAt: Date
-}
+  userId: mongoose.Types.ObjectId;
+  date: string;
+  content: string;
+  linkedVerses: ILinkedVerse[];
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 const journalSchema = new Schema<IJournal>(
   {
@@ -31,10 +31,10 @@ const journalSchema = new Schema<IJournal>(
     ],
   },
   { timestamps: true },
-)
+);
 
-journalSchema.index({ userId: 1, date: -1 }, { unique: true })
+journalSchema.index({ userId: 1, date: -1 }, { unique: true });
 
-const Journal: Model<IJournal> = mongoose.model<IJournal>('Journal', journalSchema)
+const Journal: Model<IJournal> = mongoose.model<IJournal>('Journal', journalSchema);
 
-export default Journal
+export default Journal;

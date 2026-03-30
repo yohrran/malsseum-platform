@@ -98,8 +98,8 @@ router.patch('/:planId/days/:dayId', async (req: Request, res: Response, next: N
       return res.status(404).json({ success: false, error: 'Plan not found' });
     }
 
-    const day = plan.days.find((d: IDayPlan & { _id?: mongoose.Types.ObjectId }) =>
-      d._id?.toString() === dayId,
+    const day = plan.days.find(
+      (d: IDayPlan & { _id?: mongoose.Types.ObjectId }) => d._id?.toString() === dayId,
     );
     if (!day) {
       return res.status(404).json({ success: false, error: 'Day not found' });
@@ -271,7 +271,8 @@ function getWeekKey(date: Date): string {
   d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
   const week1 = new Date(d.getFullYear(), 0, 4);
   const weekNum =
-    1 + Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
+    1 +
+    Math.round(((d.getTime() - week1.getTime()) / 86400000 - 3 + ((week1.getDay() + 6) % 7)) / 7);
   return `${d.getFullYear()}-W${String(weekNum).padStart(2, '0')}`;
 }
 

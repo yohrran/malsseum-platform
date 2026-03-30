@@ -1,31 +1,31 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export type ICustomPlanDay = {
-  date?: string
-  bookAbbr?: string
-  chapters: number[]
-  isCompleted: boolean
-  completedAt?: Date
-}
+  date?: string;
+  bookAbbr?: string;
+  chapters: number[];
+  isCompleted: boolean;
+  completedAt?: Date;
+};
 
 export type ICustomPlanSeason = Document & {
-  seasonNumber?: number
-  name?: string
-  startDate?: Date
-  endDate?: Date
-  label?: string
-  days: ICustomPlanDay[]
-  isCompleted: boolean
-  completedAt?: Date
-}
+  seasonNumber?: number;
+  name?: string;
+  startDate?: Date;
+  endDate?: Date;
+  label?: string;
+  days: ICustomPlanDay[];
+  isCompleted: boolean;
+  completedAt?: Date;
+};
 
 export type ICustomPlan = Document & {
-  userId: mongoose.Types.ObjectId
-  title: string
-  seasons: ICustomPlanSeason[]
-  createdAt: Date
-  updatedAt: Date
-}
+  userId: mongoose.Types.ObjectId;
+  title: string;
+  seasons: ICustomPlanSeason[];
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 const daySchema = new Schema<ICustomPlanDay>(
   {
@@ -36,7 +36,7 @@ const daySchema = new Schema<ICustomPlanDay>(
     completedAt: Date,
   },
   { _id: false },
-)
+);
 
 const seasonSchema = new Schema<ICustomPlanSeason>({
   seasonNumber: Number,
@@ -47,7 +47,7 @@ const seasonSchema = new Schema<ICustomPlanSeason>({
   days: [daySchema],
   isCompleted: { type: Boolean, default: false },
   completedAt: Date,
-})
+});
 
 const customPlanSchema = new Schema<ICustomPlan>({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -55,16 +55,16 @@ const customPlanSchema = new Schema<ICustomPlan>({
   seasons: [seasonSchema],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-})
+});
 
 customPlanSchema.pre('save', function (next) {
-  this.updatedAt = new Date()
-  next()
-})
+  this.updatedAt = new Date();
+  next();
+});
 
 // M-1: userId 기준 목록 조회 최적화
-customPlanSchema.index({ userId: 1, createdAt: -1 })
+customPlanSchema.index({ userId: 1, createdAt: -1 });
 
-const CustomPlan: Model<ICustomPlan> = mongoose.model<ICustomPlan>('CustomPlan', customPlanSchema)
+const CustomPlan: Model<ICustomPlan> = mongoose.model<ICustomPlan>('CustomPlan', customPlanSchema);
 
-export default CustomPlan
+export default CustomPlan;

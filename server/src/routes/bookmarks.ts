@@ -30,7 +30,9 @@ router.get('/tags/all', async (req: Request, res: Response, next: NextFunction) 
 router.get('/tags/:tag', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const tag = req.params.tag as string;
-    const bookmarks = await Bookmark.find({ userId: req.user!._id, tags: tag.toLowerCase() }).sort({ createdAt: -1 });
+    const bookmarks = await Bookmark.find({ userId: req.user!._id, tags: tag.toLowerCase() }).sort({
+      createdAt: -1,
+    });
     res.json({ success: true, data: bookmarks });
   } catch (err) {
     next(err);
@@ -41,7 +43,11 @@ router.get('/tags/:tag', async (req: Request, res: Response, next: NextFunction)
 router.get('/:bookId/:chapter', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookId, chapter } = req.params;
-    const bookmarks = await Bookmark.find({ userId: req.user!._id, bookId, chapter: Number(chapter) });
+    const bookmarks = await Bookmark.find({
+      userId: req.user!._id,
+      bookId,
+      chapter: Number(chapter),
+    });
     res.json({ success: true, data: bookmarks });
   } catch (err) {
     next(err);
@@ -53,13 +59,21 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { bookId, chapter, verse, note } = req.body;
     if (!bookId || !chapter || !verse)
-      return res.status(400).json({ success: false, error: 'bookId, chapter, and verse are required' });
+      return res
+        .status(400)
+        .json({ success: false, error: 'bookId, chapter, and verse are required' });
     const existing = await Bookmark.findOne({ userId: req.user!._id, bookId, chapter, verse });
     if (existing) {
       await Bookmark.deleteOne({ _id: existing._id });
       return res.json({ success: true, data: null, message: 'Bookmark removed' });
     }
-    const bookmark = await Bookmark.create({ userId: req.user!._id, bookId, chapter, verse, note: note || '' });
+    const bookmark = await Bookmark.create({
+      userId: req.user!._id,
+      bookId,
+      chapter,
+      verse,
+      note: note || '',
+    });
     res.status(201).json({ success: true, data: bookmark });
   } catch (err) {
     next(err);
@@ -84,7 +98,9 @@ router.patch('/:id', async (req: Request, res: Response, next: NextFunction) => 
     }
     if (Object.keys(update).length === 0)
       return res.status(400).json({ success: false, error: 'note or tags required' });
-    const bookmark = await Bookmark.findOneAndUpdate({ _id: id, userId: req.user!._id }, update, { new: true });
+    const bookmark = await Bookmark.findOneAndUpdate({ _id: id, userId: req.user!._id }, update, {
+      new: true,
+    });
     if (!bookmark) return res.status(404).json({ success: false, error: 'Bookmark not found' });
     res.json({ success: true, data: bookmark });
   } catch (err) {

@@ -1,15 +1,15 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export type IBookmark = Document & {
-  userId: mongoose.Types.ObjectId
-  bookId: string
-  chapter: number
-  verse: number
-  note: string
-  tags: string[]
-  createdAt: Date
-  updatedAt: Date
-}
+  userId: mongoose.Types.ObjectId;
+  bookId: string;
+  chapter: number;
+  verse: number;
+  note: string;
+  tags: string[];
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 const bookmarkSchema = new Schema<IBookmark>(
   {
@@ -21,10 +21,10 @@ const bookmarkSchema = new Schema<IBookmark>(
     tags: { type: [String], default: [] },
   },
   { timestamps: true },
-)
+);
 
-bookmarkSchema.index({ userId: 1, bookId: 1, chapter: 1, verse: 1 }, { unique: true })
+bookmarkSchema.index({ userId: 1, bookId: 1, chapter: 1, verse: 1 }, { unique: true });
 
-const Bookmark: Model<IBookmark> = mongoose.model<IBookmark>('Bookmark', bookmarkSchema)
+const Bookmark: Model<IBookmark> = mongoose.model<IBookmark>('Bookmark', bookmarkSchema);
 
-export default Bookmark
+export default Bookmark;

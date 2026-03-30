@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export type PointsEventType =
   | 'chapter_complete'
@@ -6,16 +6,16 @@ export type PointsEventType =
   | 'custom_day_complete'
   | 'season_complete'
   | 'streak_7'
-  | 'streak_30'
+  | 'streak_30';
 
 export type IPointsLedger = Document & {
-  userId: mongoose.Types.ObjectId
-  eventType: PointsEventType
-  points: number
-  referenceId?: mongoose.Types.ObjectId
-  description?: string
-  createdAt: Date
-}
+  userId: mongoose.Types.ObjectId;
+  eventType: PointsEventType;
+  points: number;
+  referenceId?: mongoose.Types.ObjectId;
+  description?: string;
+  createdAt: Date;
+};
 
 const pointsLedgerSchema = new Schema<IPointsLedger>({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -35,10 +35,13 @@ const pointsLedgerSchema = new Schema<IPointsLedger>({
   referenceId: mongoose.Schema.Types.ObjectId,
   description: String,
   createdAt: { type: Date, default: Date.now },
-})
+});
 
-pointsLedgerSchema.index({ userId: 1, createdAt: -1 })
+pointsLedgerSchema.index({ userId: 1, createdAt: -1 });
 
-const PointsLedger: Model<IPointsLedger> = mongoose.model<IPointsLedger>('PointsLedger', pointsLedgerSchema)
+const PointsLedger: Model<IPointsLedger> = mongoose.model<IPointsLedger>(
+  'PointsLedger',
+  pointsLedgerSchema,
+);
 
-export default PointsLedger
+export default PointsLedger;
