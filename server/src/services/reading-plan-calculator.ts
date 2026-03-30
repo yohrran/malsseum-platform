@@ -97,7 +97,10 @@ const getAllChapterRefs = (): string[] => {
   return refs;
 };
 
-export const calculateReadingPlan = (startDate: Date, endDate: Date): ReadingPlanResult => {
+export const calculateReadingPlan = (
+  startDate: string | Date,
+  endDate: string | Date,
+): ReadingPlanResult => {
   const start = new Date(startDate);
   const end = new Date(endDate);
   const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;

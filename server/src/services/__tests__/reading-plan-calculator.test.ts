@@ -1,4 +1,4 @@
-const { calculateReadingPlan, BIBLE_BOOKS, TOTAL_CHAPTERS } = require('../reading-plan-calculator');
+import { calculateReadingPlan, BIBLE_BOOKS, TOTAL_CHAPTERS } from '../reading-plan-calculator';
 
 describe('reading-plan-calculator', () => {
   describe('BIBLE_BOOKS', () => {
