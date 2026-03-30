@@ -6,7 +6,12 @@ type AppError = Error & {
   errors?: Record<string, { message: string }>;
 };
 
-export const errorHandler = (err: AppError, req: Request, res: Response, _next: NextFunction): void => {
+export const errorHandler = (
+  err: AppError,
+  req: Request,
+  res: Response,
+  _next: NextFunction,
+): void => {
   console.error('Error:', err.message);
 
   if (err.name === 'ValidationError') {

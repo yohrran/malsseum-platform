@@ -13,9 +13,7 @@ export const CrossReferenceButton = ({ bookAbbr, chapter, verse }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const hasRefs = hasCrossReferences(bookAbbr, chapter, verse);
-  if (!hasRefs) return null;
-
-  const refs = getCrossReferences(bookAbbr, chapter, verse);
+  const refs = hasRefs ? getCrossReferences(bookAbbr, chapter, verse) : [];
 
   const handleToggle = () => setIsOpen((prev) => !prev);
 
@@ -44,6 +42,8 @@ export const CrossReferenceButton = ({ bookAbbr, chapter, verse }: Props) => {
       document.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen]);
+
+  if (!hasRefs) return null;
 
   return (
     <span className="relative">

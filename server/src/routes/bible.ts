@@ -25,54 +25,57 @@ router.get('/books', async (req: Request, res: Response, next: NextFunction) => 
   }
 });
 
-router.get('/passage/:bookAbbr/:chapters', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const bookAbbr = req.params.bookAbbr as string;
-    const chaptersParam = req.params.chapters as string;
+router.get(
+  '/passage/:bookAbbr/:chapters',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const bookAbbr = req.params.bookAbbr as string;
+      const chaptersParam = req.params.chapters as string;
 
-    if (!ABBR_PATTERN.test(bookAbbr)) {
-      return res.status(400).json({ success: false, error: 'Invalid book abbreviation' });
+      if (!ABBR_PATTERN.test(bookAbbr)) {
+        return res.status(400).json({ success: false, error: 'Invalid book abbreviation' });
+      }
+      if (!CHAPTERS_PATTERN.test(chaptersParam)) {
+        return res.status(400).json({ success: false, error: 'Invalid chapters format' });
+      }
+
+      const chapterNums = chaptersParam
+        .split(',')
+        .map((s: string) => Number(s))
+        .filter((n: number) => n > 0);
+
+      if (chapterNums.length === 0 || chapterNums.length > 10) {
+        return res.status(400).json({ success: false, error: 'Provide 1-10 chapters' });
+      }
+
+      const book = await BibleBook.findOne({ abbrKo: bookAbbr });
+      if (!book) {
+        return res.status(404).json({ success: false, error: 'Book not found' });
+      }
+
+      const chaptersData = chapterNums
+        .filter((ch: number) => ch >= 1 && ch <= book.chapterCount)
+        .map((ch: number) => ({
+          chapter: ch,
+          verses: book.chapters[ch - 1].map((text: string, idx: number) => ({
+            verse: idx + 1,
+            text,
+          })),
+        }));
+
+      res.json({
+        success: true,
+        data: {
+          bookName: book.nameKo,
+          abbrKo: book.abbrKo,
+          chapters: chaptersData,
+        },
+      });
+    } catch (err) {
+      next(err);
     }
-    if (!CHAPTERS_PATTERN.test(chaptersParam)) {
-      return res.status(400).json({ success: false, error: 'Invalid chapters format' });
-    }
-
-    const chapterNums = chaptersParam
-      .split(',')
-      .map((s: string) => Number(s))
-      .filter((n: number) => n > 0);
-
-    if (chapterNums.length === 0 || chapterNums.length > 10) {
-      return res.status(400).json({ success: false, error: 'Provide 1-10 chapters' });
-    }
-
-    const book = await BibleBook.findOne({ abbrKo: bookAbbr });
-    if (!book) {
-      return res.status(404).json({ success: false, error: 'Book not found' });
-    }
-
-    const chaptersData = chapterNums
-      .filter((ch: number) => ch >= 1 && ch <= book.chapterCount)
-      .map((ch: number) => ({
-        chapter: ch,
-        verses: book.chapters[ch - 1].map((text: string, idx: number) => ({
-          verse: idx + 1,
-          text,
-        })),
-      }));
-
-    res.json({
-      success: true,
-      data: {
-        bookName: book.nameKo,
-        abbrKo: book.abbrKo,
-        chapters: chaptersData,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-});
+  },
+);
 
 router.get('/search', async (req: Request, res: Response, next: NextFunction) => {
   try {

@@ -16,7 +16,9 @@ router.get('/balance', async (req: Request, res: Response, next: NextFunction) =
 
 router.get('/history', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const history = await PointsLedger.find({ userId: req.user!._id }).sort({ createdAt: -1 }).limit(100);
+    const history = await PointsLedger.find({ userId: req.user!._id })
+      .sort({ createdAt: -1 })
+      .limit(100);
     res.json({ success: true, data: history });
   } catch (err) {
     next(err);
@@ -25,7 +27,10 @@ router.get('/history', async (req: Request, res: Response, next: NextFunction) =
 
 router.get('/leaderboard', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const leaderboard = await User.find().sort({ totalPoints: -1 }).limit(20).select('displayName picture totalPoints');
+    const leaderboard = await User.find()
+      .sort({ totalPoints: -1 })
+      .limit(20)
+      .select('displayName picture totalPoints');
     res.json({ success: true, data: leaderboard });
   } catch (err) {
     next(err);

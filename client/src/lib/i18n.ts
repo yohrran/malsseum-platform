@@ -1,8 +1,5 @@
-import { useLangStore, type Lang } from '../store/lang-store';
-
 const ko = {
   profile: '프로필',
-  displayLanguage: '표시 언어',
   saveProfile: '저장',
   saving: '저장 중...',
   savedSuccess: '저장되었습니다.',
@@ -37,48 +34,6 @@ const ko = {
   inProgress: '진행 중',
 } as const;
 
-const en: Translations = {
-  profile: 'Profile',
-  displayLanguage: 'Display Language',
-  saveProfile: 'Save',
-  saving: 'Saving...',
-  savedSuccess: 'Saved successfully.',
-  saveFailed: 'Failed to save.',
-  dashboard: 'Home',
-  readingPlan: 'Reading Plan',
-  customPlan: 'Bible Reading',
-  leaderboard: 'Leaderboard',
-  todayReading: "Today's Reading",
-  myPoints: 'My Points',
-  customPlans: 'Custom Plans',
-  markComplete: 'Mark Complete',
-  completed: 'Completed',
-  noActivePlan: 'No active reading plan',
-  createPlan: 'Create Reading Plan',
-  startDate: 'Start Date',
-  endDate: 'End Date',
-  startPlan: 'Start',
-  creating: 'Creating...',
-  chaptersPerDay: 'ch/day',
-  allDays: 'All Days',
-  days: 'days',
-  seasonComplete: 'Season Complete!',
-  viewPassage: 'View Passage',
-  noLeaderboard: 'No leaderboard data.',
-  you: '(You)',
-  logout: 'Logout',
-  close: 'Close',
-  loadingPassage: 'Loading passage...',
-  failedPassage: 'Failed to load passage.',
-  viewAndManage: 'View & manage plans',
-  inProgress: 'In Progress',
-};
-
 export type Translations = typeof ko;
 
-const translations: Record<Lang, Translations> = { ko, en };
-
-export const useT = (): Translations => {
-  const lang = useLangStore((s) => s.lang);
-  return translations[lang];
-};
+export const useT = (): Translations => ko;

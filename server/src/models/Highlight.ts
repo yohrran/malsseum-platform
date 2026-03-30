@@ -1,16 +1,16 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-export type HighlightColor = 'yellow' | 'green' | 'blue' | 'pink' | 'purple'
+export type HighlightColor = 'yellow' | 'green' | 'blue' | 'pink' | 'purple';
 
 export type IHighlight = Document & {
-  userId: mongoose.Types.ObjectId
-  bookId: string
-  chapter: number
-  verse: number
-  color: HighlightColor
-  createdAt: Date
-  updatedAt: Date
-}
+  userId: mongoose.Types.ObjectId;
+  bookId: string;
+  chapter: number;
+  verse: number;
+  color: HighlightColor;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 const highlightSchema = new Schema<IHighlight>(
   {
@@ -25,10 +25,10 @@ const highlightSchema = new Schema<IHighlight>(
     },
   },
   { timestamps: true },
-)
+);
 
-highlightSchema.index({ userId: 1, bookId: 1, chapter: 1, verse: 1 }, { unique: true })
+highlightSchema.index({ userId: 1, bookId: 1, chapter: 1, verse: 1 }, { unique: true });
 
-const Highlight: Model<IHighlight> = mongoose.model<IHighlight>('Highlight', highlightSchema)
+const Highlight: Model<IHighlight> = mongoose.model<IHighlight>('Highlight', highlightSchema);
 
-export default Highlight
+export default Highlight;

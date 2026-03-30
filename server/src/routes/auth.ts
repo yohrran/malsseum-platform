@@ -36,7 +36,7 @@ router.post('/google', async (req: Request, res: Response, next: NextFunction) =
       { userId: String(user!._id) },
       process.env.JWT_SECRET as string,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') } as any,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' } as any,
     );
 
     res.json({ success: true, data: { token, user } });
@@ -133,7 +133,7 @@ router.post('/refresh', authenticate, async (req: Request, res: Response, next: 
       { userId: String(user._id) },
       process.env.JWT_SECRET as string,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') } as any,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' } as any,
     );
 
     res.json({ success: true, data: { token, user } });
