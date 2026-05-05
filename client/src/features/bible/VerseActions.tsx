@@ -1,16 +1,21 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ShareCard } from './ShareCard';
+import { useJournalDraftStore } from '../../store/journal-draft-store';
 
 type Props = {
+  bookAbbr: string;
   bookName: string;
   chapter: number;
   verse: number;
   text: string;
 };
 
-export const VerseActions = ({ bookName, chapter, verse, text }: Props) => {
+export const VerseActions = ({ bookAbbr, bookName, chapter, verse, text }: Props) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isCardOpen, setIsCardOpen] = useState(false);
+  const navigate = useNavigate();
+  const pushVerse = useJournalDraftStore((s) => s.pushVerse);
 
   const formatted = `"${text}" - ${bookName} ${chapter}:${verse}`;
 
@@ -31,6 +36,11 @@ export const VerseActions = ({ bookName, chapter, verse, text }: Props) => {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }
+  };
+
+  const handleQuoteToJournal = () => {
+    pushVerse({ bookAbbr, bookName, chapter, verse, text });
+    navigate('/journal');
   };
 
   const handleShare = async () => {
@@ -93,6 +103,27 @@ export const VerseActions = ({ bookName, chapter, verse, text }: Props) => {
           >
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
             <line x1="3" y1="9" x2="21" y2="9" />
+          </svg>
+        </button>
+        <button
+          onClick={handleQuoteToJournal}
+          className="flex h-6 w-6 items-center justify-center rounded text-stone-300 dark:text-stone-500 transition-colors hover:text-amber-500 dark:hover:text-amber-400"
+          aria-label={`${bookName} ${chapter}:${verse} 일지에 인용`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-3.5 w-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 20h9" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+            />
           </svg>
         </button>
         {typeof navigator !== 'undefined' && 'share' in navigator && (

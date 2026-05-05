@@ -290,6 +290,7 @@ export const PassageViewer = ({ bookAbbr, chapters, label, onClose }: Props) => 
                           verse={v.verse}
                         />
                         <VerseActions
+                          bookAbbr={bookAbbr}
                           bookName={data.bookName}
                           chapter={activeChapter.chapter}
                           verse={v.verse}
