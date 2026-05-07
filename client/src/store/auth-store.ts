@@ -21,15 +21,15 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'malsseum-auth',
-      // sessionStorage clears on tab close; safer than localStorage against XSS token theft.
-      // Ensure short JWT TTL (7d max) and CSP headers are configured server-side.
+      // localStorage로 30일 무로그인 UX 지원. JWT TTL은 서버에서 30일로 제한하고
+      // CSP 헤더(server/index.ts의 helmet)로 XSS 노출면을 줄여 트레이드오프 완화.
       storage: {
         getItem: (key) => {
-          const v = sessionStorage.getItem(key);
+          const v = localStorage.getItem(key);
           return v ? JSON.parse(v) : null;
         },
-        setItem: (key, value) => sessionStorage.setItem(key, JSON.stringify(value)),
-        removeItem: (key) => sessionStorage.removeItem(key),
+        setItem: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+        removeItem: (key) => localStorage.removeItem(key),
       },
     },
   ),
