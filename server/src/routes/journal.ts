@@ -40,6 +40,32 @@ router.get('/date/:date', async (req: Request, res: Response, next: NextFunction
   }
 });
 
+// GET by month (YYYY-MM) — 해당 월의 일지 전체
+router.get('/month/:month', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const month = req.params.month as string;
+    if (!/^\d{4}-\d{2}$/.test(month)) {
+      return res.status(400).json({ success: false, error: 'Invalid month format (YYYY-MM)' });
+    }
+    const start = `${month}-01`;
+    const [year, mon] = month.split('-').map(Number);
+    const nextYear = mon === 12 ? year + 1 : year;
+    const nextMon = mon === 12 ? 1 : mon + 1;
+    const end = `${nextYear}-${String(nextMon).padStart(2, '0')}-01`;
+
+    const journals = await Journal.find({
+      userId: req.user!._id,
+      date: { $gte: start, $lt: end },
+    })
+      .sort({ date: 1 })
+      .lean();
+
+    res.json({ success: true, data: journals });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // POST create/update
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {

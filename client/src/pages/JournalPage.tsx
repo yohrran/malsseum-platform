@@ -1,34 +1,75 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   useJournals,
   useJournalByDate,
+  useJournalsByMonth,
   useSaveJournal,
   useDeleteJournal,
 } from '../features/journal/useJournal';
+import { JournalCalendar } from '../features/journal/JournalCalendar';
+import { JournalShareCard } from '../features/bible/JournalShareCard';
 import { Skeleton } from '../shared/Skeleton';
 import { SEOHead } from '../shared/SEOHead';
+import { useJournalDraftStore } from '../store/journal-draft-store';
 
 const getTodayDate = () => new Date().toISOString().slice(0, 10);
 
 export const JournalPage = () => {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
   const [isEditing, setIsEditing] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(getTodayDate().slice(0, 7));
   const { data: listData, isLoading: listLoading } = useJournals();
   const { data: currentJournal } = useJournalByDate(selectedDate);
+  const { data: monthJournals = [] } = useJournalsByMonth(currentMonth);
+  const journalDates = new Set(monthJournals.map((j) => j.date));
   const saveJournal = useSaveJournal();
   const deleteJournal = useDeleteJournal();
+
+  const draftVerses = useJournalDraftStore((s) => s.verses);
+  const clearDraft = useJournalDraftStore((s) => s.clearDraft);
+  const [pendingLinkedVerses, setPendingLinkedVerses] = useState<LinkedVerse[]>([]);
+  const [draftPrefix, setDraftPrefix] = useState('');
+
+  useEffect(() => {
+    if (draftVerses.length === 0) return;
+    const today = getTodayDate();
+    setSelectedDate(today);
+    setIsEditing(true);
+    const prefix =
+      draftVerses.map((v) => `> "${v.text}" - ${v.bookName} ${v.chapter}:${v.verse}`).join('\n') +
+      '\n\n';
+    setDraftPrefix(prefix);
+    setPendingLinkedVerses(
+      draftVerses.map((v) => ({
+        bookAbbr: v.bookAbbr,
+        bookName: v.bookName,
+        chapter: v.chapter,
+        verse: v.verse,
+      })),
+    );
+    clearDraft();
+  }, [draftVerses, clearDraft]);
+
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   const handleStartEdit = () => setIsEditing(true);
 
   const handleSave = useCallback(
     (content: string) => {
       if (content.trim().length === 0) return;
+      const merged = mergeLinkedVerses(currentJournal?.linkedVerses ?? [], pendingLinkedVerses);
       saveJournal.mutate(
-        { date: selectedDate, content: content.trim() },
-        { onSuccess: () => setIsEditing(false) },
+        { date: selectedDate, content: content.trim(), linkedVerses: merged.slice(0, 10) },
+        {
+          onSuccess: () => {
+            setIsEditing(false);
+            setPendingLinkedVerses([]);
+            setDraftPrefix('');
+          },
+        },
       );
     },
-    [selectedDate, saveJournal],
+    [selectedDate, saveJournal, currentJournal, pendingLinkedVerses],
   );
 
   const handleDelete = useCallback(
@@ -56,27 +97,29 @@ export const JournalPage = () => {
           묵상 일지
         </h1>
 
-        {/* Date selector */}
-        <div className="flex items-center gap-3">
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => {
-              setSelectedDate(e.target.value);
-              setIsEditing(false);
-            }}
-            max={getTodayDate()}
-            className="h-10 rounded-xl border-0 bg-white dark:bg-stone-800 px-3 text-sm text-stone-800 dark:text-stone-100 ring-1 ring-stone-200/60 dark:ring-stone-700/60 outline-none focus:ring-2 focus:ring-stone-400"
-          />
-          <span className="text-sm text-stone-400 dark:text-stone-500">
-            {formatDateLabel(selectedDate)}
-          </span>
-        </div>
+        {/* Calendar date selector */}
+        <JournalCalendar
+          selectedDate={selectedDate}
+          onSelectDate={(date) => {
+            setSelectedDate(date);
+            setIsEditing(false);
+            const newMonth = date.slice(0, 7);
+            if (newMonth !== currentMonth) setCurrentMonth(newMonth);
+          }}
+          journalDates={journalDates}
+        />
+        <p className="text-sm text-stone-400 dark:text-stone-500">
+          {formatDateLabel(selectedDate)}
+        </p>
 
         {/* Editor or Display */}
         {isEditing ? (
           <JournalEditor
-            initialContent={currentJournal?.content ?? ''}
+            initialContent={
+              draftPrefix
+                ? draftPrefix + (currentJournal?.content ?? '')
+                : (currentJournal?.content ?? '')
+            }
             onSave={handleSave}
             onCancel={() => setIsEditing(false)}
             isSaving={saveJournal.isPending}
@@ -88,6 +131,12 @@ export const JournalPage = () => {
                 {formatDateLabel(currentJournal.date)}
               </p>
               <div className="flex gap-1">
+                <button
+                  onClick={() => setIsShareOpen(true)}
+                  className="rounded-lg px-2.5 py-1 text-xs font-medium text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-amber-500"
+                >
+                  공유
+                </button>
                 <button
                   onClick={handleStartEdit}
                   className="rounded-lg px-2.5 py-1 text-xs font-medium text-stone-400 transition-colors hover:bg-stone-100 dark:hover:bg-stone-700 hover:text-stone-600 dark:hover:text-stone-300"
@@ -142,6 +191,15 @@ export const JournalPage = () => {
               오늘의 묵상을 기록해 보세요
             </p>
           </button>
+        )}
+
+        {isShareOpen && currentJournal && (
+          <JournalShareCard
+            date={currentJournal.date}
+            content={currentJournal.content}
+            linkedVerses={currentJournal.linkedVerses}
+            onClose={() => setIsShareOpen(false)}
+          />
         )}
 
         {/* Recent journals list */}
@@ -231,6 +289,26 @@ const JournalEditor = ({ initialContent, onSave, onCancel, isSaving }: JournalEd
       </div>
     </div>
   );
+};
+
+type LinkedVerse = {
+  bookAbbr: string;
+  bookName: string;
+  chapter: number;
+  verse: number;
+};
+
+const mergeLinkedVerses = (existing: LinkedVerse[], incoming: LinkedVerse[]): LinkedVerse[] => {
+  const seen = new Set(existing.map((v) => `${v.bookAbbr}-${v.chapter}-${v.verse}`));
+  const merged = [...existing];
+  for (const v of incoming) {
+    const key = `${v.bookAbbr}-${v.chapter}-${v.verse}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(v);
+    }
+  }
+  return merged;
 };
 
 const formatDateLabel = (dateStr: string): string => {

@@ -607,6 +607,7 @@ const BibleReader = ({
                     <span className="flex-1">{v.text}</span>
                     <span className="shrink-0 pt-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <VerseActions
+                        bookAbbr={book.abbrKo}
                         bookName={book.nameKo}
                         chapter={chapter}
                         verse={v.verse}

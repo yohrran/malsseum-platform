@@ -50,6 +50,18 @@ export const useJournalByDate = (date: string) => {
   });
 };
 
+export const useJournalsByMonth = (yyyymm: string) => {
+  return useQuery({
+    queryKey: ['journals', 'month', yyyymm],
+    queryFn: async () => {
+      const { data } = await apiClient.get<ApiResponse<Journal[]>>(`/api/journals/month/${yyyymm}`);
+      return data.data ?? [];
+    },
+    enabled: /^\d{4}-\d{2}$/.test(yyyymm),
+    staleTime: 30 * 1000,
+  });
+};
+
 type SaveJournalParams = {
   date: string;
   content: string;
@@ -68,6 +80,9 @@ export const useSaveJournal = () => {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['journals'] });
       queryClient.invalidateQueries({ queryKey: ['journal', variables.date] });
+      queryClient.invalidateQueries({
+        queryKey: ['journals', 'month', variables.date.slice(0, 7)],
+      });
     },
   });
 };
